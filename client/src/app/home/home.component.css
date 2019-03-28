@@ -1,0 +1,67 @@
+.navbar {
+    background-color: rgb(255, 255, 255);
+  }
+  .navbar h1{
+      display: inline-block;
+      color: rgb(255, 181, 21);
+  }
+  .hamIcon{
+      color: rgb(88, 88, 88);
+      margin-right: 10px;
+      display: inline-block;
+      background-color: rgba(0, 0, 0, 0.034);
+  }
+  .spacer {
+    flex-grow: 1;
+  }
+  .moreBackground{
+      background-color: rgb(255, 255, 255);
+      color: rgb(97, 97, 97);
+  }
+  .textshadow {
+    margin-bottom: 1%;
+    margin-top: 1%;
+    font-size: 22px;
+    text-shadow:  2px 2px 4px black;
+  }
+
+.example-container {
+    widows: 100vh;
+    height: 100vh;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .example-events {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+  .panel1{
+      height: 100vh;
+      width: 300px;
+      background-color: rgb(233, 233, 233);
+  }
+  .insidepanel1{
+      margin: 5%;
+      height: 80%;
+      background-color: white;
+  }
+  .panel2{
+    height: 100vh;
+    width: 100%;
+    background-color: rgb(240, 240, 240);
+}
+.example-card {
+    max-width: 400px;
+    margin: 5%;
+    background-color: white;
+  }
+  
+  .example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+  }
+  
