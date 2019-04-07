@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule, MatTableModule,
-MatSidenavModule, MatCheckboxModule, MatDialogModule,MatTreeModule } from '@angular/material';
+MatSidenavModule, MatCheckboxModule, MatDialogModule,MatTreeModule, MatProgressBarModule } from '@angular/material';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -53,6 +53,7 @@ const appRoutes: Routes = [
     MatMenuModule,
     MatExpansionModule,
     MatTreeModule,
+    MatProgressBarModule,
     RouterModule.forRoot(appRoutes)
   ],
   providers: [],
