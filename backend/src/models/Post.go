@@ -9,6 +9,7 @@ type Post struct {
 	Timestamp 	string  `json:"timestamp"`
 	Date		string 		`json:"date"`
 	User		*User	`bson:"user" json:"user"`
+	Subject		*Subject	`bson:"subject" json:"subject"`
 }
 
 type Posts []Post

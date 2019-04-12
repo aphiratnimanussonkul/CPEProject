@@ -4,6 +4,7 @@ import (
 	"CPEProject/config"
 	"CPEProject/src/models"
 	"CPEProject/src/repository"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -55,6 +56,21 @@ func GetFacultyById(w http.ResponseWriter, req *http.Request) {
 
 }
 
+func GetFacultyAll(w http.ResponseWriter, req *http.Request) {
+
+	//
+	fmt.Println("Go Mongo Db")
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
+	post, err2 := facultyRepository.FindAll()
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	json.NewEncoder(w).Encode(post)
+}
 
 //Defualt add data
 func AddFacultyDefualt(facultyname string)  {

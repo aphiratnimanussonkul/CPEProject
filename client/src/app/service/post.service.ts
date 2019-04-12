@@ -16,6 +16,9 @@ export class PostService {
   getUser(email): Observable<any> {
     return this.http.get(this.API + '/user/' + email);
   }
+  getFaculty(): Observable<any> {
+    return this.http.get(this.API + '/faculties');
+  }
   // getRoom(memberUserName):Observable<AddRoomComponent[]>{
   //   console.log(memberUserName);
   //   this.name = memberUserName;

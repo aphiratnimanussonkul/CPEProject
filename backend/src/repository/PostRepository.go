@@ -76,3 +76,13 @@ func (r *PostRepositoryMongo) FindByName(name string) (*models.Post, error){
 
 	return &post, nil
 }
+func (r *PostRepositoryMongo) FindByCode(code string) (models.Posts, error){
+	var post models.Posts
+	err := r.db.C(r.collection).Find(bson.M{"subject.code": code}).All(&post)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return post, nil
+}

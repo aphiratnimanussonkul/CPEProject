@@ -78,3 +78,14 @@ func (r *SubjectRepositoryMongo) FindByName(name string) (*models.Subject, error
 
 	return &subject, nil
 }
+
+func (r *SubjectRepositoryMongo) FindByCode(code string) (*models.Subject, error){
+	var subject models.Subject
+	err := r.db.C(r.collection).Find(bson.M{"code": code}).One(&subject)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &subject, nil
+}
