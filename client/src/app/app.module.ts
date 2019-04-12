@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule, MatTableModule,
-MatSidenavModule, MatCheckboxModule, MatDialogModule,MatTreeModule, MatProgressBarModule } from '@angular/material';
+MatSidenavModule, MatCheckboxModule, MatDialogModule, MatTreeModule, MatProgressBarModule } from '@angular/material';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -18,17 +18,19 @@ import {MatExpansionModule} from '@angular/material/expansion';
 
 
 import { HomeComponent } from './home/home.component';
+import { PostService } from './service/post.service';
 
 
 const appRoutes: Routes = [
-  {path:'home' , component:HomeComponent}
+  {path: 'home' , component: HomeComponent}
 
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -56,7 +58,7 @@ const appRoutes: Routes = [
     MatProgressBarModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [PostService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

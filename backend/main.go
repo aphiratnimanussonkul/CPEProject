@@ -30,6 +30,12 @@ func main() {
   	router.HandleFunc("/test/{id}", api.GetFacultyById).Methods("GET")
 	//Major
   	router.HandleFunc("/major/{name}/{facultyName}", api.AddMajor).Methods("GET")
+	//User
+	router.HandleFunc("/user/{Email}", api.GetUserByEmail).Methods("GET")
+	router.HandleFunc("/user/{firstName}/{lastName}/{Email}", api.AddUser).Methods("GET")
+	//Post
+	router.HandleFunc("/post/{text}/{email}", api.AddPost).Methods("GET")
+	router.HandleFunc("/posts", api.GetPostAll).Methods("GET")
   	log.Fatal(http.ListenAndServe(":12345", handlers.CORS(handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}), handlers.AllowedOrigins([]string{"*"}))(router)))
   
 }

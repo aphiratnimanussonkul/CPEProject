@@ -7,6 +7,7 @@ import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PostService } from '../service/post.service';
 
 export class DynamicFlatNode {
   constructor(public item: string, public level = 1, public expandable = false,
@@ -108,8 +109,12 @@ export class DynamicDataSource {
   providers: [DynamicDatabase]
 })
 export class HomeComponent implements OnInit {
+  post: Array<any>;
+  user : Array<any>;
   select: any = {
-    test: 'wowww'
+    test: 'wowww',
+    text : '',
+    email : ''
   }
   events: string[] = [];
   opened = true;
@@ -121,7 +126,7 @@ export class HomeComponent implements OnInit {
   isExpandable = (node: DynamicFlatNode) => node.expandable;
   hasChild = (_: number, _nodeData: DynamicFlatNode) => _nodeData.expandable;
 
-  constructor(private httpClient: HttpClient, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, database: DynamicDatabase) {
+  constructor(private  postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, database: DynamicDatabase) {
     iconRegistry.addSvgIcon(
       'more',
       sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -140,14 +145,31 @@ export class HomeComponent implements OnInit {
 
 
   ngOnInit() {
-
+    this.postService.getPost().subscribe(data => {
+      this.post = data;
+      console.log(this.post);
+    });
+    this.postService.getUser('B5923151@gmail.com').subscribe(data => {
+      this.user = data;
+      this.select.email = data.email;
+      console.log(this.user);
+    });
   }
-  add(){
-    this.httpClient.get('http://localhost:12345/test' ,this.select )
+  add() {
+    if (this.select.text === '') {
+      alert('null test');
+    }
+    console.log(this.select.text)
+    this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/' + this.select.email  , this.select )
         .subscribe(
           data => {
             console.log(data);
-            alert(data)
+            if (data) {
+              alert('somthing was wrong');
+            } else {
+              alert('post success');
+              location.reload();
+            }
             // if (data) {
             //   alert('Add Room Success');
             //   console.log('send' + this.select.memberUserName)
@@ -158,9 +180,9 @@ export class HomeComponent implements OnInit {
             // }
           },
           error => {
-            alert('Error cannot add room')
+            alert('Error cannot add room');
           }
-        )
-    
+        );
   }
+
 }

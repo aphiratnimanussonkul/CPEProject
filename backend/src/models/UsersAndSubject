@@ -1,0 +1,10 @@
+package models
+
+import "gopkg.in/mgo.v2/bson"
+
+type UserAndSubject struct {
+	ID        bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	Subject     *Subject      `bson:"subject" json:"subject"`
+	User     *User      `bson:"user" json:"user"`
+}
+type UserAndSubjects []UserAndSubject

@@ -78,3 +78,14 @@ func (r *UserRepositoryMongo) FindByName(name string) (*models.User, error){
 
 	return &user, nil
 }
+
+func (r *UserRepositoryMongo) FindByEmail(Email string) (*models.User, error){
+	var user models.User
+	err := r.db.C(r.collection).Find(bson.M{"email": Email}).One(&user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

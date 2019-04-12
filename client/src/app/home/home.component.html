@@ -1,51 +1,67 @@
 <mat-toolbar>
-  <mat-toolbar-row class="navbar">
-    <mat-icon svgIcon="hamIcon" aria-hidden="true" aria-label="Example thumbs up SVG icon" class="hamIcon"
-      (click)="sidenav.toggle()"></mat-icon>
-    <h1>SUT Course Online</h1>
+    <mat-toolbar-row class="navbar">
+        <mat-icon svgIcon="hamIcon" aria-hidden="true" aria-label="Example thumbs up SVG icon" class="hamIcon"
+                  (click)="sidenav.toggle()"></mat-icon>
+        <h1>SUT Course Online</h1>
 
-    <span class="spacer"></span>
-    <div class="nameNavbar">Mr.Aphirat Nimanussonkul</div>
-    <div mat-card-avatar class="example-header-image"></div>
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
-      class="moreBackground">
-      <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
-    </button>
-    <mat-menu yPosition="above" xPosition="before" #menu="matMenu" class="menuMore">
-      <button mat-menu-item>
-        <mat-icon>person</mat-icon>
-        <span>about me</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>add</mat-icon>
-        <span>Add Course</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon svgIcon="logout"></mat-icon>
-        <span>log out</span>
-      </button>
-    </mat-menu>
-  </mat-toolbar-row>
+        <span class="spacer"></span>
+        <div class="nameNavbar">{{user.firstname}} {{user.lastname}}</div>
+        <div mat-card-avatar class="example-header-image"></div>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
+                class="moreBackground">
+            <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
+        </button>
+        <mat-menu yPosition="above" xPosition="before" #menu="matMenu" class="menuMore">
+            <button mat-menu-item>
+                <mat-icon>person</mat-icon>
+                <span>about me</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon>add</mat-icon>
+                <span>Add Course</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon svgIcon="logout"></mat-icon>
+                <span>log out</span>
+            </button>
+        </mat-menu>
+    </mat-toolbar-row>
 </mat-toolbar>
 <mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
-    (closed)="events.push('close!')">
-    <div class="panel1">
-      <div class="insidepanel1">
-        <div>
-          <p class="favCourse">Your Favorite Course</p>
-          <!-- find course -->
-          <button mat-menu-item  (click)="search = !search"> 
-            <mat-icon class="searchIcon">search</mat-icon>
-          </button>
-        </div>
-        <form *ngIf="search"> 
-          <mat-form-field class="serachInput">
-            <input matInput placeholder="Ex:523353 or Computer Graphic">
-          </mat-form-field>
-        </form>
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
+                 (closed)="events.push('close!')">
+        <div class="panel1">
+            <div class="insidepanel1">
+                <div>
+                    <p class="favCourse">Your Favorite Course</p>
+                    <!-- find course -->
+                    <button mat-menu-item (click)="search = !search">
+                        <mat-icon class="searchIcon">search</mat-icon>
+                    </button>
+                </div>
+                <form *ngIf="search">
+                    <mat-form-field class="serachInput">
+                        <input matInput placeholder="Ex:523353 or Computer Graphic">
+                    </mat-form-field>
+                </form>
 
-        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
+                <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                        <button mat-icon-button disabled></button>
+                        {{node.item}}
+                    </mat-tree-node>
+                    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+                        <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
+                            <mat-icon class="mat-icon-rtl-mirror">
+                                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                </mat-icon>
+                                </button>
+                                {{node.item}}
+                    </mat-tree-node>
+                </mat-tree>
+
+
+                <!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
           <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
             <button mat-icon-button disabled></button>
             {{node.item}}
@@ -54,151 +70,109 @@
             <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
               <mat-icon class="mat-icon-rtl-mirror">
                 {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-              </mat-icon>
-            </button>
-            {{node.item}}
-          </mat-tree-node>
-        </mat-tree>
-
-
-
-        <!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
-          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-            <button mat-icon-button disabled></button>
-            {{node.item}}
-          </mat-tree-node>
-          <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-            <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
-              <mat-icon class="mat-icon-rtl-mirror">
-                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-              </mat-icon>
-            </button>
-            {{node.item}}
+                </mat-icon>
+                </button>
+                {{node.item}}
             <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar">
             </mat-progress-bar>
           </mat-tree-node>
         </mat-tree> -->
 
-      </div>
+            </div>
 
-    </div>
-  </mat-sidenav>
-
-  <mat-sidenav-content class="example-events">
-
-    <div class="panel2">
-
-      <div class="insidepanel2">
-        <div class="courseHeader">
-          <p>Computer Graphic 523xxx</p>
         </div>
-        <mat-card class="postCard" *ngIf="add">
-          <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>Shiba Inu</mat-card-title>
-            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-          </mat-card-header>
-          <form>
-            <mat-form-field class="comment">
-              <textarea matInput placeholder="say somthing"></textarea>
-            </mat-form-field>
-          </form>
-          <button mat-button class="postButton" (click)="add()">Post</button>
-          <button mat-button class="postButton">Upload Picture</button>
-          <button mat-button class="postButton">Upload VDO</button>
-          <button mat-button class="postButton">Audio</button>
-          <!-- <mat-card-header>
-                  <div mat-card-avatar class="example-header-image"></div>
-                  <mat-card-title>Shiba Inu</mat-card-title>
-                  <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content>
-                  <p>
-                    The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-                    A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-                    bred for hunting.
-                  </p>
-                </mat-card-content>
-                <button mat-button *ngIf='!inputshow1' (click)="inputshow1 = !inputshow1" class="addComment">Add comment</button>
-                <form *ngIf='inputshow1'>
-                  <mat-form-field class="comment">
-                    <textarea matInput placeholder="Leave a comment"></textarea>
-                  </mat-form-field>
-                </form>
-                <form *ngIf='inputshow1'>
-                  <button mat-button class="postButton">Post</button>
-                </form>
-                <form *ngIf='inputshow1'>
-                  <button mat-button class="postButton" (click)="inputshow1 = !inputshow1">Cancel</button>
-                </form>
-                <br>
-                <br> -->
-          <br>
-          <br>
-        </mat-card>
-        <mat-card class="postCard">
-          <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>Shiba Inu</mat-card-title>
-            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <p>
-              The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-              A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-              bred for hunting.
-            </p>
-          </mat-card-content>
-          <button mat-button *ngIf='!inputshow' (click)="inputshow = !inputshow" class="addComment">Add comment</button>
-          <form *ngIf='inputshow'>
-            <mat-form-field class="comment">
-              <textarea matInput placeholder="Leave a comment"></textarea>
-            </mat-form-field>
-          </form>
-          <form *ngIf='inputshow'>
-            <button mat-button class="postButton">Comment</button>
-          </form>
-          <form *ngIf='inputshow'>
-            <button mat-button class="postButton" (click)="inputshow = !inputshow">Cancel</button>
-          </form>
-          <br>
-          <br>
-        </mat-card>
-        <mat-card class="postCard">
-          <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>Shiba Inu</mat-card-title>
-            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <p>
-              The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-              A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-              bred for hunting.
-            </p>
-          </mat-card-content>
-          <button mat-button *ngIf='!inputshow1' (click)="inputshow1 = !inputshow1" class="addComment">Add
-            comment</button>
-          <form *ngIf='inputshow1'>
-            <mat-form-field class="comment">
-              <textarea matInput placeholder="Leave a comment"></textarea>
-            </mat-form-field>
-          </form>
-          <form *ngIf='inputshow1'>
-            <button mat-button class="postButton">Comment</button>
-          </form>
-          <form *ngIf='inputshow1'>
-            <button mat-button class="postButton" (click)="inputshow1 = !inputshow1">Cancel</button>
-          </form>
-          <br>
-          <br>
-        </mat-card>
+    </mat-sidenav>
 
-      </div>
-      <button mat-fab class="fab-bottom-right" (click)="add = !add">
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
-  </mat-sidenav-content>
+    <mat-sidenav-content class="example-events">
+
+        <div class="panel2">
+
+            <div class="insidepanel2">
+                <div class="courseHeader">
+                    <p>Computer Graphic 523xxx</p>
+                </div>
+                <mat-card class="postCard" *ngIf="add">
+                    <mat-card-header>
+                        <div mat-card-avatar class="example-header-image"></div>
+                        <mat-card-title>{{user.firstname}}</mat-card-title>
+                        <mat-card-subtitle>{{user.lastname}}</mat-card-subtitle>
+                    </mat-card-header>
+                    <form>
+                        <mat-form-field class="comment">
+                            <textarea matInput [(ngModel)]="select.text" placeholder="say somthing"
+                                      name="text"></textarea>
+                        </mat-form-field>
+                    </form>
+                    <button mat-button class="postButton" (click)="add()">Post</button>
+                    <button mat-button class="postButton">Upload Picture</button>
+                    <button mat-button class="postButton">Upload VDO</button>
+                    <button mat-button class="postButton">Audio</button>
+                    <!-- <mat-card-header>
+                            <div mat-card-avatar class="example-header-image"></div>
+                            <mat-card-title>Shiba Inu</mat-card-title>
+                            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+                          </mat-card-header>
+                          <mat-card-content>
+                            <p>
+                              The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
+                              A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
+                              bred for hunting.
+                            </p>
+                          </mat-card-content>
+                          <button mat-button *ngIf='!inputshow1' (click)="inputshow1 = !inputshow1" class="addComment">Add comment</button>
+                          <form *ngIf='inputshow1'>
+                            <mat-form-field class="comment">
+                              <textarea matInput placeholder="Leave a comment"></textarea>
+                            </mat-form-field>
+                          </form>
+                          <form *ngIf='inputshow1'>
+                            <button mat-button class="postButton">Post</button>
+                          </form>
+                          <form *ngIf='inputshow1'>
+                            <button mat-button class="postButton" (click)="inputshow1 = !inputshow1">Cancel</button>
+                          </form>
+                          <br>
+                          <br> -->
+                    <br>
+                    <br>
+                </mat-card>
+                <div *ngFor="let posts of post">
+                    <mat-card class="postCard">
+                        <mat-card-header>
+                            <div mat-card-avatar class="example-header-image"
+                                 src="https://material.angular.io/assets/img/examples/shiba1.jpg"></div>
+                            <mat-card-title>{{posts.user.firstname}}</mat-card-title>
+                            <mat-card-subtitle>{{posts.user.lastname}}</mat-card-subtitle>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>
+                                {{posts.text}}
+                            </p>
+                        </mat-card-content>
+                        <button mat-button *ngIf='!inputshow' (click)="inputshow = !inputshow" class="addComment">Add
+                            comment
+                        </button>
+                        <form *ngIf='inputshow'>
+                            <mat-form-field class="comment">
+                                <textarea matInput placeholder="Leave a comment"></textarea>
+                            </mat-form-field>
+                        </form>
+                        <form *ngIf='inputshow'>
+                            <button mat-button class="postButton">Comment</button>
+                        </form>
+                        <form *ngIf='inputshow'>
+                            <button mat-button class="postButton" (click)="inputshow = !inputshow">Cancel</button>
+                        </form>
+                        <br>
+                        <br>
+                    </mat-card>
+                </div>
+
+            </div>
+            <button mat-fab class="fab-bottom-right" (click)="add = !add">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+    </mat-sidenav-content>
 
 </mat-sidenav-container>
