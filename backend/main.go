@@ -23,14 +23,13 @@ func main() {
 	//
   	router := mux.NewRouter()
   	//Subject
-	router.HandleFunc("/subject/{name}/{code}", api.AddSubject).Methods("GET")
+	router.HandleFunc("/subject/{name}/{code}/{majorName}", api.AddSubject).Methods("GET")
   	//Faculty
   	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
-  	router.HandleFunc("/faculty/{name}/{majorName}", api.AddFaculty).Methods("GET")
   	router.HandleFunc("/test/{id}", api.GetFacultyById).Methods("GET")
   	router.HandleFunc("/test/{id}", api.GetFacultyById).Methods("GET")
 	//Major
-  	router.HandleFunc("/major/{name}/{sunjectname}", api.AddMajor).Methods("GET")
+  	router.HandleFunc("/major/{name}/{facultyName}", api.AddMajor).Methods("GET")
   	log.Fatal(http.ListenAndServe(":12345", handlers.CORS(handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}), handlers.AllowedOrigins([]string{"*"}))(router)))
   
 }

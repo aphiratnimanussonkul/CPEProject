@@ -7,9 +7,10 @@ import (
 //ProfileRepository interface
 type FacultyRepository interface {
   Save(*models.Faculty) error
-  //Update(string, *models.Faculty) error
+  Update(string, *models.Faculty) error
   Delete(string) error
   FindByID(string) (*models.Faculty, error)
+  SaveTest(*models.Faculty) error
   //FindAll() (models.Profiles, error)
 }
 type MajorRepository interface {

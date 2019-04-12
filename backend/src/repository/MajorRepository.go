@@ -29,8 +29,6 @@ func (r *MajorRepositoryMongo) Save(major *models.Major) error{
 
 //Update
 func (r *MajorRepositoryMongo) Update(id string, major *models.Major) error{
-	//Get ตัวแปรแล้วมาเปลี่ยนค่าแล้ว save
-	// faculty.UpdatedAt = time.Now()
 	err := r.db.C(r.collection).Update(bson.M{"id": id}, major)
 	return err
 }

@@ -2,7 +2,7 @@ package api
 
 import (
 "fmt"
-"github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 "net/http"
 "CPEProject/src/models"
 "CPEProject/config"
@@ -17,42 +17,41 @@ func AddMajor(w http.ResponseWriter, req *http.Request)  {
 		fmt.Println(err)
 	}
 	majorRepository := repository.NewMajorRepository(db, "Major")
-	//
+	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
 
-	//get variable by path
 	params := mux.Vars(req)
-	var name,subjectname string
-	name = string(params["name"])
-	subjectname = string(params["sunjectname"])
-
-	subjectRepository := repository.NewSubjectRepository(db, "Subject")
-	subject, err2 := subjectRepository.FindByName(subjectname)
+	var facultyName string
+	facultyName = string(params["facultyName"])
+	faculty, err2 := facultyRepository.FindByName(facultyName)
 	if err2 != nil {
 		fmt.Println(err)
 	}
+	var name string
+	name = string(params["name"])
 
 	var p models.Major
 	p.Name = name
-	p.Subject = subject
+	p.Faculty = faculty
 	majorRepository.Save(&p)
 
 }
 
 
 //Default data Major
-func AddMajorDefault(majorName string, subjectName string)  {
+func AddMajorDefault(majorName string, facultyname string)  {
 	db, err := config.GetMongoDB()
 	if err != nil {
 		fmt.Println(err)
 	}
 	majorRepository := repository.NewMajorRepository(db, "Major")
-	subjectRepository := repository.NewSubjectRepository(db, "Subject")
-	subject, err2 := subjectRepository.FindByName(subjectName)
+	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
+
+	faculty, err2 := facultyRepository.FindByName(facultyname)
 	if err2 != nil {
 		fmt.Println(err)
 	}
 	var p models.Major
 	p.Name = majorName
-	p.Subject = subject
+	p.Faculty = faculty
 	majorRepository.Save(&p)
 }
