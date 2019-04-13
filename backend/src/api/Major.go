@@ -1,7 +1,8 @@
 package api
 
 import (
-"fmt"
+	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 "net/http"
 "CPEProject/src/models"
@@ -54,4 +55,24 @@ func AddMajorDefault(majorName string, facultyname string)  {
 	p.Name = majorName
 	p.Faculty = faculty
 	majorRepository.Save(&p)
+}
+
+func GetMajorByFaculty(w http.ResponseWriter, req *http.Request)  {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	majorRepository := repository.NewMajorRepository(db, "Major")
+
+	params := mux.Vars(req)
+	var facultyName = string(params["facultyName"])
+	major, err2 := majorRepository.FindByFaculty(facultyName)
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	json.NewEncoder(w).Encode(major)
+
+
 }

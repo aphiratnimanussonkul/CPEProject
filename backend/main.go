@@ -24,6 +24,7 @@ func main() {
   	router := mux.NewRouter()
   	//Subject
 	router.HandleFunc("/subject/{name}/{code}/{majorName}", api.AddSubject).Methods("GET")
+	router.HandleFunc("/subject/{majorName}", api.GetSubjectByMajor).Methods("GET")
   	//Faculty
   	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
 	router.HandleFunc("/faculties", api.GetFacultyAll).Methods("GET")
@@ -31,6 +32,7 @@ func main() {
   	router.HandleFunc("/test/{id}", api.GetFacultyById).Methods("GET")
 	//Major
   	router.HandleFunc("/major/{name}/{facultyName}", api.AddMajor).Methods("GET")
+	router.HandleFunc("/major/{facultyName}", api.GetMajorByFaculty).Methods("GET")
 	//User
 	router.HandleFunc("/user/{Email}", api.GetUserByEmail).Methods("GET")
 	router.HandleFunc("/user/{firstName}/{lastName}/{Email}", api.AddUser).Methods("GET")

@@ -76,3 +76,13 @@ func (r *MajorRepositoryMongo) FindByName(name string) (*models.Major, error){
 
 	return &major, nil
 }
+
+func (r *MajorRepositoryMongo) FindByFaculty(facultyName string) (models.Majors, error){
+	var major models.Majors
+	err := r.db.C(r.collection).Find(bson.M{"faculty.name": facultyName}).All(&major)
+	if err != nil {
+
+	}
+	return major, nil
+}
+

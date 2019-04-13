@@ -89,3 +89,13 @@ func (r *SubjectRepositoryMongo) FindByCode(code string) (*models.Subject, error
 
 	return &subject, nil
 }
+
+
+func (r *SubjectRepositoryMongo) FindByMajor (majorName string) (models.Subjects, error){
+	var subject models.Subjects
+	err := r.db.C(r.collection).Find(bson.M{"major.name": majorName}).All(&subject)
+	if err != nil {
+
+	}
+	return subject, nil
+}

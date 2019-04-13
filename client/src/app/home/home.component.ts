@@ -10,43 +10,6 @@ import {PostService} from '../service/post.service';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 
-export class Variable{
-    static faculty: Array<any>;
-    static faculties: 'sadasd';
-}
-
-interface FoodNode {
-    name: string;
-    children?: FoodNode[];
-}
-
-const TREE_DATA: FoodNode[] = [
-    {
-        name: 'Variable.faculties',
-        children: [
-            {name: 'Apple'},
-            {name: 'Banana'},
-            {name: 'Fruit loops'},
-        ]
-    }, {
-        name: 'Vegetables',
-        children: [
-            {
-                name: 'Green',
-                children: [
-                    {name: 'Broccoli'},
-                    {name: 'Brussel sprouts'},
-                ]
-            }, {
-                name: 'Orange',
-                children: [
-                    {name: 'Pumpkins'},
-                    {name: 'Carrots'},
-                ]
-            },
-        ]
-    },
-];
 
 @Component({
     selector: 'app-home',
@@ -54,7 +17,7 @@ const TREE_DATA: FoodNode[] = [
     styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-
+    panelOpenState = false;
     constructor(private  postService: PostService, private httpClient: HttpClient,
                 iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
         iconRegistry.addSvgIcon(
@@ -66,12 +29,12 @@ export class HomeComponent implements OnInit {
         iconRegistry.addSvgIcon(
             'logout',
             sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
-
-        this.dataSource.data = TREE_DATA;
     }
-
-    treeControl = new NestedTreeControl<FoodNode>(node => node.children);
-    dataSource = new MatTreeNestedDataSource<FoodNode>();
+    nameSubject: string;
+    codeSubject: string;
+    faculty: Array<any>;
+    major: Array<any>;
+    subject: Array<any>;
     post: Array<any>;
     user: Array<any>;
     select: any = {
@@ -79,7 +42,6 @@ export class HomeComponent implements OnInit {
         text: '',
         email: ''
     };
-    hasChild = (_: number, node: FoodNode) => !!node.children && node.children.length > 0;
 
 
     ngOnInit(){
@@ -93,11 +55,10 @@ export class HomeComponent implements OnInit {
             console.log(this.user);
         });
         this.postService.getFaculty().subscribe(data => {
-            Variable.faculty = data;
-            console.log(Variable.faculty);
-            Variable.faculties = data[0].name;
-            console.log(Variable.faculties);
+            this.faculty = data;
+            console.log(this.faculty);
         });
+
     }
 
     test() {
@@ -106,7 +67,7 @@ export class HomeComponent implements OnInit {
             alert('null test');
         }
         console.log(this.select.text);
-        this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/' + this.select.email, this.select)
+        this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/' + this.select.email + '/' + this.codeSubject, this.select)
             .subscribe(
                 data => {
                     console.log(data);
@@ -114,7 +75,7 @@ export class HomeComponent implements OnInit {
                         alert('somthing was wrong');
                     } else {
                         alert('post success');
-                        location.reload();
+                        this.getFeed(this.codeSubject);
                     }
                     this.select.text = '';
                     // if (data) {
@@ -130,6 +91,28 @@ export class HomeComponent implements OnInit {
                     alert('Error cannot add room');
                 }
             );
+    }
+    getMajor(facultyName){
+        this.major = null;
+        this.postService.getMajor(facultyName).subscribe(data => {
+            this.major = data;
+            console.log(this.major);
+        });
+    }
+    getSubject(majorName){
+        this.subject = null;
+        this.postService.getSubject(majorName).subscribe(data => {
+            this.subject = data;
+            console.log(this.subject);
+        });
+    }
+    getFeed(code){
+        this.postService.getFeed(code).subscribe(data => {
+            this.post = data;
+            this.nameSubject = data[0].subject.name;
+            this.codeSubject = data[0].subject.code;
+            console.log(this.post);
+        });
     }
 
 }

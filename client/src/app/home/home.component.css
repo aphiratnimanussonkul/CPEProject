@@ -66,6 +66,7 @@
 }
 
 .insidepanel2 {
+  margin-top: 0%;
   position: absolute;
   margin-left: 2%;
   margin-right: 2%;
@@ -73,10 +74,7 @@
   background-color: rgb(240, 240, 240);
 }
 
-.courseExtension {
-  background-color: white;
-  margin: 5% 5%;
-}
+
 
 .courseClick {
   width: 100%;
@@ -148,7 +146,7 @@ mat-panel-title {
   vertical-align: middle;
   text-align: center;
   margin-bottom: 0px;
-  height: 60px;
+  height: 52px;
   font-size: 42px;
   color: white;
   background-color: orange;
@@ -165,13 +163,25 @@ mat-panel-title {
   width: 100%;
   margin-bottom: 2%;
 }
-.example-tree-invisible {
-  display: none;
+
+.courseExtension {
+  background-color: white;
+  width: 100%;
+  height: 40px;
+  margin-bottom: 0px;
+}
+.card{
+  height: 10px;
+}
+.mat-expansion-panel:not([class*='mat-elevation-z']){
+  box-shadow: none;
+}
+.cardExpansion:not([class*='mat-elevation-z']){
+  box-shadow: none;
+  font-size: 12px;
+}
+.courseStep2{
+  font-size: 13px;
 }
 
-.example-tree ul,
-.example-tree li {
-  margin-top: 0;
-  margin-bottom: 0;
-  list-style-type: none;
-}
+

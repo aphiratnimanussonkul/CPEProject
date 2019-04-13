@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -38,6 +39,25 @@ func AddSubject(w http.ResponseWriter, req *http.Request)  {
 
 }
 
+
+func GetSubjectByMajor(w http.ResponseWriter, req *http.Request)  {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	subjectRepository := repository.NewSubjectRepository(db, "Subject")
+	//get variable by path
+	params := mux.Vars(req)
+	var majorName = string(params["majorName"])
+
+	subject, err2 := subjectRepository.FindByMajor(majorName)
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	json.NewEncoder(w).Encode(subject)
+
+}
 
 //Default data Major
 func AddSubjectDefault(subjectName string, code string, majorName string)  {

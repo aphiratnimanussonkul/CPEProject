@@ -44,88 +44,39 @@
                         <input matInput placeholder="Ex:523353 or Computer Graphic">
                     </mat-form-field>
                 </form>
+                <mat-accordion *ngFor="let head of faculty">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title (click)="getMajor(head.name)">
+                                {{head.name}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                            <mat-expansion-panel *ngFor="let head of major">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title (click)="getSubject(head.name)" class="courseStep2">
+                                        => {{head.name}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-card *ngFor="let head of subject" class="cardExpansion" (click)="getFeed(head.code)">{{head.name}} : {{head.code}}</mat-card>
+                            </mat-expansion-panel>
+                    </mat-expansion-panel>
+                </mat-accordion>
 
-                <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
-                    <!-- This is the tree node template for leaf nodes -->
-                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-                        <li class="mat-tree-node">
-                            <!-- use a disabled button to provide padding for tree leaf -->
-                            <button mat-icon-button disabled></button>
-                            {{node.name}}
-                        </li>
-                    </mat-tree-node>
-                    <!-- This is the tree node template for expandable nodes -->
-                    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-                        <li>
-                            <div class="mat-tree-node">
-                                <button mat-icon-button matTreeNodeToggle
-                                        [attr.aria-label]="'toggle ' + node.name">
-                                    <mat-icon class="mat-icon-rtl-mirror">
-                                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                                        </mat-icon>
-                                        </button>
-                                        {{node.name}}
-                            </div>
-                            <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)">
-                                <ng-container matTreeNodeOutlet></ng-container>
-                            </ul>
-                        </li>
-                    </mat-nested-tree-node>
-                </mat-tree>
-
-
-                <!--
-                                <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
-                                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-                                        <button mat-icon-button disabled></button>
-                                        {{node.item}}
-                                    </mat-tree-node>
-                                    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-                                        <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
-                                            <mat-icon class="mat-icon-rtl-mirror">
-                                                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                                                </mat-icon>
-                                                </button>
-                                                {{node.item}}
-                                    </mat-tree-node>
-                                </mat-tree>
-                -->
-
-                                <!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
-                          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-                            <button mat-icon-button disabled></button>
-                            {{node.item}}
-                          </mat-tree-node>
-                          <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-                            <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
-                              <mat-icon class="mat-icon-rtl-mirror">
-                                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                                </mat-icon>
-                                </button>
-                                {{node.item}}
-                            <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar">
-                            </mat-progress-bar>
-                          </mat-tree-node>
-                        </mat-tree> -->
 
             </div>
-
         </div>
     </mat-sidenav>
 
     <mat-sidenav-content class="example-events">
-
         <div class="panel2">
-
             <div class="insidepanel2">
                 <div class="courseHeader">
-                    <p>Computer Graphic 523xxx</p>
+                    <p>{{nameSubject}}  {{codeSubject}}</p>
                 </div>
                 <mat-card class="postCard" *ngIf="add">
                     <mat-card-header>
                         <div mat-card-avatar class="example-header-image"></div>
-                        <mat-card-title>{{user.firstname}}</mat-card-title>
-                        <mat-card-subtitle>{{user.lastname}}</mat-card-subtitle>
+                        <mat-card-title>{{user.firstname}} {{user.lastname}}</mat-card-title>
                     </mat-card-header>
                     <form>
                         <mat-form-field class="comment">
@@ -133,36 +84,11 @@
                                       name="text"></textarea>
                         </mat-form-field>
                     </form>
-                    <button mat-button class="postButton" (click)="test()" (click)="add = !add">Post</button>
+                    <button mat-button class="postButton" (click)="test()" (click)="add = !add">Post
+                    </button>
                     <button mat-button class="postButton">Upload Picture</button>
                     <button mat-button class="postButton">Upload VDO</button>
                     <button mat-button class="postButton">Audio</button>
-                    <!-- <mat-card-header>
-                            <div mat-card-avatar class="example-header-image"></div>
-                            <mat-card-title>Shiba Inu</mat-card-title>
-                            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-                          </mat-card-header>
-                          <mat-card-content>
-                            <p>
-                              The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-                              A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-                              bred for hunting.
-                            </p>
-                          </mat-card-content>
-                          <button mat-button *ngIf='!inputshow1' (click)="inputshow1 = !inputshow1" class="addComment">Add comment</button>
-                          <form *ngIf='inputshow1'>
-                            <mat-form-field class="comment">
-                              <textarea matInput placeholder="Leave a comment"></textarea>
-                            </mat-form-field>
-                          </form>
-                          <form *ngIf='inputshow1'>
-                            <button mat-button class="postButton">Post</button>
-                          </form>
-                          <form *ngIf='inputshow1'>
-                            <button mat-button class="postButton" (click)="inputshow1 = !inputshow1">Cancel</button>
-                          </form>
-                          <br>
-                          <br> -->
                     <br>
                     <br>
                 </mat-card>
@@ -171,15 +97,16 @@
                         <mat-card-header>
                             <div mat-card-avatar class="example-header-image"
                                  src="https://material.angular.io/assets/img/examples/shiba1.jpg"></div>
-                            <mat-card-title>{{posts.user.firstname}}</mat-card-title>
-                            <mat-card-subtitle>{{posts.user.lastname}}</mat-card-subtitle>
+                            <mat-card-title>{{posts.user.firstname}} {{posts.user.lastname}}</mat-card-title>
                         </mat-card-header>
+                        <br>
                         <mat-card-content>
                             <p>
                                 {{posts.text}}
                             </p>
                         </mat-card-content>
-                        <button mat-button *ngIf='!inputshow' (click)="inputshow = !inputshow" class="addComment">Add
+                        <button mat-button *ngIf='!inputshow' (click)="inputshow = !inputshow"
+                                class="addComment">Add
                             comment
                         </button>
                         <form *ngIf='inputshow'>
@@ -191,7 +118,9 @@
                             <button mat-button class="postButton">Comment</button>
                         </form>
                         <form *ngIf='inputshow'>
-                            <button mat-button class="postButton" (click)="inputshow = !inputshow">Cancel</button>
+                            <button mat-button class="postButton" (click)="inputshow = !inputshow">
+                                Cancel
+                            </button>
                         </form>
                         <br>
                         <br>

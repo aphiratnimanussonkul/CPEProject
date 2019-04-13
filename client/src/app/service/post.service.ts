@@ -19,6 +19,15 @@ export class PostService {
   getFaculty(): Observable<any> {
     return this.http.get(this.API + '/faculties');
   }
+  getMajor(facultyName): Observable<any> {
+    return this.http.get(this.API + '/major/' + facultyName);
+  }
+  getSubject(majorName): Observable<any> {
+    return this.http.get(this.API + '/subject/' + majorName);
+  }
+  getFeed(code): Observable<any> {
+    return this.http.get(this.API + '/post/' + code);
+  }
   // getRoom(memberUserName):Observable<AddRoomComponent[]>{
   //   console.log(memberUserName);
   //   this.name = memberUserName;
