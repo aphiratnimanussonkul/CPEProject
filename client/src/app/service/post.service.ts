@@ -28,6 +28,10 @@ export class PostService {
   getFeed(code): Observable<any> {
     return this.http.get(this.API + '/post/' + code);
   }
+
+  upload(formData) {
+    return this.http.post(this.API + '/postPic' , formData);
+  }
   // getRoom(memberUserName):Observable<AddRoomComponent[]>{
   //   console.log(memberUserName);
   //   this.name = memberUserName;

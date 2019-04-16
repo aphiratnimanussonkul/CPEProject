@@ -6,9 +6,10 @@ import (
 type Post struct {
 	ID        bson.ObjectId `json:"id" bson:"_id,omitempty"`
 	Text		string 		`json:"text"`
-	Timestamp 	string  `json:"timestamp"`
+	Timestamp 	string  	`json:"timestamp"`
 	Date		string 		`json:"date"`
-	User		*User	`bson:"user" json:"user"`
+	User		*User		`bson:"user" json:"user"`
+	VdoLink		string   	`json:"vdoLink"`
 	Subject		*Subject	`bson:"subject" json:"subject"`
 }
 

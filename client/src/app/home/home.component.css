@@ -183,5 +183,7 @@ mat-panel-title {
 .courseStep2{
   font-size: 13px;
 }
-
-
+.uploadButton{
+  background-color: orange;
+  color: white;
+}

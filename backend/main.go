@@ -37,7 +37,9 @@ func main() {
 	router.HandleFunc("/user/{Email}", api.GetUserByEmail).Methods("GET")
 	router.HandleFunc("/user/{firstName}/{lastName}/{Email}", api.AddUser).Methods("GET")
 	//Post
+	router.HandleFunc("/post/{text}/{email}/{code}/{vdoLink}", api.AddPostWithLink).Methods("GET")
 	router.HandleFunc("/post/{text}/{email}/{code}", api.AddPost).Methods("GET")
+	router.HandleFunc("/postPic", api.UploadFileChunk)
 	router.HandleFunc("/posts", api.GetPostAll).Methods("GET")
 	router.HandleFunc("/post/{code}", api.GetPostByCode).Methods("GET")
   	log.Fatal(http.ListenAndServe(":12345", handlers.CORS(handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}), handlers.AllowedOrigins([]string{"*"}))(router)))

@@ -2,13 +2,8 @@ import {Component, Injectable, OnInit} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
-import {CollectionViewer, SelectionChange} from '@angular/cdk/collections';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {BehaviorSubject, merge, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
 import {PostService} from '../service/post.service';
-import {NestedTreeControl} from '@angular/cdk/tree';
-import {MatTreeNestedDataSource} from '@angular/material/tree';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
 
 @Component({
@@ -17,18 +12,19 @@ import {MatTreeNestedDataSource} from '@angular/material/tree';
     styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-    panelOpenState = false;
-    constructor(private  postService: PostService, private httpClient: HttpClient,
-                iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    profileForm: FormGroup;
+    constructor(private  formBuilder: FormBuilder, private postService: PostService,
+                private httpClient: HttpClient, iconRegistry: MatIconRegistry,
+                private sanitizer: DomSanitizer) {
         iconRegistry.addSvgIcon(
             'more',
-            sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
+            this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
         iconRegistry.addSvgIcon(
             'hamIcon',
-            sanitizer.bypassSecurityTrustResourceUrl('assets/hamIcon.svg'));
+            this.sanitizer.bypassSecurityTrustResourceUrl('assets/hamIcon.svg'));
         iconRegistry.addSvgIcon(
             'logout',
-            sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
+            this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
     }
     nameSubject: string;
     codeSubject: string;
@@ -37,14 +33,20 @@ export class HomeComponent implements OnInit {
     subject: Array<any>;
     post: Array<any>;
     user: Array<any>;
+    tempLink: Array<any>;
     select: any = {
         test: 'wowww',
         text: '',
-        email: ''
+        email: '',
+        vdoLink: ''
     };
 
 
-    ngOnInit(){
+    ngOnInit() {
+        this.profileForm = this.formBuilder.group({
+            name: [''],
+            profile: ['']
+        });
         this.postService.getPost().subscribe(data => {
             this.post = data;
             console.log(this.post);
@@ -62,51 +64,71 @@ export class HomeComponent implements OnInit {
     }
 
     test() {
-        // alert('do');
-        if (this.select.text === '') {
-            alert('null test');
-        }
-        console.log(this.select.text);
-        this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/' + this.select.email + '/' + this.codeSubject, this.select)
-            .subscribe(
-                data => {
-                    console.log(data);
-                    if (data) {
-                        alert('somthing was wrong');
-                    } else {
-                        alert('post success');
-                        this.getFeed(this.codeSubject);
+        if (this.select.vdoLink === '') {
+            console.log(this.select.text);
+            this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/'
+                + this.select.email + '/'
+                + this.codeSubject, this.select)
+                .subscribe(
+                    data => {
+                        console.log(data);
+                        if (data) {
+                            alert('somthing was wrong');
+                        } else {
+                            alert('post success');
+                            this.getFeed(this.codeSubject);
+                        }
+                        this.select.text = '';
+                    },
+                    error => {
+                        alert('Error post');
                     }
-                    this.select.text = '';
-                    // if (data) {
-                    //   alert('Add Room Success');
-                    //   console.log('send' + this.select.memberUserName)
-                    //   this.refresh(this.select.memberUserName);
-                    // }
-                    // else {
-                    //   alert('This Room number have alrady exist')
-                    // }
-                },
-                error => {
-                    alert('Error cannot add room');
-                }
-            );
+                );
+        } else {
+            console.log(this.select.text);
+            let temp =  this.select.vdoLink.split('=')
+            this.select.vdoLink = temp[1];
+            alert(this.select.vdoLink)
+            this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/'
+                + this.select.email + '/'
+                + this.codeSubject + '/'
+                + this.select.vdoLink, this.select)
+                .subscribe(
+                    data => {
+                        console.log(data);
+                        if (data) {
+                            alert('somthing was wrong');
+                        } else {
+                            alert('post success');
+                            this.getFeed(this.codeSubject);
+                        }
+                        this.select.text = '';
+                        this.select.vdoLink = '';
+                    },
+                    error => {
+                        alert('Error post');
+                    }
+                );
+
+        }
+
+
     }
-    getMajor(facultyName){
+    getMajor(facultyName) {
         this.major = null;
         this.postService.getMajor(facultyName).subscribe(data => {
             this.major = data;
             console.log(this.major);
         });
     }
-    getSubject(majorName){
+    getSubject(majorName) {
         this.subject = null;
         this.postService.getSubject(majorName).subscribe(data => {
             this.subject = data;
             console.log(this.subject);
         });
     }
-    getFeed(code){
+    getFeed(code) {
         this.postService.getFeed(code).subscribe(data => {
             this.post = data;
             this.nameSubject = data[0].subject.name;
@@ -115,4 +137,31 @@ export class HomeComponent implements OnInit {
         });
     }
 
+    onSelectedFile(event) {
+        if (event.target.files.length > 0) {
+            console.log(event.target.files);
+            const profile = event.target.files[0];
+            this.profileForm.get('profile').setValue(profile);
+            console.log(this.profileForm.get('profile').value);
+        }
+    }
+    onSubmit() {
+        alert('selectFile')
+        const formData = new FormData();
+        formData.append('profile', this.profileForm.get('profile').value);
+        alert(this.profileForm.get('profile').value)
+        this.postService.upload(formData).subscribe(
+            data => {
+                console.log(data);
+            },
+            error => {
+                alert(error);
+            }
+        );
+        this.profileForm = null;
+    }
+    getEmbedUrl(link) {
+        console.log(link)
+        return this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + link);
+    }
 }

@@ -84,10 +84,22 @@
                                       name="text"></textarea>
                         </mat-form-field>
                     </form>
-                    <button mat-button class="postButton" (click)="test()" (click)="add = !add">Post
-                    </button>
-                    <button mat-button class="postButton">Upload Picture</button>
-                    <button mat-button class="postButton">Upload VDO</button>
+
+                   <form [formGroup] = "profileForm" (ngSubmit)="onSubmit()" *ngIf="oploadFile" enctype="multipart/form-data" method="POST">
+                        <div class="form-group">
+                            <input type="file" name="profile" (change)="onSelectedFile($event)" class="inputUploadFile"/>
+                            <button mat-button class="uploadButton" (click)="onSubmit()">Upload</button>
+                        </div>
+                    </form>
+                    <mat-form-field class="comment" *ngIf="vdo" name="VdoLink"  >
+                        <input matInput [(ngModel)]="select.vdoLink" placeholder="support for link on youtube only!">
+                    </mat-form-field>
+
+
+
+                    <button mat-button type="submit"   value="upload" class="postButton"  (click)="add = !add"   (click)="test()">Post</button>
+                    <button mat-button class="postButton" (click)="oploadFile = !oploadFile">Upload Picture</button>
+                    <button mat-button class="postButton" (click)="vdo = !vdo">Upload VDO</button>
                     <button mat-button class="postButton">Audio</button>
                     <br>
                     <br>
@@ -104,6 +116,16 @@
                             <p>
                                 {{posts.text}}
                             </p>
+                           <div style="text-align: center;" *ngIf="posts.vdoLink">
+                                <span style="background-color: #fce5cd;">
+                                    <iframe width="560" height="315"
+                                            [src]="getEmbedUrl(posts.vdoLink)"
+                                            frameborder="0"
+                                            allowfullscreen>
+                                    </iframe>
+                                </span>
+                            </div>
+                            <div class="separator" style="clear: both; text-align: center;"></div>
                         </mat-card-content>
                         <button mat-button *ngIf='!inputshow' (click)="inputshow = !inputshow"
                                 class="addComment">Add
