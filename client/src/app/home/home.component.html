@@ -85,10 +85,10 @@
                         </mat-form-field>
                     </form>
 
-                   <form [formGroup] = "profileForm" (ngSubmit)="onSubmit()" *ngIf="oploadFile" enctype="multipart/form-data" method="POST">
+                   <form [formGroup] = "profileForm" *ngIf="oploadFile" enctype="multipart/form-data" method="POST">
                         <div class="form-group">
                             <input type="file" name="profile" (change)="onSelectedFile($event)" class="inputUploadFile"/>
-                            <button mat-button class="uploadButton" (click)="onSubmit()">Upload</button>
+                            <button mat-button type="submit" class="uploadButton" (click)="onSubmit()">Upload</button>
                         </div>
                     </form>
                     <mat-form-field class="comment" *ngIf="vdo" name="VdoLink"  >
@@ -97,14 +97,14 @@
 
 
 
-                    <button mat-button type="submit"   value="upload" class="postButton"  (click)="add = !add"   (click)="test()">Post</button>
+                    <button mat-button class="postButton" (click)="add = !add"  (click)="test()">Post</button>
                     <button mat-button class="postButton" (click)="oploadFile = !oploadFile">Upload Picture</button>
                     <button mat-button class="postButton" (click)="vdo = !vdo">Upload VDO</button>
                     <button mat-button class="postButton">Audio</button>
                     <br>
                     <br>
                 </mat-card>
-                <div *ngFor="let posts of post.slice().reverse()">
+                <ng-container *ngFor="let posts of post.slice().reverse()">
                     <mat-card class="postCard">
                         <mat-card-header>
                             <div mat-card-avatar class="example-header-image"
@@ -127,27 +127,34 @@
                             </div>
                             <div class="separator" style="clear: both; text-align: center;"></div>
                         </mat-card-content>
-                        <button mat-button *ngIf='!inputshow' (click)="inputshow = !inputshow"
-                                class="addComment">Add
-                            comment
-                        </button>
-                        <form *ngIf='inputshow'>
-                            <mat-form-field class="comment">
-                                <textarea matInput placeholder="Leave a comment"></textarea>
-                            </mat-form-field>
-                        </form>
-                        <form *ngIf='inputshow'>
-                            <button mat-button class="postButton">Comment</button>
-                        </form>
-                        <form *ngIf='inputshow'>
-                            <button mat-button class="postButton" (click)="inputshow = !inputshow">
-                                Cancel
-                            </button>
-                        </form>
+                        <ng-container *ngIf='!posts.comment' >
+                            <button mat-button (click)="isComment(posts)"
+                                    class="addComment">Add comment</button>
+                        </ng-container>
+
+
+                        <ng-container *ngIf='posts.comment'>
+                            <form >
+                                <mat-form-field class="comment">
+                                    <textarea matInput placeholder="Leave a comment"></textarea>
+                                </mat-form-field>
+                            </form>
+                            <form >
+                                <button mat-button class="postButton">Comment</button>
+                            </form>
+                            <form >
+                                <button mat-button class="postButton" (click)="notComment(posts)">
+                                    Cancel
+                                </button>
+                            </form>
+                        </ng-container>
+
+
+
                         <br>
                         <br>
                     </mat-card>
-                </div>
+                </ng-container>
 
             </div>
             <button mat-fab class="fab-bottom-right" (click)="add = !add">

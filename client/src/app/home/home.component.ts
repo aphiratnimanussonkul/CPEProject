@@ -6,6 +6,7 @@ import {PostService} from '../service/post.service';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
 
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -33,12 +34,12 @@ export class HomeComponent implements OnInit {
     subject: Array<any>;
     post: Array<any>;
     user: Array<any>;
-    tempLink: Array<any>;
     select: any = {
         test: 'wowww',
         text: '',
         email: '',
-        vdoLink: ''
+        vdoLink: '',
+        imgId: ''
     };
 
 
@@ -86,8 +87,12 @@ export class HomeComponent implements OnInit {
                 );
         } else {
             console.log(this.select.text);
-            let temp =  this.select.vdoLink.split('=')
+            let temp =  this.select.vdoLink.split('=');
             this.select.vdoLink = temp[1];
+            if (this.select.vdoLink.endsWith('&list', this.select.vdoLink.length)) {
+                let temp = this.select.vdoLink.split('&');
+                this.select.vdoLink = temp[0];
+            }
             alert(this.select.vdoLink)
             this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/'
                 + this.select.email + '/'
@@ -142,26 +147,30 @@ export class HomeComponent implements OnInit {
             console.log(event.target.files);
             const profile = event.target.files[0];
             this.profileForm.get('profile').setValue(profile);
-            console.log(this.profileForm.get('profile').value);
         }
     }
     onSubmit() {
-        alert('selectFile')
         const formData = new FormData();
         formData.append('profile', this.profileForm.get('profile').value);
-        alert(this.profileForm.get('profile').value)
         this.postService.upload(formData).subscribe(
             data => {
-                console.log(data);
+                if (data != null) {
+                    alert('Upload file success');
+                    this.select.imgId = data.id;
+                }
             },
             error => {
-                alert(error);
             }
         );
-        this.profileForm = null;
     }
     getEmbedUrl(link) {
-        console.log(link)
+        console.log(link);
         return this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + link);
+    }
+    isComment(posts) {
+        posts.comment = true;
+    }
+    notComment(posts) {
+        posts.comment = false;
     }
 }
