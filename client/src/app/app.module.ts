@@ -17,6 +17,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireStorageModule } from 'angularfire2/storage';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { HomeComponent } from './home/home.component';
 import { PostService } from './service/post.service';
@@ -58,7 +61,15 @@ const appRoutes: Routes = [
     MatTreeModule,
     MatProgressBarModule,
     RouterModule.forRoot(appRoutes),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFireModule.initializeApp({
+      apiKey: 'AIzaSyAS9Y5HsByA2leqctQkuVnANVpR8hS7vEY',
+      authDomain: 'cpeproject.firebaseapp.com',
+      storageBucket: 'cpeproject.appspot.com',
+      projectId: 'cpeproject',
+    }),
+    AngularFireStorageModule,
+    MatTooltipModule
   ],
   providers: [PostService],
   bootstrap: [AppComponent]

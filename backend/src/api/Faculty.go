@@ -28,7 +28,6 @@ func AddFaculty(w http.ResponseWriter, req *http.Request)  {
 	var p models.Faculty
 	p.Name = name
 	facultyRepository.Save(&p)
-
 }
 
 

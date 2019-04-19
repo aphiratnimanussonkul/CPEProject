@@ -44,21 +44,22 @@
                         <input matInput placeholder="Ex:523353 or Computer Graphic">
                     </mat-form-field>
                 </form>
-                <mat-accordion *ngFor="let head of faculty">
+                <mat-accordion *ngFor="let head of faculty ">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title (click)="getMajor(head.name)">
                                 {{head.name}}
                             </mat-panel-title>
                         </mat-expansion-panel-header>
-                            <mat-expansion-panel *ngFor="let head of major">
-                                <mat-expansion-panel-header>
-                                    <mat-panel-title (click)="getSubject(head.name)" class="courseStep2">
-                                        => {{head.name}}
-                                    </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                <mat-card *ngFor="let head of subject" class="cardExpansion" (click)="getFeed(head.code)">{{head.name}} : {{head.code}}</mat-card>
-                            </mat-expansion-panel>
+                        <mat-expansion-panel *ngFor="let head of major">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title (click)="getSubject(head.name)" class="courseStep2">
+                                    => {{head.name}}
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <mat-card *ngFor="let head of subject" class="cardExpansion"
+                                      (click)="getFeed(head.code)">{{head.name}} : {{head.code}}</mat-card>
+                        </mat-expansion-panel>
                     </mat-expansion-panel>
                 </mat-accordion>
 
@@ -85,21 +86,37 @@
                         </mat-form-field>
                     </form>
 
-                   <form [formGroup] = "profileForm" *ngIf="oploadFile" enctype="multipart/form-data" method="POST">
-                        <div class="form-group">
-                            <input type="file" name="profile" (change)="onSelectedFile($event)" class="inputUploadFile"/>
-                            <button mat-button type="submit" class="uploadButton" (click)="onSubmit()">Upload</button>
+
+                    <div *ngIf="oploadFile">
+                        <div>
+                            <input type="file" (change)="upload($event)" accept=".png, .jpg, pdf, doc, docx"/>
+                            <br><br>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+                                     [style.width]="(uploadProgress | async) + '%'"
+                                     [attr.aria-valuenow]="(uploadProgress | async)" aria-valuemin="0"
+                                     aria-valuemax="100"></div>
+                            </div>
+                            <br>
+                            <div *ngIf="downloadURL | async; let downloadSrc" role="alert">
+                                <p *ngIf="downloadSrc? URL(downloadSrc):false"></p>
+                            </div>
                         </div>
-                    </form>
-                    <mat-form-field class="comment" *ngIf="vdo" name="VdoLink"  >
+                        <img *ngIf="isPicture" [src]="select.getURL" height="150px">
+                    </div>
+
+                    <mat-form-field class="comment" *ngIf="vdo" name="VdoLink">
                         <input matInput [(ngModel)]="select.vdoLink" placeholder="support for link on youtube only!">
                     </mat-form-field>
 
 
-
-                    <button mat-button class="postButton" (click)="add = !add"  (click)="test()">Post</button>
-                    <button mat-button class="postButton" (click)="oploadFile = !oploadFile">Upload Picture</button>
-                    <button mat-button class="postButton" (click)="vdo = !vdo">Upload VDO</button>
+                    <button mat-button class="postButton" (click)="add = !add" (click)="test()">Post</button>
+                    <button mat-button class="postButton" (click)="oploadFile = !oploadFile"
+                            matTooltip="ex: png, jpg, pdf, word"
+                            aria-label="Button that displays a tooltip when focused or hovered over">Upload File</button>
+                    <button mat-button class="postButton" (click)="vdo = !vdo"
+                            matTooltip="for youtube link only"
+                            aria-label="Button that displays a tooltip when focused or hovered over">Upload VDO</button>
                     <button mat-button class="postButton">Audio</button>
                     <br>
                     <br>
@@ -116,7 +133,7 @@
                             <p>
                                 {{posts.text}}
                             </p>
-                           <div style="text-align: center;" *ngIf="posts.vdoLink">
+                            <div style="text-align: center;" *ngIf="posts.vdoLink">
                                 <span style="background-color: #fce5cd;">
                                     <iframe width="560" height="315"
                                             [src]="getEmbedUrl(posts.vdoLink)"
@@ -127,28 +144,26 @@
                             </div>
                             <div class="separator" style="clear: both; text-align: center;"></div>
                         </mat-card-content>
-                        <ng-container *ngIf='!posts.comment' >
+                        <ng-container *ngIf='!posts.comment'>
                             <button mat-button (click)="isComment(posts)"
-                                    class="addComment">Add comment</button>
+                                    class="addComment">Add comment
+                            </button>
                         </ng-container>
 
 
                         <ng-container *ngIf='posts.comment'>
-                            <form >
+                            <form>
                                 <mat-form-field class="comment">
                                     <textarea matInput placeholder="Leave a comment"></textarea>
                                 </mat-form-field>
                             </form>
-                            <form >
+                            <form>
                                 <button mat-button class="postButton">Comment</button>
                             </form>
-                            <form >
-                                <button mat-button class="postButton" (click)="notComment(posts)">
-                                    Cancel
-                                </button>
+                            <form>
+                                <button mat-button class="postButton" (click)="notComment(posts)">Cancel</button>
                             </form>
                         </ng-container>
-
 
 
                         <br>

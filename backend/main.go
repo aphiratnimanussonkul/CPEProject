@@ -1,17 +1,20 @@
 package main
 
 import (
-  //"fmt"
-//   "time"
-//
-//  "CPEProject/config"
+	//"fmt"
+	//   "time"
+	//
+	//  "CPEProject/config"
 	"CPEProject/src/api"
-  //"CPEProject/src/models"
-  //"CPEProject/src/repository"
-  "github.com/gorilla/handlers"
-  "github.com/gorilla/mux"
-  "net/http"
-  "log"
+	"encoding/json"
+	"fmt"
+
+	//"CPEProject/src/models"
+	//"CPEProject/src/repository"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
 )
 
 func main() {
@@ -20,16 +23,17 @@ func main() {
 	//api.AddSubjectDefault("Computer Network", 523353)
 	//api.AddMajorDefault("Computer Engineering", "Computer Network")
 	//api.AddFacultyDefault("Engineering","Computer Engineering")
-	//
+
   	router := mux.NewRouter()
+	//test
+	router.HandleFunc("/test", test).Methods("GET")
   	//Subject
 	router.HandleFunc("/subject/{name}/{code}/{majorName}", api.AddSubject).Methods("GET")
 	router.HandleFunc("/subject/{majorName}", api.GetSubjectByMajor).Methods("GET")
   	//Faculty
   	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
 	router.HandleFunc("/faculties", api.GetFacultyAll).Methods("GET")
-  	router.HandleFunc("/test/{id}", api.GetFacultyById).Methods("GET")
-  	router.HandleFunc("/test/{id}", api.GetFacultyById).Methods("GET")
+
 	//Major
   	router.HandleFunc("/major/{name}/{facultyName}", api.AddMajor).Methods("GET")
 	router.HandleFunc("/major/{facultyName}", api.GetMajorByFaculty).Methods("GET")
@@ -45,7 +49,14 @@ func main() {
   	log.Fatal(http.ListenAndServe(":12345", handlers.CORS(handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}), handlers.AllowedOrigins([]string{"*"}))(router)))
   
 }
+func test(w http.ResponseWriter, req *http.Request) {
+	//
+	body:= req.Body
+	fmt.Println(body)
+	json.NewEncoder(w).Encode(body)
 
+
+}
 
 
 // func updateProfile(profileRepository repository.ProfileRepository) {

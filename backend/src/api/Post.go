@@ -4,12 +4,6 @@ import (
 	"CPEProject/config"
 	"CPEProject/src/models"
 	"CPEProject/src/repository"
-	"io"
-	"os"
-
-	"gopkg.in/mgo.v2/bson"
-	"strings"
-
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -94,41 +88,39 @@ func UploadFileChunk(w http.ResponseWriter,r *http.Request) {
 
 	file, handler, err := r.FormFile("profile")
 	if err != nil {
-		return
-	}
-	fmt.Println(file)
-	img := new(models.Img)
-	img.ID = bson.NewObjectId()
-	name := strings.Split(handler.Filename, ".")
-	img.Name = name[0]
-	img.Img = "/img/" + img.ID.Hex() + "." + name[1]
-	handler.Filename = img.ID.Hex() + "." + name[1]
-
-	db, err := config.GetMongoDB()
-	if err != nil {
-
-	}
-
-	src, err := handler.Open()
-	if err != nil {
-
-		return
-	}
-	defer src.Close()
-
-
-	dst, err := os.Create("./img/" + handler.Filename)
-	if err != nil {
+		fmt.Println("error can not get data")
 		fmt.Println(err)
 		return
 	}
-	defer dst.Close()
 
-	io.Copy(dst, src)
-
-	imgRepository := repository.NewImgRepository(db, "Img")
-	imgRepository.Save(img)
-	json.NewEncoder(w).Encode(img)
+	//name := strings.Split(handler.Filename, ".")
+	fmt.Println(handler,file)
+	//
+	//db, err := config.GetMongoDB()
+	//if err != nil {
+	//
+	//}
+	//
+	//src, err := handler.Open()
+	//if err != nil {
+	//
+	//	return
+	//}
+	//defer src.Close()
+	//
+	//
+	//dst, err := os.Create("./img/" + handler.Filename)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+	//defer dst.Close()
+	//
+	//io.Copy(dst, src)
+	//
+	//imgRepository := repository.NewImgRepository(db, "Img")
+	//imgRepository.Save(img)
+	//json.NewEncoder(w).Encode(img.ID)
 }
 
 func AddPostWithLink(w http.ResponseWriter, req *http.Request) {
