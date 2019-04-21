@@ -1,24 +1,39 @@
-import {Component, OnInit} from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MatIconRegistry} from '@angular/material';
-import {HttpClient} from '@angular/common/http';
-import {PostService} from '../service/post.service';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from 'angularfire2/storage';
-import {Observable} from 'rxjs/Observable';
-import {map} from 'rxjs/operators/map';
-
+import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { PostService } from '../service/post.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
+import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators/map';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { DataSource } from '@angular/cdk/collections';
+export interface FacultyComponent {
+    name: string;
+    // newRoomStatusEntity: {
+    //   roomStatusName: String;
+    // }
+}
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css'],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
 })
 export class HomeComponent implements OnInit {
-    profileForm: FormGroup;
-
-    constructor(private  formBuilder: FormBuilder, private postService: PostService,
-                private httpClient: HttpClient, iconRegistry: MatIconRegistry,
+    // table
+    dataSource = new FacultyDataSource(this.postService);
+    columnsToDisplay = ['สำนักวิชา'];
+    //
+    constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
                 private sanitizer: DomSanitizer, private storage: AngularFireStorage) {
         iconRegistry.addSvgIcon(
             'more',
@@ -30,7 +45,9 @@ export class HomeComponent implements OnInit {
             'logout',
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
     }
-
+    link: any = {
+        name: 'adsdsds/ddddsdsds'
+      };
     // FileUpload
     isDocument: boolean;
     isPicture: boolean;
@@ -48,16 +65,21 @@ export class HomeComponent implements OnInit {
     post: Array<any>;
     user: Array<any>;
     select: any = {
-        test: 'wowww',
         text: '',
         email: '',
         vdoLink: '',
-        imgId: '',
         getURL: ''
     };
-
-
+    postVariable: any = {
+        _id: 'wwweew',
+        name: 'hello'
+        // text: 'hello 12345',
+        // vdolink: 'gWuTMYThfwE',
+        // img: 'https://firebasestorage.googleapis.com/v0/b/cpeproject.appspot.com/o/2GB.png?' +
+        //     'alt=media&token=77950445-251e-4cc9-b7d7-159b4153ec12'
+    };
     ngOnInit() {
+        this.refresh();
         this.postService.getPost().subscribe(data => {
             this.post = data;
             console.log(this.post);
@@ -75,27 +97,44 @@ export class HomeComponent implements OnInit {
     }
     test() {
         if (this.select.vdoLink === '') {
+            let header = new HttpHeaders();
+            header.set('content-type', 'application/json');
             console.log(this.select.text);
-            this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/'
-                + this.select.email + '/'
-                + this.codeSubject, this.select)
-                .subscribe(
-                    data => {
-                        console.log(data);
-                        if (data) {
-                            alert('somthing was wrong');
-                        } else {
-                            alert('post success');
-                            this.getFeed(this.codeSubject);
-                        }
-                        this.select.text = '';
-                    },
-                    error => {
-                        alert('Error post');
+            this.postService.addPost(this.select.text, this.select.email, this.codeSubject, this.select).subscribe(
+                data => {
+                    console.log(data);
+                    if (data) {
+                        alert('somthing was wrong');
+                    } else {
+                        alert('post success');
+                        this.getFeed(this.codeSubject);
                     }
-                );
+                    this.select.text = '';
+                },
+                error => {
+                    alert('Error post');
+                }
+            );
+            // this.httpClient.post('http://localhost:12345/post/' + this.select.text + '/'
+            //     + this.select.email + '/'
+            //     + this.codeSubject,  this.select)
+            //     .subscribe(
+            //         data => {
+            //             console.log(data);
+            //             if (data) {
+            //                 alert('somthing was wrong');
+            //             } else {
+            //                 alert('post success');
+            //                 this.getFeed(this.codeSubject);
+            //             }
+            //             this.select.text = '';
+            //         },
+            //         error => {
+            //             alert('Error post');
+            //         }
+            //     );
         } else {
-            if ( this.select.vdoLink.includes('www.youtube.com/watch?v='), 0) {
+            if (this.select.vdoLink.includes('youtube'), this.select.vdoLink.length) {
                 console.log(this.select.text);
                 let temp = this.select.vdoLink.split('=');
                 this.select.vdoLink = temp[1];
@@ -130,28 +169,6 @@ export class HomeComponent implements OnInit {
                 this.select.text = '';
             }
         }
-        // if (this.getURL === '') {
-        //     console.log(this.select.text);
-        //     this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/'
-        //         + this.select.email + '/'
-        //         + this.codeSubject, this.select)
-        //         .subscribe(
-        //             data => {
-        //                 console.log(data);
-        //                 if (data) {
-        //                     alert('somthing was wrong');
-        //                 } else {
-        //                     alert('post success');
-        //                     this.getFeed(this.codeSubject);
-        //                 }
-        //             },
-        //             error => {
-        //                 alert('Error post');
-        //             }
-        //         );
-        // }
-
-
     }
 
     getMajor(facultyName) {
@@ -160,6 +177,7 @@ export class HomeComponent implements OnInit {
             this.major = data;
             console.log(this.major);
         });
+
     }
 
     getSubject(majorName) {
@@ -178,30 +196,6 @@ export class HomeComponent implements OnInit {
             console.log(this.post);
         });
     }
-
-    onSelectedFile(event) {
-        if (event.target.files.length > 0) {
-            console.log(event.target.files);
-            const profile = event.target.files[0];
-            this.profileForm.get('profile').setValue(profile);
-        }
-    }
-
-    onSubmit() {
-        const formData = new FormData();
-        formData.append('profile', this.profileForm.get('profile').value);
-        this.postService.upload(formData).subscribe(
-            data => {
-                if (data != null) {
-                    alert('Upload file success');
-                    this.select.imgId = data;
-                }
-            },
-            error => {
-            }
-        );
-    }
-
     getEmbedUrl(link) {
         console.log(link);
         return this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + link);
@@ -241,5 +235,23 @@ export class HomeComponent implements OnInit {
             this.isDocument = false;
         }
         console.log(this.select.getURL);
+    }
+    refresh() {
+        this.postService.getFacultyTable().subscribe((res) => {
+            this.faculty = res;
+            this.dataSource = new FacultyDataSource(this.postService);
+        });
+    }
+}
+export class FacultyDataSource extends DataSource<any> {
+    constructor(private postService: PostService) {
+        super();
+        //   this.name = this.memberUserName;
+    }
+    connect(): Observable<FacultyComponent[]> {
+        return this.postService.getFacultyTable();
+    }
+    disconnect() {
+        console.log('disconnect');
     }
 }

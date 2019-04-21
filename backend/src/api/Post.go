@@ -7,12 +7,42 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	"time"
 )
 
 func AddPost(w http.ResponseWriter, req *http.Request) {
 	//
+	req.ParseForm()
+	log.Println(req.Form)
+	for key, value := range req.Form {
+		fmt.Println("%s = %s\n", key, value)
+	}
+
+	//var bodyBuffer []byte
+	//if req.Body != nil {
+	//	bodyBuffer, _ = ioutil.ReadAll(req.Body) // after this operation body will equal 0
+	//	// Restore the io.ReadCloser to request
+	//	fmt.Println('=')
+	//	fmt.Println(bodyBuffer)
+	//	fmt.Println('=')
+	//	req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBuffer))
+	//	fmt.Println(req.Body)
+	//	fmt.Println('=')
+	//} else {
+	//	fmt.Println(bodyBuffer)
+	//	fmt.Println(req.Body)
+	//}
+
+	//postJson, err := json.Marshal(tempPost)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//w.Header().Set("content-type", "application/json")
+	//fmt.Println(postJson)
+
+	fmt.Println("i post")
 	db, err := config.GetMongoDB()
 	if err != nil {
 		fmt.Println(err)
@@ -64,6 +94,7 @@ func GetPostAll(w http.ResponseWriter, req *http.Request) {
 }
 func GetPostByCode(w http.ResponseWriter, req *http.Request) {
 	//
+
 	db, err := config.GetMongoDB()
 	if err != nil {
 		fmt.Println(err)
@@ -81,7 +112,7 @@ func GetPostByCode(w http.ResponseWriter, req *http.Request) {
 
 }
 
-func UploadFileChunk(w http.ResponseWriter,r *http.Request) {
+func UploadFileChunk(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("File Upload Endpoint Hit")
 
 	r.ParseMultipartForm(10 << 20)
@@ -94,7 +125,7 @@ func UploadFileChunk(w http.ResponseWriter,r *http.Request) {
 	}
 
 	//name := strings.Split(handler.Filename, ".")
-	fmt.Println(handler,file)
+	fmt.Println(handler, file)
 	//
 	//db, err := config.GetMongoDB()
 	//if err != nil {
@@ -158,8 +189,6 @@ func AddPostWithLink(w http.ResponseWriter, req *http.Request) {
 	p.User = user
 	p.Subject = subject
 	p.VdoLink = vdoLink;
-
 	postRepository.Save(&p)
 
 }
-

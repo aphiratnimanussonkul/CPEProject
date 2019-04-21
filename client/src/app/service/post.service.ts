@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import { FacultyComponent } from '../home/home.component';
 
 @Injectable({
   providedIn: 'root'
@@ -32,10 +33,11 @@ export class PostService {
   upload(formData) {
     return this.http.post(this.API + '/postPic' , formData);
   }
-  // getRoom(memberUserName):Observable<AddRoomComponent[]>{
-  //   console.log(memberUserName);
-  //   this.name = memberUserName;
-  //   console.log(this.name)
-  //   return this.http.get<AddRoomComponent[]>(this.API + '/rooms/'+ this.name);
-  // }
+  getFacultyTable(): Observable <FacultyComponent[]> {
+    return this.http.get<FacultyComponent[]>(this.API + '/faculties');
+  }
+  addPost(text, email, codeSubject, form: any): Observable<any> {
+    alert(text + email + codeSubject + form);
+    return this.http.get(this.API + '/post/' + text + '/' + email + '/' + codeSubject, form);
+  }
 }

@@ -1,14 +1,14 @@
 <mat-toolbar>
     <mat-toolbar-row class="navbar">
         <mat-icon svgIcon="hamIcon" aria-hidden="true" aria-label="Example thumbs up SVG icon" class="hamIcon"
-                  (click)="sidenav.toggle()"></mat-icon>
+            (click)="sidenav1.toggle()"></mat-icon>
         <h1>SUT Course Online</h1>
 
         <span class="spacer"></span>
         <div class="nameNavbar">{{user.firstname}} {{user.lastname}}</div>
         <div mat-card-avatar class="example-header-image"></div>
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
-                class="moreBackground">
+            class="moreBackground">
             <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
         </button>
         <mat-menu yPosition="above" xPosition="before" #menu="matMenu" class="menuMore">
@@ -28,10 +28,16 @@
     </mat-toolbar-row>
 </mat-toolbar>
 <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
-                 (closed)="events.push('close!')">
+    <mat-sidenav #sidenav1 mode="side">
         <div class="panel1">
             <div class="insidepanel1">
+                <div class="col-xs-12 visible-xs">
+                    <iframe
+                        src="//www.facebook.com/plugins/likebox.php?href=http://https://www.facebook.com/SUT-Computer-Club-837427779776860?show_faces=true&colorscheme=light&stream=false&show_border=false&header=false&appId=123849637763517"
+                        scrolling="no" frameborder="0"
+                        style="border:none;width:100%; overflow:hidden;  height:214px;margin:0px 0px 0px 8px;"
+                        allowtransparency="true"></iframe>
+                </div>
                 <div>
                     <p class="favCourse">Your Favorite Course</p>
                     <!-- find course -->
@@ -44,26 +50,39 @@
                         <input matInput placeholder="Ex:523353 or Computer Graphic">
                     </mat-form-field>
                 </form>
-                <mat-accordion *ngFor="let head of faculty ">
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title (click)="getMajor(head.name)">
-                                {{head.name}}
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <mat-expansion-panel *ngFor="let head of major">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title (click)="getSubject(head.name)" class="courseStep2">
-                                    => {{head.name}}
-                                </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <mat-card *ngFor="let head of subject" class="cardExpansion"
-                                      (click)="getFeed(head.code)">{{head.name}} : {{head.code}}</mat-card>
-                        </mat-expansion-panel>
-                    </mat-expansion-panel>
-                </mat-accordion>
 
 
+                <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+                    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+                        <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+                        <td mat-cell *matCellDef="let element" (click)="getMajor(element.name)"> {{element.name}} </td>
+                    </ng-container>
+
+                    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                    <ng-container matColumnDef="expandedDetail">
+                        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+                            <div class="example-element-detail"
+                                [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                                <mat-accordion>
+                                    <mat-expansion-panel *ngFor="let head of major">
+                                        <mat-expansion-panel-header (click)="getSubject(head.name)" class="courseStep2">
+                                            {{head.name}}
+                                        </mat-expansion-panel-header>
+                                        <mat-card *ngFor="let head of subject" class="cardExpansion"
+                                            (click)="getFeed(head.code)">{{head.name}} : {{head.code}}</mat-card>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+                        [class.example-expanded-row]="expandedElement === element"
+                        (click)="expandedElement = expandedElement === element ? null : element">
+                    </tr>
+                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                </table>
             </div>
         </div>
     </mat-sidenav>
@@ -71,9 +90,9 @@
     <mat-sidenav-content class="example-events">
         <div class="panel2">
             <div class="insidepanel2">
-                <div class="courseHeader">
-                    <p>{{nameSubject}}  {{codeSubject}}</p>
-                </div>
+                <mat-toolbar class="courseHeader">
+                    <span class="title-center">{{nameSubject}} {{codeSubject}}</span>
+                </mat-toolbar>
                 <mat-card class="postCard" *ngIf="add">
                     <mat-card-header>
                         <div mat-card-avatar class="example-header-image"></div>
@@ -82,20 +101,20 @@
                     <form>
                         <mat-form-field class="comment">
                             <textarea matInput [(ngModel)]="select.text" placeholder="say somthing"
-                                      name="text"></textarea>
+                                name="text"></textarea>
                         </mat-form-field>
                     </form>
 
 
                     <div *ngIf="oploadFile">
                         <div>
-                            <input type="file" (change)="upload($event)" accept=".png, .jpg, pdf, doc, docx"/>
+                            <input type="file" (change)="upload($event)" accept=".png, .jpg, pdf, doc, docx" />
                             <br><br>
                             <div class="progress">
                                 <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
-                                     [style.width]="(uploadProgress | async) + '%'"
-                                     [attr.aria-valuenow]="(uploadProgress | async)" aria-valuemin="0"
-                                     aria-valuemax="100"></div>
+                                    [style.width]="(uploadProgress | async) + '%'"
+                                    [attr.aria-valuenow]="(uploadProgress | async)" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
                             </div>
                             <br>
                             <div *ngIf="downloadURL | async; let downloadSrc" role="alert">
@@ -112,11 +131,10 @@
 
                     <button mat-button class="postButton" (click)="add = !add" (click)="test()">Post</button>
                     <button mat-button class="postButton" (click)="oploadFile = !oploadFile"
-                            matTooltip="ex: png, jpg, pdf, word"
-                            aria-label="Button that displays a tooltip when focused or hovered over">Upload File</button>
-                    <button mat-button class="postButton" (click)="vdo = !vdo"
-                            matTooltip="for youtube link only"
-                            aria-label="Button that displays a tooltip when focused or hovered over">Upload VDO</button>
+                        matTooltip="ex: png, jpg, pdf, word"
+                        aria-label="Button that displays a tooltip when focused or hovered over">Upload File</button>
+                    <button mat-button class="postButton" (click)="vdo = !vdo" matTooltip="for youtube link only"
+                        aria-label="Button that displays a tooltip when focused or hovered over">Upload VDO</button>
                     <button mat-button class="postButton">Audio</button>
                     <br>
                     <br>
@@ -125,7 +143,7 @@
                     <mat-card class="postCard">
                         <mat-card-header>
                             <div mat-card-avatar class="example-header-image"
-                                 src="https://material.angular.io/assets/img/examples/shiba1.jpg"></div>
+                                src="https://material.angular.io/assets/img/examples/shiba1.jpg"></div>
                             <mat-card-title>{{posts.user.firstname}} {{posts.user.lastname}}</mat-card-title>
                         </mat-card-header>
                         <br>
@@ -135,18 +153,15 @@
                             </p>
                             <div style="text-align: center;" *ngIf="posts.vdoLink">
                                 <span style="background-color: #fce5cd;">
-                                    <iframe width="560" height="315"
-                                            [src]="getEmbedUrl(posts.vdoLink)"
-                                            frameborder="0"
-                                            allowfullscreen>
+                                    <iframe width="560" height="315" [src]="getEmbedUrl(posts.vdoLink)" frameborder="0"
+                                        allowfullscreen>
                                     </iframe>
                                 </span>
                             </div>
                             <div class="separator" style="clear: both; text-align: center;"></div>
                         </mat-card-content>
                         <ng-container *ngIf='!posts.comment'>
-                            <button mat-button (click)="isComment(posts)"
-                                    class="addComment">Add comment
+                            <button mat-button (click)="isComment(posts)" class="addComment">Add comment
                             </button>
                         </ng-container>
 
