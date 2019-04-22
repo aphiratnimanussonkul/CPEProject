@@ -7,42 +7,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
 func AddPost(w http.ResponseWriter, req *http.Request) {
+	fmt.Println(req.URL.String())
 	//
-	req.ParseForm()
-	log.Println(req.Form)
-	for key, value := range req.Form {
-		fmt.Println("%s = %s\n", key, value)
-	}
-
-	//var bodyBuffer []byte
-	//if req.Body != nil {
-	//	bodyBuffer, _ = ioutil.ReadAll(req.Body) // after this operation body will equal 0
-	//	// Restore the io.ReadCloser to request
-	//	fmt.Println('=')
-	//	fmt.Println(bodyBuffer)
-	//	fmt.Println('=')
-	//	req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBuffer))
-	//	fmt.Println(req.Body)
-	//	fmt.Println('=')
-	//} else {
-	//	fmt.Println(bodyBuffer)
-	//	fmt.Println(req.Body)
-	//}
-
-	//postJson, err := json.Marshal(tempPost)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//w.Header().Set("content-type", "application/json")
-	//fmt.Println(postJson)
-
-	fmt.Println("i post")
 	db, err := config.GetMongoDB()
 	if err != nil {
 		fmt.Println(err)
@@ -53,8 +25,10 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 	currentTime := time.Now()
 	//get variable by path
 	params := mux.Vars(req)
+	var text = string(params["text"])
 	var email = string(params["email"])
 	var code = string(params["code"])
+
 	user, err2 := userRepository.FindByEmail(email)
 	if err2 != nil {
 		fmt.Println(err2)
@@ -65,15 +39,29 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err3)
 	}
 
-	var text string
-	text = string(params["text"])
-
 	var p models.Post
 	p.Text = text
 	p.Timestamp = currentTime.Format("3:4:5")
 	p.Date = currentTime.Format("2006-01-02")
 	p.User = user
 	p.Subject = subject
+
+	if strings.Contains( req.URL.String(), "postvdo") {
+		var vdoLink = string(params["vdoLink"])
+		p.VdoLink = vdoLink
+	} else if strings.Contains( req.URL.String(), "postfile") {
+		var URLName = string(params["name"])
+		var URLToken = string(params["token"])
+		p.File = URLName + "?" + URLToken
+	} else if strings.Contains( req.URL.String(), "postfull") {
+		var URLName = string(params["name"])
+		var URLToken = string(params["token"])
+		var vdoLink = string(params["vdoLink"])
+		p.VdoLink = vdoLink
+		p.File = URLName + "?" + URLToken
+	} else {
+	}
+
 	postRepository.Save(&p)
 
 }
@@ -94,7 +82,6 @@ func GetPostAll(w http.ResponseWriter, req *http.Request) {
 }
 func GetPostByCode(w http.ResponseWriter, req *http.Request) {
 	//
-
 	db, err := config.GetMongoDB()
 	if err != nil {
 		fmt.Println(err)
@@ -166,6 +153,7 @@ func AddPostWithLink(w http.ResponseWriter, req *http.Request) {
 	currentTime := time.Now()
 	//get variable by path
 	params := mux.Vars(req)
+	var text = string(params["text"])
 	var email = string(params["email"])
 	var code = string(params["code"])
 	var vdoLink = string(params["vdoLink"])
@@ -179,9 +167,6 @@ func AddPostWithLink(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err3)
 	}
 
-	var text string
-	text = string(params["text"])
-
 	var p models.Post
 	p.Text = text
 	p.Timestamp = currentTime.Format("3:4:5")
@@ -192,3 +177,45 @@ func AddPostWithLink(w http.ResponseWriter, req *http.Request) {
 	postRepository.Save(&p)
 
 }
+func AddPostWithLinkFirebase(w http.ResponseWriter, req *http.Request) {
+	fmt.Println(req.URL)
+	fmt.Println("i firebase")
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	postRepository := repository.NewPostRepository(db, "Post")
+	userRepository := repository.NewUserRepository(db, "User")
+	subjectRepository := repository.NewSubjectRepository(db, "Subject")
+	currentTime := time.Now()
+	params := mux.Vars(req)
+	var text = string(params["text"])
+	var email = string(params["email"])
+	var code = string(params["code"])
+	var vdoLink = string(params["vdoLink"])
+	var firebaseLink = string(params["firebase"])
+	user, err2 := userRepository.FindByEmail(email)
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+
+	subject, err3 := subjectRepository.FindByCode(code)
+	if err3 != nil {
+		fmt.Println(err3)
+	}
+
+	var p models.Post
+	p.Text = text
+	p.Timestamp = currentTime.Format("3:4:5")
+	p.Date = currentTime.Format("2006-01-02")
+	p.User = user
+	p.Subject = subject
+	p.VdoLink = vdoLink;
+	p.File = firebaseLink;
+	postRepository.Save(&p)
+
+}
+
+

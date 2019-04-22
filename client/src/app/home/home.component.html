@@ -122,6 +122,7 @@
                             </div>
                         </div>
                         <img *ngIf="isPicture" [src]="select.getURL" height="150px">
+                        <a *ngIf="isDocument" [href]="select.getURL" target="_blank" rel="noopener noreferrer">Download Here</a>
                     </div>
 
                     <mat-form-field class="comment" *ngIf="vdo" name="VdoLink">
@@ -151,6 +152,11 @@
                             <p>
                                 {{posts.text}}
                             </p>
+                            <div *ngIf="posts.file">
+                                <p *ngIf="posts.file; then checkLink(posts)"></p>
+                                <img *ngIf="posts.isLinkPic" [src]="getFireUrl(posts)" height="150px">
+                                <a *ngIf="posts.isLinkDocument" [href]="getFireUrl(posts)" target="_blank" rel="noopener noreferrer">Download Here</a>
+                            </div>
                             <div style="text-align: center;" *ngIf="posts.vdoLink">
                                 <span style="background-color: #fce5cd;">
                                     <iframe width="560" height="315" [src]="getEmbedUrl(posts.vdoLink)" frameborder="0"

@@ -36,8 +36,4 @@ export class PostService {
   getFacultyTable(): Observable <FacultyComponent[]> {
     return this.http.get<FacultyComponent[]>(this.API + '/faculties');
   }
-  addPost(text, email, codeSubject, form: any): Observable<any> {
-    alert(text + email + codeSubject + form);
-    return this.http.get(this.API + '/post/' + text + '/' + email + '/' + codeSubject, form);
-  }
 }

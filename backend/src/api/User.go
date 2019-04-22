@@ -56,5 +56,28 @@ func GetUserByEmail(w http.ResponseWriter, req *http.Request)  {
 
 }
 
+func AddUserSubject(w http.ResponseWriter, req *http.Request)  {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	userRepository := repository.NewUserRepository(db, "User")
+	subjectRepository := repository.NewSubjectRepository(db, "Subject")
 
+	//get variable by path
+	params := mux.Vars(req)
+	var firstName, lastName, Email string
+	firstName = string(params["firstName"])
+	lastName = string(params["lastName"])
+	Email = string(params["Email"])
+	var codeSubject = string(params["code"])
+	subject, err := subjectRepository.FindByCode(codeSubject)
+	var p models.User
+	p.Firstname = firstName
+	p.Lastname = lastName
+	p.Email = Email
+	userRepository.SaveSubject(subject, &p)
+
+}
 //Default data Major

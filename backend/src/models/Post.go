@@ -10,7 +10,7 @@ type Post struct {
 	Date		string 		`json:"date"`
 	User		*User		`bson:"user" json:"user"`
 	VdoLink		string   	`json:"vdoLink"`
-	Img	        string 		`json:"img"`
+	File	    string 		`json:"file"`
 	Subject		*Subject	`bson:"subject" json:"subject"`
 }
 

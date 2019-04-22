@@ -3,18 +3,16 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { PostService } from '../service/post.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { DataSource } from '@angular/cdk/collections';
+
 export interface FacultyComponent {
     name: string;
-    // newRoomStatusEntity: {
-    //   roomStatusName: String;
-    // }
 }
+
 
 @Component({
     selector: 'app-home',
@@ -45,9 +43,6 @@ export class HomeComponent implements OnInit {
             'logout',
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
     }
-    link: any = {
-        name: 'adsdsds/ddddsdsds'
-      };
     // FileUpload
     isDocument: boolean;
     isPicture: boolean;
@@ -68,114 +63,125 @@ export class HomeComponent implements OnInit {
         text: '',
         email: '',
         vdoLink: '',
-        getURL: ''
-    };
-    postVariable: any = {
-        _id: 'wwweew',
-        name: 'hello'
-        // text: 'hello 12345',
-        // vdolink: 'gWuTMYThfwE',
-        // img: 'https://firebasestorage.googleapis.com/v0/b/cpeproject.appspot.com/o/2GB.png?' +
-        //     'alt=media&token=77950445-251e-4cc9-b7d7-159b4153ec12'
+        getURL: '',
+        sendURLName: '',
+        sendURLToken: ''
     };
     ngOnInit() {
         this.refresh();
         this.postService.getPost().subscribe(data => {
             this.post = data;
-            console.log(this.post);
         });
         this.postService.getUser('B5923151@gmail.com').subscribe(data => {
             this.user = data;
             this.select.email = data.email;
-            console.log(this.user);
         });
         this.postService.getFaculty().subscribe(data => {
             this.faculty = data;
-            console.log(this.faculty);
         });
 
     }
     test() {
-        if (this.select.vdoLink === '') {
-            let header = new HttpHeaders();
-            header.set('content-type', 'application/json');
-            console.log(this.select.text);
-            this.postService.addPost(this.select.text, this.select.email, this.codeSubject, this.select).subscribe(
-                data => {
-                    console.log(data);
-                    if (data) {
-                        alert('somthing was wrong');
-                    } else {
-                        alert('post success');
-                        this.getFeed(this.codeSubject);
-                    }
-                    this.select.text = '';
-                },
-                error => {
-                    alert('Error post');
-                }
-            );
-            // this.httpClient.post('http://localhost:12345/post/' + this.select.text + '/'
-            //     + this.select.email + '/'
-            //     + this.codeSubject,  this.select)
-            //     .subscribe(
-            //         data => {
-            //             console.log(data);
-            //             if (data) {
-            //                 alert('somthing was wrong');
-            //             } else {
-            //                 alert('post success');
-            //                 this.getFeed(this.codeSubject);
-            //             }
-            //             this.select.text = '';
-            //         },
-            //         error => {
-            //             alert('Error post');
-            //         }
-            //     );
-        } else {
-            if (this.select.vdoLink.includes('youtube'), this.select.vdoLink.length) {
-                console.log(this.select.text);
-                let temp = this.select.vdoLink.split('=');
-                this.select.vdoLink = temp[1];
-                if (this.select.vdoLink.endsWith('&list', this.select.vdoLink.length)) {
-                    let temp = this.select.vdoLink.split('&');
-                    this.select.vdoLink = temp[0];
-                }
-                alert(this.select.vdoLink)
-                this.httpClient.get('http://localhost:12345/post/' + this.select.text + '/'
-                    + this.select.email + '/'
-                    + this.codeSubject + '/'
-                    + this.select.vdoLink, this.select)
-                    .subscribe(
-                        data => {
-                            console.log(data);
-                            if (data) {
-                                alert('somthing was wrong');
-                            } else {
-                                alert('post success');
-                                this.getFeed(this.codeSubject);
-                            }
-                            this.select.text = '';
-                            this.select.vdoLink = '';
-                        },
-                        error => {
-                            alert('Error post');
-                        }
-                    );
-            } else {
-                alert('Please check your youtube link');
-                this.select.vdoLink = '';
-                this.select.text = '';
+        if (this.select.vdoLink === '' && this.select.vdoLink.includes('youtube'), this.select.vdoLink.length) {
+            let temp = this.select.vdoLink.split('=');
+            this.select.vdoLink = temp[1];
+            if (this.select.vdoLink.endsWith('&list', this.select.vdoLink.length)) {
+                let temp = this.select.vdoLink.split('&');
+                this.select.vdoLink = temp[0];
             }
+        } else {
+            alert('Please check your youtube link');
         }
+        if (this.select.sendURLName === '' &&  this.select.vdoLink === '') {
+            this.httpClient.get('http://localhost:12345/post/'
+                + this.select.text + '/'
+                + this.select.email + '/'
+                + this.codeSubject,  this.select)
+                .subscribe(
+                    data => {
+                        if (data) {
+                            alert('somthing was wrong');
+                        } else {
+                            alert('post success');
+                            this.getFeed(this.codeSubject);
+                        }
+                    },
+                    error => {
+                        alert('Error post');
+                    }
+                );
+        } else if (this.select.vdoLink === '') {
+            this.httpClient.get('http://localhost:12345/postfile/'
+                + this.select.text + '/'
+                + this.select.email + '/'
+                + this.codeSubject + '/'
+                + this.select.sendURLName + '/'
+                + this.select.sendURLToken, this.select)
+                .subscribe(
+                    data => {
+                        if (data) {
+                            alert('somthing was wrong');
+                        } else {
+                            alert('post success');
+                            this.getFeed(this.codeSubject);
+                        }
+                    },
+                    error => {
+                        alert('Error post');
+                    }
+                );
+        } else if (this.select.sendURLName === '') {
+            this.httpClient.get('http://localhost:12345/postvdo/'
+                + this.select.text + '/'
+                + this.select.email + '/'
+                + this.codeSubject + '/'
+                + this.select.vdoLink, this.select)
+                .subscribe(
+                    data => {
+                        if (data) {
+                            alert('somthing was wrong');
+                        } else {
+                            alert('post success');
+                            this.getFeed(this.codeSubject);
+                        }
+                    },
+                    error => {
+                        alert('Error post');
+                    }
+                );
+        } else {
+            this.httpClient.get('http://localhost:12345/postfull/'
+                + this.select.text + '/'
+                + this.select.email + '/'
+                + this.codeSubject + '/'
+                + this.select.vdoLink + '/'
+                + this.select.sendURLName + '/'
+                + this.select.sendURLToken, this.select)
+                .subscribe(
+                    data => {
+                        if (data) {
+                            alert('somthing was wrong');
+                        } else {
+                            alert('post success');
+                            this.getFeed(this.codeSubject);
+                        }
+                    },
+                    error => {
+                        alert('Error post');
+                    }
+                );
+        }
+        this.select.sendURLToken = '';
+        this.select.sendURLName = '';
+        this.select.text = '';
+        this.select.vdoLink = '';
+        this.select.getURL = '';
     }
 
     getMajor(facultyName) {
         this.major = null;
         this.postService.getMajor(facultyName).subscribe(data => {
             this.major = data;
-            console.log(this.major);
         });
 
     }
@@ -184,7 +190,6 @@ export class HomeComponent implements OnInit {
         this.subject = null;
         this.postService.getSubject(majorName).subscribe(data => {
             this.subject = data;
-            console.log(this.subject);
         });
     }
 
@@ -197,7 +202,6 @@ export class HomeComponent implements OnInit {
         });
     }
     getEmbedUrl(link) {
-        console.log(link);
         return this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + link);
     }
 
@@ -223,24 +227,42 @@ export class HomeComponent implements OnInit {
     URL(url) {
         if (!url) {
             alert('Can not upload file, please try again');
-        }
-        this.select.getURL = url;
-        if (this.select.getURL.includes('pdf', 0) |
-            this.select.getURL.includes('doc', 0) |
-            this.select.getURL.includes('docx', 0)) {
-            this.isDocument = true;
-            this.isPicture = false;
         } else {
-            this.isPicture = true;
-            this.isDocument = false;
+            this.select.getURL = url;
+            if (this.select.getURL.includes('pdf', 0) |
+                this.select.getURL.includes('doc', 0) |
+                this.select.getURL.includes('docx', 0)) {
+                this.isDocument = true;
+                this.isPicture = false;
+            } else {
+                this.isPicture = true;
+                this.isDocument = false;
+            }
+            let temp = this.select.getURL.split('/');
+            let tempLink = temp[7].split('?');
+            this.select.sendURLName = tempLink[0];
+            this.select.sendURLToken = tempLink[1];
         }
-        console.log(this.select.getURL);
     }
     refresh() {
         this.postService.getFacultyTable().subscribe((res) => {
             this.faculty = res;
             this.dataSource = new FacultyDataSource(this.postService);
         });
+    }
+    checkLink (link) {
+        if (link.file.includes('pdf', 0) |
+            link.file.includes('doc', 0) |
+            link.file.includes('docx', 0)) {
+            link.isLinkDocument = true;
+            link.isLinkPic = false;
+        } else {
+            link.isLinkPic = true;
+            link.isLinkDocument = false;
+        }
+    }
+    getFireUrl(link) {
+        return 'https://firebasestorage.googleapis.com/v0/b/cpeproject.appspot.com/o/' + link.file;
     }
 }
 export class FacultyDataSource extends DataSource<any> {

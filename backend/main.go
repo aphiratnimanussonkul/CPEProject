@@ -40,9 +40,12 @@ func main() {
 	//User
 	router.HandleFunc("/user/{Email}", api.GetUserByEmail).Methods("GET")
 	router.HandleFunc("/user/{firstName}/{lastName}/{Email}", api.AddUser).Methods("GET")
+	router.HandleFunc("/user/{firstName}/{lastName}/{Email}/{code}", api.AddUserSubject).Methods("GET")
 	//Post
-	router.HandleFunc("/post/{text}/{email}/{code}/{vdoLink}", api.AddPostWithLink)
-	router.HandleFunc("/post/{text}/{email}/{code}", api.AddPost)
+	router.HandleFunc("/postvdo/{text}/{email}/{code}/{vdoLink}", api.AddPost).Methods("GET")
+	router.HandleFunc("/postfile/{text}/{email}/{code}/{name}/{token}", api.AddPost).Methods("GET")
+	router.HandleFunc("/postfull/{text}/{email}/{code}/{vdoLink}/{name}/{token}", api.AddPost).Methods("GET")
+	router.HandleFunc("/post/{text}/{email}/{code}", api.AddPost).Methods("GET")
 	router.HandleFunc("/postPic", api.UploadFileChunk)
 	router.HandleFunc("/posts", api.GetPostAll).Methods("GET")
 	router.HandleFunc("/post/{code}", api.GetPostByCode).Methods("GET")

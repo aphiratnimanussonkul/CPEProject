@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	// "time"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -26,11 +27,17 @@ func (r *UserRepositoryMongo) Save(user *models.User) error{
 	err := r.db.C(r.collection).Insert(user)
 	return err
 }
-
+func (r *UserRepositoryMongo) SaveSubject(subject *models.Subject, user *models.User) error{
+	err := r.db.C(r.collection).Insert(user)
+	err2 := r.db.C(r.collection).Update(bson.M{"subject": subject}, user)
+	fmt.Println(err2)
+	return err
+}
 //Update
 func (r *UserRepositoryMongo) Update(id string, user *models.User) error{
 	//Get ตัวแปรแล้วมาเปลี่ยนค่าแล้ว save
 	// faculty.UpdatedAt = time.Now()
+
 	err := r.db.C(r.collection).Update(bson.M{"id": id}, user)
 	return err
 }
