@@ -12,7 +12,14 @@ import { DataSource } from '@angular/cdk/collections';
 export interface FacultyComponent {
     name: string;
 }
-
+export interface Post {
+    text: string;
+    user: {
+        firstname: string
+        lastname: string
+        email: string
+    };
+}
 
 @Component({
     selector: 'app-home',
@@ -67,6 +74,14 @@ export class HomeComponent implements OnInit {
         sendURLName: '',
         sendURLToken: ''
     };
+    posts: Post = {
+        text: '',
+        user: {
+            firstname: '',
+            lastname: '',
+            email: ''
+        }
+    };
     ngOnInit() {
         this.refresh();
         this.postService.getPost().subscribe(data => {
@@ -75,11 +90,13 @@ export class HomeComponent implements OnInit {
         this.postService.getUser('B5923151@gmail.com').subscribe(data => {
             this.user = data;
             this.select.email = data.email;
+            this.posts.user.firstname = data.firstname;
+            this.posts.user.lastname = data.lastname;
+            this.posts.user.email = data.email;
         });
         this.postService.getFaculty().subscribe(data => {
             this.faculty = data;
         });
-
     }
     test() {
         if (this.select.vdoLink === '' && this.select.vdoLink.includes('youtube'), this.select.vdoLink.length) {
@@ -93,23 +110,32 @@ export class HomeComponent implements OnInit {
             alert('Please check your youtube link');
         }
         if (this.select.sendURLName === '' &&  this.select.vdoLink === '') {
-            this.httpClient.get('http://localhost:12345/post/'
-                + this.select.text + '/'
-                + this.select.email + '/'
-                + this.codeSubject,  this.select)
-                .subscribe(
-                    data => {
-                        if (data) {
-                            alert('somthing was wrong');
-                        } else {
-                            alert('post success');
-                            this.getFeed(this.codeSubject);
-                        }
-                    },
-                    error => {
-                        alert('Error post');
-                    }
-                );
+            this.posts.text = this.select.text;
+             this.postService.createArticle(this.posts).subscribe(
+                 data => {
+                     let temp = data;
+                     console.log(temp);
+                 },
+                 error1 => {
+                 }
+             );
+            // this.httpClient.post('http://localhost:12345/post/'
+            //     + this.select.text + '/'
+            //     + this.select.email + '/'
+            //     + this.codeSubject,  this.select,)
+            //     .subscribe(
+            //         data => {
+            //             if (data) {
+            //                 alert('somthing was wrong');
+            //             } else {
+            //                 alert('post success');
+            //                 this.getFeed(this.codeSubject);
+            //             }
+            //         },
+            //         error => {
+            //             alert('Error post');
+            //         }
+            //     );
         } else if (this.select.vdoLink === '') {
             this.httpClient.get('http://localhost:12345/postfile/'
                 + this.select.text + '/'

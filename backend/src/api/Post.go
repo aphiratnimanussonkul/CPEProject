@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
@@ -14,6 +15,32 @@ import (
 
 func AddPost(w http.ResponseWriter, req *http.Request) {
 	fmt.Println(req.URL.String())
+	fmt.Println(req.Header)
+	fmt.Println(req.Body)
+	b, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	fmt.Println(b)
+
+	// Unmarshal
+	var msg models.Post
+	err = json.Unmarshal(b, &msg)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	fmt.Println("msg" ,msg.Text)
+	fmt.Println("msg" ,msg.User.Lastname)
+
+	output, err := json.Marshal(msg)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	fmt.Println("outpuy", output)
 	//
 	db, err := config.GetMongoDB()
 	if err != nil {
@@ -48,17 +75,25 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 
 	if strings.Contains( req.URL.String(), "postvdo") {
 		var vdoLink = string(params["vdoLink"])
-		p.VdoLink = vdoLink
+		var vdoLinkAll []string
+		vdoLinkAll = append(vdoLinkAll, vdoLink)
+		p.VdoLink = vdoLinkAll
 	} else if strings.Contains( req.URL.String(), "postfile") {
 		var URLName = string(params["name"])
 		var URLToken = string(params["token"])
-		p.File = URLName + "?" + URLToken
+		var FileAll []string
+		FileAll = append(FileAll, URLName + "?" + URLToken)
+		p.File = FileAll
 	} else if strings.Contains( req.URL.String(), "postfull") {
 		var URLName = string(params["name"])
 		var URLToken = string(params["token"])
 		var vdoLink = string(params["vdoLink"])
-		p.VdoLink = vdoLink
-		p.File = URLName + "?" + URLToken
+
+		var FileAll,vdoLinkAll  []string
+        vdoLinkAll = append(vdoLinkAll, vdoLink)
+		FileAll = append(FileAll, URLName + "?" + URLToken)
+		p.VdoLink = vdoLinkAll
+		p.File = FileAll
 	} else {
 	}
 
@@ -173,49 +208,12 @@ func AddPostWithLink(w http.ResponseWriter, req *http.Request) {
 	p.Date = currentTime.Format("2006-01-02")
 	p.User = user
 	p.Subject = subject
-	p.VdoLink = vdoLink;
+	var vdoLinkAll []string
+	vdoLinkAll = append(vdoLinkAll, vdoLink)
+	p.VdoLink = vdoLinkAll
 	postRepository.Save(&p)
 
 }
-func AddPostWithLinkFirebase(w http.ResponseWriter, req *http.Request) {
-	fmt.Println(req.URL)
-	fmt.Println("i firebase")
-	//
-	db, err := config.GetMongoDB()
-	if err != nil {
-		fmt.Println(err)
-	}
 
-	postRepository := repository.NewPostRepository(db, "Post")
-	userRepository := repository.NewUserRepository(db, "User")
-	subjectRepository := repository.NewSubjectRepository(db, "Subject")
-	currentTime := time.Now()
-	params := mux.Vars(req)
-	var text = string(params["text"])
-	var email = string(params["email"])
-	var code = string(params["code"])
-	var vdoLink = string(params["vdoLink"])
-	var firebaseLink = string(params["firebase"])
-	user, err2 := userRepository.FindByEmail(email)
-	if err2 != nil {
-		fmt.Println(err2)
-	}
-
-	subject, err3 := subjectRepository.FindByCode(code)
-	if err3 != nil {
-		fmt.Println(err3)
-	}
-
-	var p models.Post
-	p.Text = text
-	p.Timestamp = currentTime.Format("3:4:5")
-	p.Date = currentTime.Format("2006-01-02")
-	p.User = user
-	p.Subject = subject
-	p.VdoLink = vdoLink;
-	p.File = firebaseLink;
-	postRepository.Save(&p)
-
-}
 
 

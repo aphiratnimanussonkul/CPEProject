@@ -13,6 +13,6 @@ func GetMongoDB() (*mgo.Database, error) {
   if err != nil {
     return nil, err
   }
-  db := session.DB("People")
+  db := session.DB("CourseOnline")
   return db, nil
 }

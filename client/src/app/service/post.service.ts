@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import { FacultyComponent } from '../home/home.component';
+import {FacultyComponent, Post} from '../home/home.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
   public API = '//localhost:12345';
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getPost(): Observable<any> {
     return this.http.get(this.API + '/posts');
@@ -35,5 +35,12 @@ export class PostService {
   }
   getFacultyTable(): Observable <FacultyComponent[]> {
     return this.http.get<FacultyComponent[]>(this.API + '/faculties');
+  }
+  createArticle(post: Post): Observable<Post> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    headers.append('Content-Type', 'application/json');
+    return this.http.post<Post>(this.API + '/post/test/B5923151@gmail.com/523353', JSON.stringify(post), {headers});
   }
 }
