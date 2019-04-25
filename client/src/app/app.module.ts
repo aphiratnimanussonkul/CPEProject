@@ -20,6 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatTabsModule} from '@angular/material/tabs';
 
 import { HomeComponent } from './home/home.component';
 import { PostService } from './service/post.service';
@@ -69,7 +70,8 @@ const appRoutes: Routes = [
       projectId: 'cpeproject',
     }),
     AngularFireStorageModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTabsModule
   ],
   providers: [PostService],
   bootstrap: [AppComponent]
