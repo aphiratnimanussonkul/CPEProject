@@ -46,6 +46,7 @@ func main() {
 	router.HandleFunc("/postfile/{text}/{email}/{code}/{name}/{token}", api.AddPost).Methods("GET")
 	router.HandleFunc("/postfull/{text}/{email}/{code}/{vdoLink}/{name}/{token}", api.AddPost).Methods("GET")
 	router.HandleFunc("/post/{text}/{email}/{code}", api.AddPost).Methods("POST")
+	router.HandleFunc("/post", api.AddPost).Methods("POST")
 	router.HandleFunc("/postPic", api.UploadFileChunk)
 	router.HandleFunc("/posts", api.GetPostAll).Methods("GET")
 	router.HandleFunc("/post/{code}", api.GetPostByCode).Methods("GET")

@@ -14,17 +14,12 @@ import (
 )
 
 func AddPost(w http.ResponseWriter, req *http.Request) {
-	fmt.Println(req.URL.String())
-	fmt.Println(req.Header)
-	fmt.Println(req.Body)
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	fmt.Println(b)
-
 	// Unmarshal
 	var msg models.Post
 	err = json.Unmarshal(b, &msg)
@@ -33,14 +28,6 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-
-	// output, err := json.Marshal(msg)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), 500)
-	// 	return
-	// }
-	// fmt.Println("outpuy", output)
-	//
 	db, err := config.GetMongoDB()
 	if err != nil {
 		fmt.Println(err)
@@ -49,11 +36,6 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 	userRepository := repository.NewUserRepository(db, "User")
 	subjectRepository := repository.NewSubjectRepository(db, "Subject")
 	currentTime := time.Now()
-	//get variable by path
-	//params := mux.Vars(req)
-	//var text = string(params["text"])
-	// var email = string(params["email"])
-	// var code = string(params["code"])
 
 	user, err2 := userRepository.FindByEmail(msg.User.Email)
 	if err2 != nil {
@@ -82,7 +64,7 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 	// } else if strings.Contains( req.URL.String(), "postfile") {
 	// 	var URLName = string(params["name"])
 	// 	var URLToken = string(params["token"])
-		var FileAll []string		
+		var FileAll []string
 		for i := 0; i < len(msg.File); i++ {
 			FileAll = append(FileAll, msg.File[i])
 		}
@@ -91,7 +73,7 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 		// var URLName = string(params["name"])
 		// var URLToken = string(params["token"])
 		// var vdoLink = string(params["vdoLink"])
-		var FileAll,vdoLinkAll  []string
+		var FileAll,vdoLinkAll,PicAll, FileNameAll  []string
 		for i := 0; i < len(msg.VdoLink); i++ {
 			if msg.VdoLink[i] == "" {
 				continue
@@ -104,8 +86,22 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 			}
 			FileAll = append(FileAll, msg.File[i])
 		}
+		for i := 0; i < len(msg.Picture); i++ {
+			if msg.Picture[i] == "" {
+				continue
+			}
+			PicAll = append(PicAll, msg.Picture[i])
+		}
+		for i := 0; i < len(msg.FileName); i++ {
+			if msg.FileName[i] == "" {
+				continue
+			}
+			FileNameAll = append(FileNameAll, msg.FileName[i])
+		}
+		p.FileName = FileNameAll
 		p.VdoLink = vdoLinkAll
 		p.File = FileAll
+		p.Picture = PicAll
 	} else {
 	}
 
@@ -188,44 +184,6 @@ func UploadFileChunk(w http.ResponseWriter, r *http.Request) {
 	//json.NewEncoder(w).Encode(img.ID)
 }
 
-func AddPostWithLink(w http.ResponseWriter, req *http.Request) {
-	//
-	db, err := config.GetMongoDB()
-	if err != nil {
-		fmt.Println(err)
-	}
-	postRepository := repository.NewPostRepository(db, "Post")
-	userRepository := repository.NewUserRepository(db, "User")
-	subjectRepository := repository.NewSubjectRepository(db, "Subject")
-	currentTime := time.Now()
-	//get variable by path
-	params := mux.Vars(req)
-	var text = string(params["text"])
-	var email = string(params["email"])
-	var code = string(params["code"])
-	var vdoLink = string(params["vdoLink"])
-	user, err2 := userRepository.FindByEmail(email)
-	if err2 != nil {
-		fmt.Println(err2)
-	}
-
-	subject, err3 := subjectRepository.FindByCode(code)
-	if err3 != nil {
-		fmt.Println(err3)
-	}
-
-	var p models.Post
-	p.Text = text
-	p.Timestamp = currentTime.Format("3:4:5")
-	p.Date = currentTime.Format("2006-01-02")
-	p.User = user
-	p.Subject = subject
-	var vdoLinkAll []string
-	vdoLinkAll = append(vdoLinkAll, vdoLink)
-	p.VdoLink = vdoLinkAll
-	postRepository.Save(&p)
-
-}
 
 
 

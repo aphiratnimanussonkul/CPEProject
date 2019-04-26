@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material';
-import { HttpClient } from '@angular/common/http';
-import { PostService } from '../service/post.service';
-import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { DataSource } from '@angular/cdk/collections';
-import { observable } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
+import {MatIconRegistry} from '@angular/material';
+import {HttpClient} from '@angular/common/http';
+import {PostService} from '../service/post.service';
+import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from 'angularfire2/storage';
+import {Observable} from 'rxjs/Observable';
+import {map} from 'rxjs/operators/map';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {DataSource} from '@angular/cdk/collections';
 
 export interface FacultyComponent {
     name: string;
@@ -23,6 +22,8 @@ export interface Post {
     };
     vdolink: string[];
     file: string[];
+    filename: string[];
+    picture: string[];
     subject: {
         name: string;
         code: string;
@@ -35,8 +36,8 @@ export interface Post {
     styleUrls: ['./home.component.css'],
     animations: [
         trigger('detailExpand', [
-            state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
-            state('expanded', style({ height: '*' })),
+            state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+            state('expanded', style({height: '*'})),
             transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
         ]),
     ],
@@ -48,7 +49,7 @@ export class HomeComponent implements OnInit {
 
     //
     constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
-        private sanitizer: DomSanitizer, private storage: AngularFireStorage) {
+                private sanitizer: DomSanitizer, private storage: AngularFireStorage) {
         iconRegistry.addSvgIcon(
             'more',
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -62,23 +63,46 @@ export class HomeComponent implements OnInit {
 
     // upload vdo many
     count: number;
-    tempVdoLink: string[] = ['', '', '', '', '', '', '', '', '', ''];
-    tempVdoLink2: string[] = ['', '', '', '', '', '', '', '', '', ''];
+    tempVdoLink: string[] = ['', '', '', '', ''];
+    tempVdoLink2: string[] = ['', '', '', '', ''];
     isAddVdo: boolean;
     // upload file many
     countFile: number;
-    tempFileLink: string[] = ['', '', '', '', '', '', '', '', '', ''];
-    tempFileLink2: string[] = ['', '', '', '', '', '', '', '', '', ''];
+    tempFileLink: string[] = ['', '', '', '', ''];
+    tempFileLink2: string[] = ['', '', '', '', ''];
+    fileName: string[] = ['', '', '', '', ''];
     isFile: boolean;
+    // Upload Picture Many
+    countPic: number;
+    tempPicLink: string[] = ['', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', ''];
+    tempPicLink2: string[] = ['', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', ''];
+    isPic: boolean;
     // FileUpload
     isDocument: boolean;
     isPicture: boolean;
     ref: AngularFireStorageReference;
     task: AngularFireUploadTask;
-    uploadProgress: Observable<number>[] = [null, null, null, null, null, null, null, null, null, null];
-    downloadURL: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null];
-    uploadState: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null];
-    getURL: string[] = ['', '', '', '', '', '', '', '', '', ''];
+    uploadProgress: Observable<number>[] = [null, null, null, null, null];
+    downloadURL: Observable<string>[] = [null, null, null, null, null];
+    uploadState: Observable<string>[] = [null, null, null, null, null];
+    getURL: string[] = ['', '', '', '', ''];
+    // Picturee Upload
+    uploadProgressPic: Observable<number>[] = [null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null];
+    downloadURLPic: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null];
+    uploadStatePic: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null];
+    getURLPic: string[] = ['', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', '',
+        '', '', '', '', '', '', '', '', '', ''];
     //
     nameSubject: string;
     codeSubject: string;
@@ -101,18 +125,25 @@ export class HomeComponent implements OnInit {
             lastname: '',
             email: ''
         },
-        vdolink: ['', '', '', '', '', '', '', '', '', ''],
-        file: ['', '', '', '', '', '', '', '', '', ''],
-        subject : {
+        vdolink: ['', '', '', '', ''],
+        file: ['', '', '', '', ''],
+        filename: ['', '', '', '', ''],
+        picture: ['', '', '', '', '', '', '', '', '', '',
+            '', '', '', '', '', '', '', '', '', '',
+            '', '', '', '', '', '', '', '', '', ''],
+        subject: {
             name: '',
             code: ''
         }
     };
+
     ngOnInit() {
         this.isFile = true;
+        this.isPic = true;
         this.isAddVdo = true;
         this.count = 0;
         this.countFile = 0;
+        this.countPic = 0;
         this.refresh();
         this.postService.getPost().subscribe(data => {
             this.post = data;
@@ -142,8 +173,10 @@ export class HomeComponent implements OnInit {
         }
         if (this.select.sendURLName === '' && this.select.vdoLink === '') {
             this.posts.text = this.select.text;
-            this.posts.file = this.getURL;
+            this.posts.file = this.tempFileLink;
             this.posts.vdolink = this.tempVdoLink;
+            this.posts.picture = this.tempPicLink;
+            this.posts.filename = this.fileName;
             this.postService.createArticle(this.posts).subscribe(
                 data => {
                     let temp = data;
@@ -152,83 +185,6 @@ export class HomeComponent implements OnInit {
                 error1 => {
                 }
             );
-            // this.httpClient.post('http://localhost:12345/post/'
-            //     + this.select.text + '/'
-            //     + this.select.email + '/'
-            //     + this.codeSubject,  this.select,)
-            //     .subscribe(
-            //         data => {
-            //             if (data) {
-            //                 alert('somthing was wrong');
-            //             } else {
-            //                 alert('post success');
-            //                 this.getFeed(this.codeSubject);
-            //             }
-            //         },
-            //         error => {
-            //             alert('Error post');
-            //         }
-            //     );
-        } else if (this.select.vdoLink === '') {
-            this.httpClient.get('http://localhost:12345/postfile/'
-                + this.select.text + '/'
-                + this.select.email + '/'
-                + this.codeSubject + '/'
-                + this.select.sendURLName + '/'
-                + this.select.sendURLToken, this.select)
-                .subscribe(
-                    data => {
-                        if (data) {
-                            alert('somthing was wrong');
-                        } else {
-                            alert('post success');
-                            this.getFeed(this.codeSubject);
-                        }
-                    },
-                    error => {
-                        alert('Error post');
-                    }
-                );
-        } else if (this.select.sendURLName === '') {
-            this.httpClient.get('http://localhost:12345/postvdo/'
-                + this.select.text + '/'
-                + this.select.email + '/'
-                + this.codeSubject + '/'
-                + this.select.vdoLink, this.select)
-                .subscribe(
-                    data => {
-                        if (data) {
-                            alert('somthing was wrong');
-                        } else {
-                            alert('post success');
-                            this.getFeed(this.codeSubject);
-                        }
-                    },
-                    error => {
-                        alert('Error post');
-                    }
-                );
-        } else {
-            this.httpClient.get('http://localhost:12345/postfull/'
-                + this.select.text + '/'
-                + this.select.email + '/'
-                + this.codeSubject + '/'
-                + this.select.vdoLink + '/'
-                + this.select.sendURLName + '/'
-                + this.select.sendURLToken, this.select)
-                .subscribe(
-                    data => {
-                        if (data) {
-                            alert('somthing was wrong');
-                        } else {
-                            alert('post success');
-                            this.getFeed(this.codeSubject);
-                        }
-                    },
-                    error => {
-                        alert('Error post');
-                    }
-                );
         }
         this.select.sendURLToken = '';
         this.select.sendURLName = '';
@@ -264,7 +220,7 @@ export class HomeComponent implements OnInit {
     }
 
     getEmbedUrl(link) {
-        return this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/' + link);
+        return this.sanitizer.bypassSecurityTrustResourceUrl(link);
     }
 
     isComment(posts) {
@@ -276,28 +232,25 @@ export class HomeComponent implements OnInit {
     }
 
     upload(event, index) {
+        this.downloadURL[index] = null;
         const file = event.target.files[0];
-        const filePath = file.name;
-        this.ref = this.storage.ref(filePath);
-        this.task = this.ref.put(file);
-        this.uploadState[index] = this.task.snapshotChanges().pipe(map(s => s.state));
-        this.uploadProgress[index] = this.task.percentageChanges();
-        this.downloadURL[index] = this.ref.getDownloadURL();
-    }
-
-    URL(url, index) {
-        this.getURL[index] = url;
-        if (this.getURL[index].includes('pdf', 0) ||
-            this.getURL[index].includes('doc', 0) ||
-            this.getURL[index].includes('docx', 0)) {
-            this.isDocument = true;
-            this.isPicture = false;
+        if (file.name.includes('pdf', 0) |
+            file.name.includes('docx', 0) |
+            file.name.includes('doc', 0)
+        ) {
+            const filePath = file.name;
+            this.ref = this.storage.ref(filePath);
+            this.task = this.ref.put(file);
+            this.uploadState[index] = this.task.snapshotChanges().pipe(map(s => s.state));
+            this.uploadProgress[index] = this.task.percentageChanges();
+            this.downloadURL[index] = this.ref.getDownloadURL();
+            console.log(this.downloadURL);
+            if (this.downloadURL[index] === null) {
+                alert('Can not upload file, please try again');
+                this.downloadURL[index] = null;
+            }
         } else {
-            this.isPicture = true;
-            this.isDocument = false;
-        }
-        if (this.getURL[index] === null) {
-            alert('Can not upload file, please try again');
+            alert('Please choose file as type : pdf, word , exel and ppt');
         }
     }
 
@@ -309,15 +262,18 @@ export class HomeComponent implements OnInit {
     }
 
     checkLink(link) {
-        if (link.file.includes('pdf', 0) |
-            link.file.includes('doc', 0) |
-            link.file.includes('docx', 0)) {
+        console.log(link);
+        if (link.includes('pdf', 0) |
+            link.includes('doc', 0) |
+            link.includes('docx', 0)) {
             link.isLinkDocument = true;
             link.isLinkPic = false;
         } else {
             link.isLinkPic = true;
             link.isLinkDocument = false;
         }
+        console.log(link.isLinkPic);
+        console.log(link.isLinkDocument);
     }
 
     getFireUrl(link) {
@@ -326,59 +282,106 @@ export class HomeComponent implements OnInit {
 
     isAddFunc() {
         if (this.tempVdoLink.length === this.count) {
-            alert('Limited video at 10 link');
+            alert('Limited video at 5 link');
         } else {
             if (this.isAddVdo === true) {
                 this.tempVdoLink2[this.count] = '1';
                 this.count += 1;
                 console.log(this.tempVdoLink);
                 console.log(this.count);
-            } else if (this.isAddVdo === false) {
-                for (let i = 0; i <= this.count; i++) {
-                    this.tempVdoLink[i] = '';
-                    this.tempVdoLink2[i] = '';
-                }
-                this.count = 0;
             }
         }
     }
 
     isClear() {
-        this.tempVdoLink2[this.count] = '';
-        this.tempVdoLink[this.count] = '';
-        this.count -= 1;
-    }
-
-    testVdo() {
-        console.log(this.tempVdoLink);
-        console.log(this.tempVdoLink2);
-        this.posts.file = this.getURL;
-        console.log(this.posts);
-        console.log(this.getURL)
+        if (this.count > 0) {
+            this.count -= 1;
+            this.tempVdoLink2[this.count] = '';
+            this.tempVdoLink[this.count] = '';
+        }
     }
 
     // file
+    URL(url, index) {
+        if (url === null) {
+            alert('Can not upload');
+        }
+        this.tempFileLink[index] = url;
+        let temp = url.split('/');
+        let temp2 = temp[7].split('?');
+        this.fileName[index] = temp2[0];
+    }
     isFileFunc() {
         if (this.tempFileLink.length === this.countFile) {
-            alert('Limited files at 10 file');
+            alert('Limited files at 5 file');
         } else {
             if (this.isFile === true) {
                 this.tempFileLink2[this.countFile] = '1';
                 this.countFile += 1;
             } else if (this.isFile === false) {
-                for (let i = 0; i <= this.countFile; i++) {
-                    this.tempFileLink[i] = '';
-                    this.tempFileLink2[i] = '';
-                }
-                this.countFile = 0;
+                this.isFile = true;
             }
         }
     }
 
     isFileClear() {
-        this.tempFileLink[this.countFile] = '';
-        this.tempFileLink2[this.countFile] = '';
-        this.countFile -= 1;
+        if (this.countFile === 0) {
+            this.isFile = false;
+
+        } else {
+            this.countFile -= 1;
+            this.tempFileLink[this.countFile] = '';
+            this.tempFileLink2[this.countFile] = '';
+        }
+    }
+
+    // Picture
+    isPicFunc() {
+        if (this.tempPicLink.length === this.countPic) {
+            alert('Limited pictures at 30');
+        } else {
+            if (this.isPic === true) {
+                this.tempPicLink2[this.countPic] = '1';
+                this.countPic += 1;
+            } else if (this.isPic === false) {
+                this.isPic = true;
+            }
+        }
+    }
+
+    isPicClear() {
+        if (this.countPic === 0) {
+            this.isPic = false;
+
+        } else {
+            this.countPic -= 1;
+            this.tempPicLink[this.countPic] = '';
+            this.tempPicLink2[this.countPic] = '';
+        }
+    }
+
+    uploadPic(event, index) {
+        this.downloadURLPic[index] = null;
+        const file = event.target.files[0];
+        if (file.name.includes('jpg', 0) |
+            file.name.includes('png', 0)
+        ) {
+            const filePath = file.name;
+            this.ref = this.storage.ref(filePath);
+            this.task = this.ref.put(file);
+            this.uploadStatePic[index] = this.task.snapshotChanges().pipe(map(s => s.state));
+            this.uploadProgressPic[index] = this.task.percentageChanges();
+            this.downloadURLPic[index] = this.ref.getDownloadURL();
+            if (this.downloadURLPic[index] === null) {
+                alert('Can not upload file, please try again');
+            }
+        } else {
+            alert('Please choose picture!');
+        }
+    }
+
+    URLPic(url, index) {
+        this.tempPicLink[index] = url;
     }
 }
 

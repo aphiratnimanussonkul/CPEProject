@@ -41,6 +41,6 @@ export class PostService {
     headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('Content-Type', 'application/json');
-    return this.http.post<Post>(this.API + '/post/test/B5923151@gmail.com/523353', JSON.stringify(post), {headers});
+    return this.http.post<Post>(this.API + '/post', JSON.stringify(post), {headers});
   }
 }

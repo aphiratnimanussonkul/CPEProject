@@ -11,6 +11,8 @@ type Post struct {
 	User		*User		`bson:"user" json:"user"`
 	VdoLink		[]string   	`json:"vdoLink"`
 	File	    []string 	`json:"file"`
+	FileName	[]string	`json:"filename"`
+	Picture	    []string 	`json:"picture"`
 	Subject		*Subject	`bson:"subject" json:"subject"`
 }
 

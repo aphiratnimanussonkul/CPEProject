@@ -5,7 +5,7 @@
         <div class="nameNavbar">{{user.firstname}} {{user.lastname}}</div>
         <div mat-card-avatar class="example-header-image"></div>
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
-            class="moreBackground">
+                class="moreBackground">
             <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
         </button>
         <mat-menu yPosition="above" xPosition="before" #menu="matMenu" class="menuMore">
@@ -53,14 +53,14 @@
                 <ng-container matColumnDef="expandedDetail">
                     <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
                         <div class="example-element-detail"
-                            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                             <mat-accordion>
                                 <mat-expansion-panel *ngFor="let head of major">
                                     <mat-expansion-panel-header (click)="getSubject(head.name)" class="courseStep2">
                                         {{head.name}}
                                     </mat-expansion-panel-header>
                                     <mat-card *ngFor="let head of subject" class="cardExpansion"
-                                        (click)="getFeed(head.code)">{{head.name}} : {{head.code}}</mat-card>
+                                              (click)="getFeed(head.code)">{{head.name}} : {{head.code}}</mat-card>
                                 </mat-expansion-panel>
                             </mat-accordion>
                         </div>
@@ -94,24 +94,10 @@
                         <textarea matInput [(ngModel)]="select.text" placeholder="say somthing" name="text"></textarea>
                     </mat-form-field>
                 </form>
-                <!-- <div *ngIf="isAddVdo">
-                    <ng-container *ngFor="let vdo2 of tempVdoLink2; let i = index">
-                        <mat-form-field class="VdoLink" *ngIf="vdo2" name="VdoLink">
-                            <input matInput [(ngModel)]="tempVdoLink[i]"
-                                placeholder="support for link on youtube only!">
-                        </mat-form-field>
-                    </ng-container>
-                    <button mat-mini-fab class="addVdoLink" (click)="isAddFunc()">
-                        <mat-icon>add</mat-icon>
-                    </button>
-                    <button mat-mini-fab class="deleteVdoLink" (click)="isClear()">
-                        <mat-icon>clear</mat-icon>
-                    </button>
-                </div> -->
-                <mat-tab-group>
+                <mat-tab-group *ngIf="isUploadFile">
                     <mat-tab>
                         <ng-template mat-tab-label>
-                            <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
+                            <mat-icon>play_circle_outline</mat-icon>
                             Youtube
                         </ng-template>
                         <br>
@@ -119,7 +105,7 @@
                             <ng-container *ngFor="let vdo2 of tempVdoLink2; let i = index">
                                 <mat-form-field class="VdoLink" *ngIf="vdo2" name="VdoLink">
                                     <input matInput [(ngModel)]="tempVdoLink[i]"
-                                        placeholder="support for link on youtube only!">
+                                           placeholder="support for link on youtube only!">
                                 </mat-form-field>
                             </ng-container>
                             <button mat-mini-fab class="addVdoLink" (click)="isAddFunc()">
@@ -132,21 +118,21 @@
                     </mat-tab>
                     <mat-tab>
                         <ng-template mat-tab-label>
-                            <mat-icon class="example-tab-icon">attach_file</mat-icon>
+                            <mat-icon>attach_file</mat-icon>
                             แนบไฟล์
                         </ng-template>
                         <br>
                         <div *ngIf="isFile">
                             <ng-container *ngFor="let file of tempFileLink2; let j = index">
-                                <div *ngIf="file" >
-                                        <input type="file" (change)="upload($event, j)"
-                                            accept=".png, .jpg, pdf, doc, docx" />
+                                <div *ngIf="file">
+                                    <input type="file" (change)="upload($event, j)"
+                                           accept=".pdf, .doc, .docx"/>
                                     <br><br>
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
-                                            [style.width]="(uploadProgress[j] | async) + '%'"
-                                            [attr.aria-valuenow]="(uploadProgress[j] | async)" aria-valuemin="0"
-                                            aria-valuemax="100">
+                                             [style.width]="(uploadProgress[j] | async) + '%'"
+                                             [attr.aria-valuenow]="(uploadProgress[j] | async)" aria-valuemin="0"
+                                             aria-valuemax="100">
                                         </div>
                                     </div>
                                     <br>
@@ -154,9 +140,8 @@
                                         <p *ngIf="downloadSrc? URL(downloadSrc, j):false"></p>
                                     </div>
                                 </div>
-                                <img *ngIf="isPicture" [src]="getURL[j]" height="150px">
-                                <a *ngIf="isDocument" [href]="getURL[j]" target="_blank"
-                                    rel="noopener noreferrer">Download
+                                <a *ngIf="tempFileLink[j]" [href]="tempFileLink[j]" target="_blank"
+                                   rel="noopener noreferrer">Download
                                     Here</a>
                             </ng-container>
                         </div>
@@ -167,46 +152,108 @@
                             <mat-icon>clear</mat-icon>
                         </button>
                     </mat-tab>
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            <mat-icon>photo_library</mat-icon>
+                            Picture
+                        </ng-template>
+                        <br>
+                        <div *ngIf="isPic">
+                            <ng-container *ngFor="let pic of tempPicLink2; let p = index">
+                                <div *ngIf="pic">
+                                    <input type="file" (change)="uploadPic($event, p)"
+                                           accept=".png, .jpg"/>
+                                    <br><br>
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+                                             [style.width]="(uploadProgressPic[p] | async) + '%'"
+                                             [attr.aria-valuenow]="(uploadProgressPic[p] | async)" aria-valuemin="0"
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div *ngIf="downloadURLPic[p] | async; let downloadSrcPic" role="alert">
+                                        <p *ngIf="downloadSrcPic? URLPic(downloadSrcPic, p):false"></p>
+                                    </div>
+                                </div>
+                                <img [src]="tempPicLink[p]" height="150px">
+                            </ng-container>
+                        </div>
+                        <button mat-mini-fab class="addVdoLink" (click)="isPicFunc()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        <button mat-mini-fab class="deleteVdoLink" (click)="isPicClear()">
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </mat-tab>
                 </mat-tab-group>
 
                 <button mat-button class="postButton" (click)="add = !add" (click)="test()">Post</button>
-                <button mat-button class="postButton" (click)="oploadFile = !oploadFile"
-                    matTooltip="ex: png, jpg, pdf, word"
-                    aria-label="Button that displays a tooltip when focused or hovered over">Upload File
-                </button>
-                <button mat-button class="postButton" (click)="isAddVdoFunc()" matTooltip="for youtube link only"
-                    aria-label="Button that displays a tooltip when focused or hovered over">Upload VDO
+                <button mat-button class="postButton" (click)="isUploadFile = !isUploadFile" *ngIf="!isUploadFile"
+                        matTooltip="ex: png, jpg, pdf, word"
+                        aria-label="Button that displays a tooltip when focused or hovered over">Upload File & Video
                 </button>
                 <!--<button mat-button class="postButton">Audio</button>-->
                 <br>
             </mat-card>
+
+            <!-- Post -->
+
             <div *ngIf="post">
-                <ng-container *ngFor="let posts of post.slice().reverse()">
+                <ng-container *ngFor="let posts of post.slice().reverse(); let i = index">
                     <mat-card class="postCard">
                         <mat-card-header>
                             <div mat-card-avatar class="example-header-image"
-                                src="https://material.angular.io/assets/img/examples/shiba1.jpg"></div>
+                                 src="https://material.angular.io/assets/img/examples/shiba1.jpg"></div>
                             <mat-card-title>{{posts.user.firstname}} {{posts.user.lastname}}</mat-card-title>
                         </mat-card-header>
                         <br>
                         <mat-card-content>
-                            <p>
-                                {{posts.text}}
-                            </p>
-                            <div *ngIf="posts.file">
-                                <p *ngIf="posts.file; then checkLink(posts)"></p>
-                                <img *ngIf="posts.isLinkPic" [src]="getFireUrl(posts)" height="150px">
-                                <a *ngIf="posts.isLinkDocument" [href]="getFireUrl(posts)" target="_blank"
-                                    rel="noopener noreferrer">Download Here</a>
-                            </div>
-                            <div style="text-align: center;" *ngIf="posts.vdoLink">
-                                <span style="background-color: #fce5cd;">
-                                    <iframe width="560" height="315" [src]="getEmbedUrl(posts.vdoLink)" frameborder="0"
-                                        allowfullscreen>
-                                    </iframe>
-                                </span>
-                            </div>
-                            <div class="separator" style="clear: both; text-align: center;"></div>
+                            <p>{{posts.text}}</p>
+                            <mat-tab-group>
+                                <mat-tab *ngIf="posts.vdoLink[0]">
+                                    <ng-template mat-tab-label>
+                                        <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
+                                        Youtube
+                                    </ng-template>
+                                    <br>
+                                    <div *ngFor="let vdo of posts.vdoLink; let j = index">
+                                        <div style="text-align: center;" *ngIf="posts.vdoLink[i]">
+                                        <span>
+                                            <iframe width=100% height="235" [src]="getEmbedUrl(posts.vdoLink[j])"
+                                                    frameborder="0"
+                                                    allowfullscreen>
+                                            </iframe>
+                                        </span>
+                                        </div>
+                                        <div class="separator" style="clear: both; text-align: center;"></div>
+                                    </div>
+                                </mat-tab>
+                                <mat-tab *ngIf="posts.file[0]">
+                                    <ng-template mat-tab-label>
+                                        <mat-icon class="example-tab-icon">attach_file</mat-icon>
+                                        File
+                                    </ng-template>
+                                    <br>
+                                    <div *ngFor="let files of posts.file; let k = index">
+                                        <div>
+                                            <img src="https://img.icons8.com/ios/25/000000/ms-excel.png">
+                                            <a [href]="posts.file[k]" target="_blank"
+                                               rel="noopener noreferrer">    Download Here</a>
+                                        </div>
+                                    </div>
+                                </mat-tab>
+                                <mat-tab *ngIf="posts.picture[0]">
+                                    <ng-template mat-tab-label>
+                                        <mat-icon class="example-tab-icon">photo_library</mat-icon>
+                                        Picture
+                                    </ng-template>
+                                    <br>
+                                    <div *ngFor="let pics of posts.picture; let x = index">
+                                        <img [src]="posts.picture[x]" height="150px">
+                                    </div>
+                                </mat-tab>
+                            </mat-tab-group>
                         </mat-card-content>
                         <ng-container *ngIf='!posts.comment'>
                             <button mat-button (click)="isComment(posts)" class="addComment">comment
@@ -236,10 +283,10 @@
         <div class="insidepanel3">
             <div class="col-xs-12 visible-xs">
                 <iframe
-                    src="//www.facebook.com/plugins/likebox.php?href=http://https://www.facebook.com/SUT-Computer-Club-837427779776860?show_faces=true&colorscheme=light&stream=false&show_border=false&header=false&appId=123849637763517"
-                    scrolling="no" frameborder="0"
-                    style="border:none;width:100%; overflow:hidden;  height:214px;margin:0px 0px 0px 10px;"
-                    allowtransparency="true"></iframe>
+                        src="//www.facebook.com/plugins/likebox.php?href=http://https://www.facebook.com/SUT-Computer-Club-837427779776860?show_faces=true&colorscheme=light&stream=false&show_border=false&header=false&appId=123849637763517"
+                        scrolling="no" frameborder="0"
+                        style="border:none;width:100%; overflow:hidden;  height:214px;margin:0px 0px 0px 10px;"
+                        allowtransparency="true"></iframe>
             </div>
         </div>
     </div>

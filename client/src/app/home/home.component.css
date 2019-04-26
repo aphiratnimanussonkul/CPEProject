@@ -131,12 +131,14 @@ mat-panel-title {
   width: 100%;
 }
 .addVdoLink {
+  box-shadow: none !important;
   margin-bottom: 5px;
   margin-left: calc(48% - 40px);
   margin-right: 10px;
   background-color: rgb(216, 0, 162);
  }
 .deleteVdoLink {
+  box-shadow: none !important;
   margin-bottom: 5px;
   margin-right: calc(48% - 40px);
   background-color: rgba(216, 0, 162, 0.918);
