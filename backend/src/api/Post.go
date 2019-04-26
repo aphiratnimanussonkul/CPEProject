@@ -32,15 +32,14 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	fmt.Println("msg" ,msg.Text)
-	fmt.Println("msg" ,msg.User.Lastname)
 
-	output, err := json.Marshal(msg)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	fmt.Println("outpuy", output)
+
+	// output, err := json.Marshal(msg)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), 500)
+	// 	return
+	// }
+	// fmt.Println("outpuy", output)
 	//
 	db, err := config.GetMongoDB()
 	if err != nil {
@@ -51,47 +50,60 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 	subjectRepository := repository.NewSubjectRepository(db, "Subject")
 	currentTime := time.Now()
 	//get variable by path
-	params := mux.Vars(req)
-	var text = string(params["text"])
-	var email = string(params["email"])
-	var code = string(params["code"])
+	//params := mux.Vars(req)
+	//var text = string(params["text"])
+	// var email = string(params["email"])
+	// var code = string(params["code"])
 
-	user, err2 := userRepository.FindByEmail(email)
+	user, err2 := userRepository.FindByEmail(msg.User.Email)
 	if err2 != nil {
 		fmt.Println(err2)
 	}
 
-	subject, err3 := subjectRepository.FindByCode(code)
+	subject, err3 := subjectRepository.FindByCode(msg.Subject.Code)
 	if err3 != nil {
 		fmt.Println(err3)
 	}
 
 	var p models.Post
-	p.Text = text
+	p.Text = msg.Text
 	p.Timestamp = currentTime.Format("3:4:5")
 	p.Date = currentTime.Format("2006-01-02")
 	p.User = user
 	p.Subject = subject
 
 	if strings.Contains( req.URL.String(), "postvdo") {
-		var vdoLink = string(params["vdoLink"])
+		// var vdoLink = string(params["vdoLink"])
 		var vdoLinkAll []string
-		vdoLinkAll = append(vdoLinkAll, vdoLink)
+		for i := 0; i < len(msg.VdoLink); i++ {
+			vdoLinkAll = append(vdoLinkAll, msg.VdoLink[i])
+		}
 		p.VdoLink = vdoLinkAll
-	} else if strings.Contains( req.URL.String(), "postfile") {
-		var URLName = string(params["name"])
-		var URLToken = string(params["token"])
-		var FileAll []string
-		FileAll = append(FileAll, URLName + "?" + URLToken)
+	// } else if strings.Contains( req.URL.String(), "postfile") {
+	// 	var URLName = string(params["name"])
+	// 	var URLToken = string(params["token"])
+		var FileAll []string		
+		for i := 0; i < len(msg.File); i++ {
+			FileAll = append(FileAll, msg.File[i])
+		}
 		p.File = FileAll
-	} else if strings.Contains( req.URL.String(), "postfull") {
-		var URLName = string(params["name"])
-		var URLToken = string(params["token"])
-		var vdoLink = string(params["vdoLink"])
-
+	} else if strings.Contains( req.URL.String(), "post") {
+		// var URLName = string(params["name"])
+		// var URLToken = string(params["token"])
+		// var vdoLink = string(params["vdoLink"])
 		var FileAll,vdoLinkAll  []string
-        vdoLinkAll = append(vdoLinkAll, vdoLink)
-		FileAll = append(FileAll, URLName + "?" + URLToken)
+		for i := 0; i < len(msg.VdoLink); i++ {
+			if msg.VdoLink[i] == "" {
+				continue
+			}
+			vdoLinkAll = append(vdoLinkAll, msg.VdoLink[i])
+		}
+		for i := 0; i < len(msg.File); i++ {
+			if msg.File[i] == "" {
+				continue
+			}
+			FileAll = append(FileAll, msg.File[i])
+		}
 		p.VdoLink = vdoLinkAll
 		p.File = FileAll
 	} else {

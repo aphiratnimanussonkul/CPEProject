@@ -1,13 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MatIconRegistry} from '@angular/material';
-import {HttpClient} from '@angular/common/http';
-import {PostService} from '../service/post.service';
-import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from 'angularfire2/storage';
-import {Observable} from 'rxjs/Observable';
-import {map} from 'rxjs/operators/map';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {DataSource} from '@angular/cdk/collections';
+import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
+import { PostService } from '../service/post.service';
+import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
+import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators/map';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { DataSource } from '@angular/cdk/collections';
 import { observable } from 'rxjs';
 
 export interface FacultyComponent {
@@ -21,25 +21,13 @@ export interface Post {
         lastname: string
         email: string
     };
+    vdolink: string[];
+    file: string[];
+    subject: {
+        name: string;
+        code: string;
+    };
 }
-
-class VdoLinkAll {
-    status: number;
-    link: string;
-
-    constructor(status, link) {
-        this.status = status;
-        this.link = link;
-    }
-}
-
-type VdoLinkAlls = Array<VdoLinkAll>;
-
-const vdoLinkAll: VdoLinkAlls = [
-    new VdoLinkAll(0, 'Available'),
-    new VdoLinkAll(1, 'Ready'),
-    new VdoLinkAll(2, 'Started')
-];
 
 @Component({
     selector: 'app-home',
@@ -47,8 +35,8 @@ const vdoLinkAll: VdoLinkAlls = [
     styleUrls: ['./home.component.css'],
     animations: [
         trigger('detailExpand', [
-            state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
-            state('expanded', style({height: '*'})),
+            state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
+            state('expanded', style({ height: '*' })),
             transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
         ]),
     ],
@@ -60,7 +48,7 @@ export class HomeComponent implements OnInit {
 
     //
     constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
-                private sanitizer: DomSanitizer, private storage: AngularFireStorage) {
+        private sanitizer: DomSanitizer, private storage: AngularFireStorage) {
         iconRegistry.addSvgIcon(
             'more',
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -88,8 +76,9 @@ export class HomeComponent implements OnInit {
     ref: AngularFireStorageReference;
     task: AngularFireUploadTask;
     uploadProgress: Observable<number>[] = [null, null, null, null, null, null, null, null, null, null];
-    downloadURL: Observable<string>;
-    uploadState: Observable<string>;
+    downloadURL: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null];
+    uploadState: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null];
+    getURL: string[] = ['', '', '', '', '', '', '', '', '', ''];
     //
     nameSubject: string;
     codeSubject: string;
@@ -102,7 +91,6 @@ export class HomeComponent implements OnInit {
         text: '',
         email: '',
         vdoLink: '',
-        getURL: '',
         sendURLName: '',
         sendURLToken: ''
     };
@@ -112,6 +100,12 @@ export class HomeComponent implements OnInit {
             firstname: '',
             lastname: '',
             email: ''
+        },
+        vdolink: ['', '', '', '', '', '', '', '', '', ''],
+        file: ['', '', '', '', '', '', '', '', '', ''],
+        subject : {
+            name: '',
+            code: ''
         }
     };
     ngOnInit() {
@@ -148,6 +142,8 @@ export class HomeComponent implements OnInit {
         }
         if (this.select.sendURLName === '' && this.select.vdoLink === '') {
             this.posts.text = this.select.text;
+            this.posts.file = this.getURL;
+            this.posts.vdolink = this.tempVdoLink;
             this.postService.createArticle(this.posts).subscribe(
                 data => {
                     let temp = data;
@@ -261,6 +257,8 @@ export class HomeComponent implements OnInit {
             this.post = data;
             this.nameSubject = data[0].subject.name;
             this.codeSubject = data[0].subject.code;
+            this.posts.subject.code = this.codeSubject;
+            this.posts.subject.name = this.nameSubject;
             console.log(this.post);
         });
     }
@@ -282,30 +280,24 @@ export class HomeComponent implements OnInit {
         const filePath = file.name;
         this.ref = this.storage.ref(filePath);
         this.task = this.ref.put(file);
-        this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
+        this.uploadState[index] = this.task.snapshotChanges().pipe(map(s => s.state));
         this.uploadProgress[index] = this.task.percentageChanges();
-        this.downloadURL = this.ref.getDownloadURL();
-
+        this.downloadURL[index] = this.ref.getDownloadURL();
     }
 
-    URL(url) {
-        if (!url) {
-            alert('Can not upload file, please try again');
+    URL(url, index) {
+        this.getURL[index] = url;
+        if (this.getURL[index].includes('pdf', 0) ||
+            this.getURL[index].includes('doc', 0) ||
+            this.getURL[index].includes('docx', 0)) {
+            this.isDocument = true;
+            this.isPicture = false;
         } else {
-            this.select.getURL = url;
-            if (this.select.getURL.includes('pdf', 0) |
-                this.select.getURL.includes('doc', 0) |
-                this.select.getURL.includes('docx', 0)) {
-                this.isDocument = true;
-                this.isPicture = false;
-            } else {
-                this.isPicture = true;
-                this.isDocument = false;
-            }
-            let temp = this.select.getURL.split('/');
-            let tempLink = temp[7].split('?');
-            this.select.sendURLName = tempLink[0];
-            this.select.sendURLToken = tempLink[1];
+            this.isPicture = true;
+            this.isDocument = false;
+        }
+        if (this.getURL[index] === null) {
+            alert('Can not upload file, please try again');
         }
     }
 
@@ -360,6 +352,9 @@ export class HomeComponent implements OnInit {
     testVdo() {
         console.log(this.tempVdoLink);
         console.log(this.tempVdoLink2);
+        this.posts.file = this.getURL;
+        console.log(this.posts);
+        console.log(this.getURL)
     }
 
     // file

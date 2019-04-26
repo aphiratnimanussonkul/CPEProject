@@ -150,12 +150,12 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <div *ngIf="downloadURL | async; let downloadSrc" role="alert">
-                                        <p *ngIf="downloadSrc? URL(downloadSrc):false"></p>
+                                    <div *ngIf="downloadURL[j] | async; let downloadSrc" role="alert">
+                                        <p *ngIf="downloadSrc? URL(downloadSrc, j):false"></p>
                                     </div>
                                 </div>
-                                <img *ngIf="isPicture" [src]="select.getURL" height="150px">
-                                <a *ngIf="isDocument" [href]="select.getURL" target="_blank"
+                                <img *ngIf="isPicture" [src]="getURL[j]" height="150px">
+                                <a *ngIf="isDocument" [href]="getURL[j]" target="_blank"
                                     rel="noopener noreferrer">Download
                                     Here</a>
                             </ng-container>
@@ -169,7 +169,7 @@
                     </mat-tab>
                 </mat-tab-group>
 
-                <button mat-button class="postButton" (click)="add = !add" (click)="testVdo()">Post</button>
+                <button mat-button class="postButton" (click)="add = !add" (click)="test()">Post</button>
                 <button mat-button class="postButton" (click)="oploadFile = !oploadFile"
                     matTooltip="ex: png, jpg, pdf, word"
                     aria-label="Button that displays a tooltip when focused or hovered over">Upload File
