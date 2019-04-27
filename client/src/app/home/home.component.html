@@ -1,5 +1,5 @@
 <mat-toolbar>
-    <mat-toolbar-row class="navbar">
+    <mat-toolbar-row class="navbar" >
         <h1>SUT Course Online</h1>
         <span class="spacer"></span>
         <div class="nameNavbar">{{user.firstname}} {{user.lastname}}</div>
@@ -8,7 +8,7 @@
                 class="moreBackground">
             <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
         </button>
-        <mat-menu yPosition="above" xPosition="before" #menu="matMenu" class="menuMore">
+        <mat-menu yPosition="above" xPosition="before" #menu="matMenu" >
             <button mat-menu-item>
                 <mat-icon>person</mat-icon>
                 <span>about me</span>
@@ -60,7 +60,7 @@
                                         {{head.name}}
                                     </mat-expansion-panel-header>
                                     <mat-card *ngFor="let head of subject" class="cardExpansion"
-                                              (click)="getFeed(head.code)">{{head.name}} : {{head.code}}</mat-card>
+                                              (click)="getFeed(head.code, head.name)">{{head.name}} : {{head.code}}</mat-card>
                                 </mat-expansion-panel>
                             </mat-accordion>
                         </div>
@@ -206,11 +206,26 @@
                             <div mat-card-avatar class="example-header-image"
                                  src="https://material.angular.io/assets/img/examples/shiba1.jpg"></div>
                             <mat-card-title>{{posts.user.firstname}} {{posts.user.lastname}}</mat-card-title>
+                            <span class="spacer"></span>
+                            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
+                                    class="moreBackground" class="morePost">
+                                <mat-icon>more_horiz</mat-icon>
+                            </button>
+                            <mat-menu yPosition="below" xPosition="after" #menu="matMenu" >
+                                <button mat-menu-item>
+                                    <mat-icon>delete_outline</mat-icon>
+                                    <span>Delete</span>
+                                </button>
+                                <button mat-menu-item>
+                                    <mat-icon>edit</mat-icon>
+                                    <span>Edit</span>
+                                </button>
+                            </mat-menu>
                         </mat-card-header>
                         <br>
                         <mat-card-content>
                             <p>{{posts.text}}</p>
-                            <mat-tab-group>
+                            <mat-tab-group *ngIf="posts.vdoLink[0] && posts.file[0] && posts.picture[0]">
                                 <mat-tab *ngIf="posts.vdoLink[0]">
                                     <ng-template mat-tab-label>
                                         <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
@@ -218,7 +233,7 @@
                                     </ng-template>
                                     <br>
                                     <div *ngFor="let vdo of posts.vdoLink; let j = index">
-                                        <div style="text-align: center;" *ngIf="posts.vdoLink[i]">
+                                        <div style="text-align: center;" *ngIf="posts.vdoLink[j]">
                                         <span>
                                             <iframe width=100% height="235" [src]="getEmbedUrl(posts.vdoLink[j])"
                                                     frameborder="0"
@@ -237,7 +252,7 @@
                                     <br>
                                     <div *ngFor="let files of posts.file; let k = index">
                                         <div>
-                                            <img src="https://img.icons8.com/ios/25/000000/ms-excel.png">
+                                            <p>{{posts.filename[k]}}</p>
                                             <a [href]="posts.file[k]" target="_blank"
                                                rel="noopener noreferrer">    Download Here</a>
                                         </div>

@@ -22,7 +22,6 @@ export interface Post {
     };
     vdolink: string[];
     file: string[];
-    filename: string[];
     picture: string[];
     subject: {
         name: string;
@@ -70,7 +69,6 @@ export class HomeComponent implements OnInit {
     countFile: number;
     tempFileLink: string[] = ['', '', '', '', ''];
     tempFileLink2: string[] = ['', '', '', '', ''];
-    fileName: string[] = ['', '', '', '', ''];
     isFile: boolean;
     // Upload Picture Many
     countPic: number;
@@ -82,14 +80,11 @@ export class HomeComponent implements OnInit {
         '', '', '', '', '', '', '', '', '', ''];
     isPic: boolean;
     // FileUpload
-    isDocument: boolean;
-    isPicture: boolean;
     ref: AngularFireStorageReference;
     task: AngularFireUploadTask;
     uploadProgress: Observable<number>[] = [null, null, null, null, null];
     downloadURL: Observable<string>[] = [null, null, null, null, null];
     uploadState: Observable<string>[] = [null, null, null, null, null];
-    getURL: string[] = ['', '', '', '', ''];
     // Picturee Upload
     uploadProgressPic: Observable<number>[] = [null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null,
@@ -100,9 +95,6 @@ export class HomeComponent implements OnInit {
     uploadStatePic: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null];
-    getURLPic: string[] = ['', '', '', '', '', '', '', '', '', '',
-        '', '', '', '', '', '', '', '', '', '',
-        '', '', '', '', '', '', '', '', '', ''];
     //
     nameSubject: string;
     codeSubject: string;
@@ -112,11 +104,7 @@ export class HomeComponent implements OnInit {
     post: Array<any>;
     user: Array<any>;
     select: any = {
-        text: '',
-        email: '',
-        vdoLink: '',
-        sendURLName: '',
-        sendURLToken: ''
+        text: ''
     };
     posts: Post = {
         text: '',
@@ -127,7 +115,6 @@ export class HomeComponent implements OnInit {
         },
         vdolink: ['', '', '', '', ''],
         file: ['', '', '', '', ''],
-        filename: ['', '', '', '', ''],
         picture: ['', '', '', '', '', '', '', '', '', '',
             '', '', '', '', '', '', '', '', '', '',
             '', '', '', '', '', '', '', '', '', ''],
@@ -150,7 +137,6 @@ export class HomeComponent implements OnInit {
         });
         this.postService.getUser('B5923151@gmail.com').subscribe(data => {
             this.user = data;
-            this.select.email = data.email;
             this.posts.user.firstname = data.firstname;
             this.posts.user.lastname = data.lastname;
             this.posts.user.email = data.email;
@@ -161,36 +147,33 @@ export class HomeComponent implements OnInit {
     }
 
     test() {
-        if (this.select.vdoLink === '' && this.select.vdoLink.includes('youtube'), this.select.vdoLink.length) {
-            let temp = this.select.vdoLink.split('=');
-            this.select.vdoLink = temp[1];
-            if (this.select.vdoLink.endsWith('&list', this.select.vdoLink.length)) {
-                let temp = this.select.vdoLink.split('&');
-                this.select.vdoLink = temp[0];
-            }
-        } else {
-            alert('Please check your youtube link');
-        }
-        if (this.select.sendURLName === '' && this.select.vdoLink === '') {
-            this.posts.text = this.select.text;
-            this.posts.file = this.tempFileLink;
-            this.posts.vdolink = this.tempVdoLink;
-            this.posts.picture = this.tempPicLink;
-            this.posts.filename = this.fileName;
-            this.postService.createArticle(this.posts).subscribe(
-                data => {
-                    let temp = data;
-                    console.log(temp);
-                },
-                error1 => {
+        this.posts.text = this.select.text;
+        this.posts.file = this.tempFileLink;
+        this.posts.vdolink = this.tempVdoLink;
+        this.posts.picture = this.tempPicLink;
+        this.postService.createArticle(this.posts).subscribe(
+            data => {
+                if (data) {
+                    console.log(data);
+                    alert(data);
+                } else {
+                    alert('success');
+                    this.getFeed(this.codeSubject, this.nameSubject);
                 }
-            );
-        }
-        this.select.sendURLToken = '';
-        this.select.sendURLName = '';
+            },
+            error1 => {
+            }
+        );
+        this.posts.text = '';
         this.select.text = '';
-        this.select.vdoLink = '';
-        this.select.getURL = '';
+        this.posts.file = null;
+        this.posts.vdolink = null;
+        this.posts.picture = null;
+        this.tempVdoLink = null;
+        this.tempPicLink = null;
+        this.tempVdoLink2 = null
+        this.tempFileLink = null;
+        this.tempFileLink2 = null;
     }
 
     getMajor(facultyName) {
@@ -208,11 +191,11 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    getFeed(code) {
+    getFeed(code, name) {
         this.postService.getFeed(code).subscribe(data => {
             this.post = data;
-            this.nameSubject = data[0].subject.name;
-            this.codeSubject = data[0].subject.code;
+            this.nameSubject = name;
+            this.codeSubject = code;
             this.posts.subject.code = this.codeSubject;
             this.posts.subject.name = this.nameSubject;
             console.log(this.post);
@@ -264,8 +247,9 @@ export class HomeComponent implements OnInit {
     checkLink(link) {
         console.log(link);
         if (link.includes('pdf', 0) |
-            link.includes('doc', 0) |
-            link.includes('docx', 0)) {
+            link.includes('ppt', 0) |
+            link.includes('xls', 0) |
+            link.includes('doc', 0)) {
             link.isLinkDocument = true;
             link.isLinkPic = false;
         } else {
@@ -307,10 +291,8 @@ export class HomeComponent implements OnInit {
             alert('Can not upload');
         }
         this.tempFileLink[index] = url;
-        let temp = url.split('/');
-        let temp2 = temp[7].split('?');
-        this.fileName[index] = temp2[0];
     }
+
     isFileFunc() {
         if (this.tempFileLink.length === this.countFile) {
             alert('Limited files at 5 file');

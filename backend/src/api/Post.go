@@ -18,14 +18,12 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
-		return
 	}
 	// Unmarshal
 	var msg models.Post
 	err = json.Unmarshal(b, &msg)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
-		return
 	}
 
 	db, err := config.GetMongoDB()
@@ -54,61 +52,77 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 	p.User = user
 	p.Subject = subject
 
-	if strings.Contains( req.URL.String(), "postvdo") {
-		// var vdoLink = string(params["vdoLink"])
-		var vdoLinkAll []string
-		for i := 0; i < len(msg.VdoLink); i++ {
-			vdoLinkAll = append(vdoLinkAll, msg.VdoLink[i])
-		}
-		p.VdoLink = vdoLinkAll
-	// } else if strings.Contains( req.URL.String(), "postfile") {
-	// 	var URLName = string(params["name"])
-	// 	var URLToken = string(params["token"])
-		var FileAll []string
-		for i := 0; i < len(msg.File); i++ {
-			FileAll = append(FileAll, msg.File[i])
-		}
-		p.File = FileAll
-	} else if strings.Contains( req.URL.String(), "post") {
-		// var URLName = string(params["name"])
-		// var URLToken = string(params["token"])
-		// var vdoLink = string(params["vdoLink"])
-		var FileAll,vdoLinkAll,PicAll, FileNameAll  []string
-		for i := 0; i < len(msg.VdoLink); i++ {
-			if msg.VdoLink[i] == "" {
-				continue
+
+	// Vdo
+	if msg.VdoLink != nil {
+		var status string
+		p.VdoLink, status = getVdoLink(msg.VdoLink)
+		if status != "1" {
+			json.NewEncoder(w).Encode(status)
+
+		} else {
+			// File
+			if msg.File != nil {
+				p.File, p.FileName = getFile(msg.File)
 			}
-			vdoLinkAll = append(vdoLinkAll, msg.VdoLink[i])
-		}
-		for i := 0; i < len(msg.File); i++ {
-			if msg.File[i] == "" {
-				continue
+			// Picture
+			if msg.Picture != nil {
+				p.Picture = getPicture(msg.Picture)
 			}
-			FileAll = append(FileAll, msg.File[i])
+			postRepository.Save(&p)
 		}
-		for i := 0; i < len(msg.Picture); i++ {
-			if msg.Picture[i] == "" {
-				continue
-			}
-			PicAll = append(PicAll, msg.Picture[i])
-		}
-		for i := 0; i < len(msg.FileName); i++ {
-			if msg.FileName[i] == "" {
-				continue
-			}
-			FileNameAll = append(FileNameAll, msg.FileName[i])
-		}
-		p.FileName = FileNameAll
-		p.VdoLink = vdoLinkAll
-		p.File = FileAll
-		p.Picture = PicAll
-	} else {
 	}
 
-	postRepository.Save(&p)
 
 }
 
+func getVdoLink (vdoLink []string)  ([]string, string){
+	var vdoLinkAll []string
+	for i := 0; i < len(vdoLink); i++ {
+		var temp []string
+		if vdoLink[i] == "" {
+			continue
+		} else if strings.Contains(vdoLink[i], "https://www.youtube.com/watch?v") {
+			temp = strings.Split(vdoLink[i], "=");
+			if strings.Contains(vdoLink[i], "&list") {
+				temp = strings.Split(temp[1], "&");
+				vdoLink[i] = "https://www.youtube.com/embed/" + temp[0];
+			} else {
+				vdoLink[i] = "https://www.youtube.com/embed/" + temp[1];
+			}
+			vdoLinkAll = append(vdoLinkAll, vdoLink[i])
+		} else {
+			return  nil, "Can not post, Please make sure you enter correct youtube link"
+		}
+	}
+	return vdoLinkAll, "1"
+}
+
+func getFile (File []string) ([]string, []string) {
+	var FileAll, FileNameAll, temp []string
+	for i := 0; i < len(File); i++ {
+		if File[i] == "" {
+			continue
+		}
+		FileAll = append(FileAll, File[i])
+
+		temp = strings.Split(File[i], "/")
+		temp = strings.Split(temp[7], "?")
+		FileNameAll = append(FileNameAll, temp[0])
+	}
+	return FileAll, FileNameAll
+}
+
+func getPicture (Picture []string) ([] string) {
+	var PicAll []string
+	for i:= 0; i < len(Picture); i++ {
+		if Picture[i] == "" {
+			continue
+		}
+		PicAll = append(PicAll, Picture[i])
+	}
+	return PicAll
+}
 func GetPostAll(w http.ResponseWriter, req *http.Request) {
 	//
 	db, err := config.GetMongoDB()
@@ -183,7 +197,3 @@ func UploadFileChunk(w http.ResponseWriter, r *http.Request) {
 	//imgRepository.Save(img)
 	//json.NewEncoder(w).Encode(img.ID)
 }
-
-
-
-
