@@ -24,17 +24,20 @@ import {MatTabsModule} from '@angular/material/tabs';
 
 import { HomeComponent } from './home/home.component';
 import { PostService } from './service/post.service';
+import { MycourseComponent } from './mycourse/mycourse.component';
 
 
 const appRoutes: Routes = [
-  {path: 'home' , component: HomeComponent}
-
+  {path: 'home' , component: HomeComponent},
+  {path: 'mycourse' , component: MycourseComponent}
 ];
+
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    MycourseComponent
 
   ],
   imports: [
