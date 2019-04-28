@@ -7,6 +7,6 @@ type User struct {
 	Firstname	string `json:"firstname"`
 	Lastname 	string `json:"lastname"`
 	Email		string `json:"email"`
-	Subject 	[]Subject `json:"subject" bson:"subject"`
+	Subject 	[]*Subject `json:"subject" bson:"subject"`
 }
 type Users []User

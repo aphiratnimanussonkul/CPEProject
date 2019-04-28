@@ -1,0 +1,119 @@
+<mat-toolbar>
+  <mat-toolbar-row class="navbar">
+    <h1>SUT Course Online</h1>
+    <span class="spacer"></span>
+    <div class="nameNavbar">sss</div>
+    <div mat-card-avatar class="example-header-image"></div>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
+            class="moreBackground">
+      <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
+    </button>
+    <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon>
+        <span>about me</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>add</mat-icon>
+        <span>Add Course</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon svgIcon="logout"></mat-icon>
+        <span>log out</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="panelMaster">
+  <div class="panelleft">
+  </div>
+  <div class="panel1">
+    <div class="insidepanel1">
+      <div class="col-xs-12 visible-xs">
+        <iframe
+                src="//www.facebook.com/plugins/likebox.php?href=http://https://www.facebook.com/SUT-Computer-Club-837427779776860?show_faces=true&colorscheme=light&stream=false&show_border=false&header=false&appId=123849637763517"
+                scrolling="no" frameborder="0"
+                style="border:none;width:100%; overflow:hidden;  height:214px;margin:0px 0px 0px 10px;"
+                allowtransparency="true"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel2">
+    <div class="insidepanel2">
+      <div class="searchToolbar">
+        <div class="search1">
+          <p class="SearchText">Search Course&nbsp;</p>
+        </div>
+        <div class="search2">
+          <p class="SearchInput">
+            <mat-form-field appearance="outline" floatLabel="never">
+              <input matInput placeholder="Search">
+              <mat-icon matPrefix>book</mat-icon>
+            </mat-form-field>
+            <button mat-icon-button>
+              <mat-icon matPrefix>search</mat-icon>
+            </button>
+          </p>
+        </div>
+
+      </div>
+
+      <!--<p class="SearchText">Search Course : </p>
+      <p class="pInput">
+      <mat-form-field  floatLabel="never">
+          <input matInput placeholder="Search">
+          <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+      <p>
+      <button mat-icon-button>
+          <mat-icon>arrow_forward_ios</mat-icon>
+      </button>
+-->
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+          <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+          <td mat-cell *matCellDef="let element" (click)="getMajor(element.name)"> {{element.name}} </td>
+        </ng-container>
+
+        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="example-element-detail"
+                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <mat-accordion>
+                <mat-expansion-panel *ngFor="let head of major">
+                  <mat-expansion-panel-header (click)="getSubject(head.name)" class="courseStep2">
+                    {{head.name}}
+                  </mat-expansion-panel-header>
+                  <mat-list>
+                    <mat-list-item *ngFor="let head of subject" class="cardExpansion">
+                      <h4 mat-line>{{head.name}}: {{head.code}}</h4>
+                      <button mat-icon-button  class="addCourse">
+                        <mat-icon mat-list-icon matTooltip="follow"
+                                  aria-label="Button that displays a tooltip when focused or hovered over">library_add</mat-icon>
+                      </button>
+                    </mat-list-item>
+                  </mat-list>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      </table>
+
+
+    </div>
+  </div>
+  <div class="panelright">
+  </div>
+</div>
+<button mat-fab class="fab-bottom-right" (click)="add = !add">
+  <mat-icon>add</mat-icon>
+</button>

@@ -34,17 +34,17 @@ func (r *UserRepositoryMongo) SaveSubject(subject *models.Subject, user *models.
 	return err
 }
 //Update
-func (r *UserRepositoryMongo) Update(id string, user *models.User) error{
+func (r *UserRepositoryMongo) Update(user *models.User) error{
 	//Get ตัวแปรแล้วมาเปลี่ยนค่าแล้ว save
 	// faculty.UpdatedAt = time.Now()
 
-	err := r.db.C(r.collection).Update(bson.M{"id": id}, user)
+	err := r.db.C(r.collection).Update(bson.M{"_id": user.ID}, user)
 	return err
 }
 
 //Delete
 func (r *UserRepositoryMongo) Delete(id string) error{
-	err := r.db.C(r.collection).Remove(bson.M{"id": id})
+	err := r.db.C(r.collection).Remove(bson.M{"_id": id})
 	return err
 }
 

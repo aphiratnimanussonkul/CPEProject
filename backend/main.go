@@ -39,6 +39,7 @@ func main() {
 	router.HandleFunc("/major/{facultyName}", api.GetMajorByFaculty).Methods("GET")
 	//User
 	router.HandleFunc("/user/{Email}", api.GetUserByEmail).Methods("GET")
+	router.HandleFunc("/follow/{email}/{code}", api.FollowSubject).Methods("GET")
 	router.HandleFunc("/user/{firstName}/{lastName}/{Email}", api.AddUser).Methods("GET")
 	router.HandleFunc("/user/{firstName}/{lastName}/{Email}/{code}", api.AddUserSubject).Methods("GET")
 	//Post

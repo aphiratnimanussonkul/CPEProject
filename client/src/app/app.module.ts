@@ -25,11 +25,13 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { HomeComponent } from './home/home.component';
 import { PostService } from './service/post.service';
 import { MycourseComponent } from './mycourse/mycourse.component';
+import { SearchCourseComponent } from './search-course/search-course.component';
 
 
 const appRoutes: Routes = [
-  {path: 'home' , component: HomeComponent},
-  {path: 'mycourse' , component: MycourseComponent}
+  {path: 'home/:email' , component: HomeComponent},
+  {path: 'mycourse' , component: MycourseComponent},
+  {path: 'search/:code' , component: SearchCourseComponent}
 ];
 
 
@@ -37,7 +39,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    MycourseComponent
+    MycourseComponent,
+    SearchCourseComponent
 
   ],
   imports: [

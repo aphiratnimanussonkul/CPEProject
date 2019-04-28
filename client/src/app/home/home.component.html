@@ -48,28 +48,16 @@
                 <div class="search2">
                     <p class="SearchInput">
                         <mat-form-field appearance="outline" floatLabel="never">
-                            <input matInput placeholder="Search">
+                            <input matInput placeholder="Search" [(ngModel)]="code" name="code">
                             <mat-icon matPrefix>book</mat-icon>
                         </mat-form-field>
-                        <button mat-icon-button>
+                        <button mat-icon-button (click)="search()">
                             <mat-icon matPrefix>search</mat-icon>
                         </button>
                     </p>
                 </div>
 
             </div>
-
-                <!--<p class="SearchText">Search Course : </p>
-                <p class="pInput">
-                <mat-form-field  floatLabel="never">
-                    <input matInput placeholder="Search">
-                    <mat-icon matPrefix>search</mat-icon>
-                </mat-form-field>
-                <p>
-                <button mat-icon-button>
-                    <mat-icon>arrow_forward_ios</mat-icon>
-                </button>
--->
             <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
                 <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
                     <th mat-header-cell *matHeaderCellDef> {{column}} </th>
@@ -89,9 +77,9 @@
                                     <mat-list>
                                         <mat-list-item *ngFor="let head of subject" class="cardExpansion">
                                             <h4 mat-line>{{head.name}}: {{head.code}}</h4>
-                                            <button mat-icon-button  class="addCourse">
-                                                <mat-icon mat-list-icon matTooltip="follow"
-                                                          aria-label="Button that displays a tooltip when focused or hovered over">library_add</mat-icon>
+                                            <button mat-icon-button  class="addCourse" (click)="follow(head.code)">
+                                                <mat-icon mat-list-icon matTooltip="follow" aria-label="Button that displays a tooltip when focused or hovered over"
+                                                >library_add</mat-icon>
                                             </button>
                                         </mat-list-item>
                                     </mat-list>
