@@ -26,11 +26,12 @@ import { HomeComponent } from './home/home.component';
 import { PostService } from './service/post.service';
 import { MycourseComponent } from './mycourse/mycourse.component';
 import { SearchCourseComponent } from './search-course/search-course.component';
-
+import { MatChipsModule} from '@angular/material/chips';
+import { MatAutocompleteModule} from '@angular/material/autocomplete';
 
 const appRoutes: Routes = [
   {path: 'home/:email' , component: HomeComponent},
-  {path: 'mycourse' , component: MycourseComponent},
+  {path: 'mycourse/:email/:code' , component: MycourseComponent},
   {path: 'search/:code' , component: SearchCourseComponent}
 ];
 
@@ -77,7 +78,9 @@ const appRoutes: Routes = [
     }),
     AngularFireStorageModule,
     MatTooltipModule,
-    MatTabsModule
+    MatTabsModule,
+    MatChipsModule,
+    MatAutocompleteModule
   ],
   providers: [PostService],
   bootstrap: [AppComponent]

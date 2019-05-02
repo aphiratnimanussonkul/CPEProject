@@ -289,3 +289,17 @@ tr.example-element-row:not(.example-expanded-row):active {
     font-size: 18px;
     color: black;
 }
+/*facebook*/
+.facebookPage {
+    height: 315px;
+    margin-left: calc(50% - 151.25px);
+}
+.chip-code {
+    width: 150px;
+}
+.chip-tag {
+    margin-left: 20px;
+    width: 150px;
+}
+
+

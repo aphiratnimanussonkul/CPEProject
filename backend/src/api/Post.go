@@ -63,14 +63,19 @@ func AddPost(w http.ResponseWriter, req *http.Request) {
 		} else {
 			// File
 			if msg.File != nil {
-				p.File, p.FileName = getFile(msg.File)
+				p.File = getFile(msg.File)
+				p.FileName = msg.FileName;
+				fmt.Println(msg.File)
 			}
 			// Picture
 			if msg.Picture != nil {
 				p.Picture = getPicture(msg.Picture)
+				fmt.Println(msg.Picture)
 			}
 			postRepository.Save(&p)
 		}
+	} else {
+		postRepository.Save(&p)
 	}
 
 
@@ -98,19 +103,15 @@ func getVdoLink (vdoLink []string)  ([]string, string){
 	return vdoLinkAll, "1"
 }
 
-func getFile (File []string) ([]string, []string) {
-	var FileAll, FileNameAll, temp []string
+func getFile (File []string) ([]string) {
+	var FileAll []string
 	for i := 0; i < len(File); i++ {
 		if File[i] == "" {
 			continue
 		}
 		FileAll = append(FileAll, File[i])
-
-		temp = strings.Split(File[i], "/")
-		temp = strings.Split(temp[7], "?")
-		FileNameAll = append(FileNameAll, temp[0])
 	}
-	return FileAll, FileNameAll
+	return FileAll
 }
 
 func getPicture (Picture []string) ([] string) {

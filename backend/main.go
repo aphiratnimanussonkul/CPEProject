@@ -30,10 +30,14 @@ func main() {
   	//Subject
 	router.HandleFunc("/subject/{name}/{code}/{majorName}", api.AddSubject).Methods("GET")
 	router.HandleFunc("/subject/{majorName}", api.GetSubjectByMajor).Methods("GET")
+	router.HandleFunc("/subjectbycode/{code}", api.GetSubjectByCode).Methods("GET")
+	router.HandleFunc("/subjects", api.GetSubjectAll).Methods("GET")
   	//Faculty
   	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
 	router.HandleFunc("/faculties", api.GetFacultyAll).Methods("GET")
-
+	//Chip
+	router.HandleFunc("/chip/{name}", api.AddChip).Methods("GET")
+	router.HandleFunc("/chips", api.GetChipAll).Methods("GET")
 	//Major
   	router.HandleFunc("/major/{name}/{facultyName}", api.AddMajor).Methods("GET")
 	router.HandleFunc("/major/{facultyName}", api.GetMajorByFaculty).Methods("GET")

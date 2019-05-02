@@ -20,12 +20,18 @@ export class PostService {
   getFaculty(): Observable<any> {
     return this.http.get(this.API + '/faculties');
   }
+  getChips(): Observable<any> {
+    return this.http.get(this.API + '/chips');
+  }
+  getSubjects(): Observable<any> {
+    return this.http.get(this.API + '/subjects');
+  }
   getMajor(facultyName): Observable<any> {
     return this.http.get(this.API + '/major/' + facultyName);
   }
   getSubject(majorName): Observable<any> {
     return this.http.get(this.API + '/subject/' + majorName);
-  }
+}
   getFeed(code): Observable<any> {
     return this.http.get(this.API + '/post/' + code);
   }
@@ -42,5 +48,8 @@ export class PostService {
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('Content-Type', 'application/json');
     return this.http.post<Post>(this.API + '/post', JSON.stringify(post), {headers});
+  }
+  getSubjectByCode(code): Observable<any> {
+    return this.http.get(this.API + '/subjectbycode/' + code);
   }
 }

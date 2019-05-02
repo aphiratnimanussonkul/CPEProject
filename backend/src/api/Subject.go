@@ -77,3 +77,38 @@ func AddSubjectDefault(subjectName string, code string, majorName string)  {
 	p.Major = major
 	subjectRepository.Save(&p)
 }
+
+func GetSubjectByCode(w http.ResponseWriter, req *http.Request)  {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	subjectRepository := repository.NewSubjectRepository(db, "Subject")
+	//get variable by path
+	params := mux.Vars(req)
+	var code = string(params["code"])
+
+	subject, err2 := subjectRepository.FindByCode(code)
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	json.NewEncoder(w).Encode(subject.Name)
+
+}
+
+func GetSubjectAll(w http.ResponseWriter, req *http.Request) {
+
+	//
+	fmt.Println("Go Mongo Db")
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	subjectRepository := repository.NewSubjectRepository(db, "Subject")
+	post, err2 := subjectRepository.FindAll()
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	json.NewEncoder(w).Encode(post)
+}

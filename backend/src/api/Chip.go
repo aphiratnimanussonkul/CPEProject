@@ -11,27 +11,27 @@ import (
 )
 
 
-func AddFaculty(w http.ResponseWriter, req *http.Request)  {
+func AddChip(w http.ResponseWriter, req *http.Request)  {
 
 	//
 	db, err := config.GetMongoDB()
 	if err != nil {
 		fmt.Println(err)
 	}
-	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
+	chipRepository := repository.NewChipRepositorry(db, "Chip")
 	//
 
 	params := mux.Vars(req)
 	var name string
 	name = string(params["name"])
 
-	var p models.Faculty
+	var p models.Chip
 	p.Name = name
-	facultyRepository.Save(&p)
+	chipRepository.Save(&p)
 }
 
 
-func GetFacultyById(w http.ResponseWriter, req *http.Request) {
+func GetChipId(w http.ResponseWriter, req *http.Request) {
 
 	//
 	fmt.Println("Go Mongo Db")
@@ -39,23 +39,23 @@ func GetFacultyById(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
+	chipRepository := repository.NewChipRepositorry(db, "Chip")
 	//
 	params := mux.Vars(req)
 	fmt.Println(params["id"])
 
 
-	profile, err := facultyRepository.FindByID(params["id"])
+	chip, err := chipRepository.FindByID(params["id"])
 
 	fmt.Println("===== 1 =====")
-	fmt.Println(profile)
+	fmt.Println(chip)
 	fmt.Println("===== 2 =====")
-	fmt.Println(profile.ID)
+	fmt.Println(chip.ID)
 
 
 }
 
-func GetFacultyAll(w http.ResponseWriter, req *http.Request) {
+func GetChipAll(w http.ResponseWriter, req *http.Request) {
 
 	//
 	fmt.Println("Go Mongo Db")
@@ -63,8 +63,8 @@ func GetFacultyAll(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
-	post, err2 := facultyRepository.FindAll()
+	chipRepository := repository.NewChipRepositorry(db, "Chip")
+	post, err2 := chipRepository.FindAll()
 	if err2 != nil {
 		fmt.Println(err2)
 	}
@@ -72,13 +72,13 @@ func GetFacultyAll(w http.ResponseWriter, req *http.Request) {
 }
 
 //Defualt add data
-func AddFacultyDefualt(facultyname string)  {
+func AddChipDefualt(chipname string)  {
 	db, err := config.GetMongoDB()
 	if err != nil {
 		fmt.Println(err)
 	}
-	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
-	var p models.Faculty
-	p.Name = facultyname
-	facultyRepository.Save(&p)
+	chipRepository := repository.NewChipRepositorry(db, "Chip")
+	var p models.Chip
+	p.Name = chipname
+	chipRepository.Save(&p)
 }

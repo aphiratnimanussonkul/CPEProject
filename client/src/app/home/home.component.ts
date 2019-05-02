@@ -48,7 +48,10 @@ export class HomeComponent implements OnInit {
     major: Array<any>;
     subject: Array<any>;
     post: Array<any>;
-    user: Array<any>;
+    user: any = {
+        firstname: '',
+        lastname: ''
+    };
     select: any = {
         text: ''
     };
@@ -60,11 +63,13 @@ export class HomeComponent implements OnInit {
             this.post = data;
         });
         this.postService.getUser(this.email).subscribe(data => {
-            this.user = data;
+            this.user.firstname = data.firstname;
+            this.user.lastname = data.lastname;
         });
         this.postService.getFaculty().subscribe(data => {
             this.faculty = data;
         });
+
     }
     getMajor(facultyName) {
         this.major = null;
@@ -104,7 +109,9 @@ export class HomeComponent implements OnInit {
             error => {}
         );
     }
-
+    getfeed(code) {
+        this.router.navigate(['/mycourse', this.email, code]);
+    }
 }
 
 export class FacultyDataSource extends DataSource<any> {

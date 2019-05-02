@@ -129,6 +129,8 @@
 }
 .cardExpansion:hover{
   background-color: ghostwhite;
+  color: rgb(255, 19, 149);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.17);
 }
 .courseStep2{
   font-size: 13px;
@@ -202,4 +204,13 @@ tr.example-element-row:not(.example-expanded-row):active {
     margin-left: 38%;
 }
 
+/*facebook*/
+.facebookPage {
+  height: 315px;
+  margin-left: calc(50% - 151.25px);
+}
 
+.headerimage{
+  background-image: url('https://firebasestorage.googleapis.com/v0/b/cpeproject.appspot.com/o/49610433_513634159046415_4070154654594367488_n.jpg?alt=media&token=ab09a34b-4f85-4db5-9808-784b348e5ccd');
+  background-size: cover;
+}
