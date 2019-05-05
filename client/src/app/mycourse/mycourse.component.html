@@ -152,15 +152,8 @@
                             <ng-container *ngFor="let pic of tempPicLink2; let p = index">
                                 <div *ngIf="pic">
                                     <input type="file" (change)="uploadPic($event, p)"
-                                           accept=".png, .jpg"/>
+                                           accept=".png, .jpg, .PNG, .JPG"/>
                                     <br><br>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
-                                             [style.width]="(uploadProgressPic[p] | async) + '%'"
-                                             [attr.aria-valuenow]="(uploadProgressPic[p] | async)" aria-valuemin="0"
-                                             aria-valuemax="100">
-                                        </div>
-                                    </div>
                                     <br>
                                 </div>
                                 <!--<img [src]="tempPicLink[p]" height="150px">-->
@@ -196,11 +189,11 @@
                             <span class="spacer"></span>
                             <button mat-icon-button [matMenuTriggerFor]="menu"
                                     aria-label="Example icon-button with a menu"
-                                    class="moreBackground" class="morePost">
+                                    class="moreBackground" class="morePost" *ngIf="posts.user.email === tempEmail">
                                 <mat-icon>more_horiz</mat-icon>
                             </button>
                             <mat-menu yPosition="below" xPosition="after" #menu="matMenu">
-                                <button mat-menu-item>
+                                <button mat-menu-item (click)="delete(posts.id)">
                                     <mat-icon>delete_outline</mat-icon>
                                     <span>Delete</span>
                                 </button>
@@ -239,7 +232,7 @@
                                     <br>
                                     <div *ngFor="let files of posts.file; let k = index">
                                         <div>
-                                            <a [href]="posts.file[k]" target="_blank"
+                                            <a [href]="files" target="_blank"
                                                rel="noopener noreferrer">{{posts.filename[k]}}</a>
                                         </div>
                                     </div>
@@ -253,9 +246,21 @@
                                     <div *ngFor="let pics of posts.picture; let x = index">
                                         <a [href]="posts.picture[x]" target="_blank"
                                            rel="noopener noreferrer">
-                                            <img [src]="posts.picture[x]" height="150px">
+                                            <img [src]="posts.picture[x]" width=100%>
                                         </a>
                                     </div>
+
+                                       <!-- <slideshow
+                                                [minHeight]="'300px'"
+                                                [autoPlay]="true"
+                                                [showArrows]="true"
+                                                [imageUrls]="posts.picture"
+                                                [showDots]="true"
+                                                [arrowSize]="'25px'"
+                                                [showArrows]="true"
+                                                [lazyLoad]="posts.pictures?.length > 1"
+                                                [autoPlayWaitForLazyLoad]="true">
+                                        </slideshow>-->
                                 </mat-tab>
                             </mat-tab-group>
                         </mat-card-content>
@@ -285,7 +290,7 @@
     </div>
     <div class="panel3">
         <div class="insidepanel3">
-            <div class="col-xs-12 visible-xs">
+            <div >
                 <iframe
                         src="//www.facebook.com/plugins/likebox.php?href=http://https://www.facebook.com/SUT-Computer-Club-837427779776860?show_faces=true&colorscheme=light&stream=false&show_border=false&header=false&appId=123849637763517"
                         scrolling="no" frameborder="0"

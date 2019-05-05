@@ -8,4 +8,5 @@ type Faculty struct {
 }
 //
 type Faculties []Faculty
+type FacultiesPointer []*Faculty
 

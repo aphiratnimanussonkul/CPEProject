@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -197,4 +198,22 @@ func UploadFileChunk(w http.ResponseWriter, r *http.Request) {
 	//imgRepository := repository.NewImgRepository(db, "Img")
 	//imgRepository.Save(img)
 	//json.NewEncoder(w).Encode(img.ID)
+}
+
+func DeletePost(w http.ResponseWriter, req *http.Request) {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	postRepository := repository.NewPostRepository(db, "Post")
+	params := mux.Vars(req)
+	var postId = string(params["postid"])
+	fmt.Println(postId)
+	post , err := postRepository.FindByID(bson.ObjectIdHex(postId))
+	fmt.Println(post)
+	err = postRepository.Delete(post)
+	if err != nil {
+	}
 }

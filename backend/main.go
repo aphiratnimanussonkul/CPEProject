@@ -34,6 +34,7 @@ func main() {
 	router.HandleFunc("/subjects", api.GetSubjectAll).Methods("GET")
   	//Faculty
   	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
+	router.HandleFunc("/facultyemail/{email}", api.GetFacultyByEmail).Methods("GET")
 	router.HandleFunc("/faculties", api.GetFacultyAll).Methods("GET")
 	//Chip
 	router.HandleFunc("/chip/{name}", api.AddChip).Methods("GET")
@@ -55,6 +56,7 @@ func main() {
 	router.HandleFunc("/postPic", api.UploadFileChunk)
 	router.HandleFunc("/posts", api.GetPostAll).Methods("GET")
 	router.HandleFunc("/post/{code}", api.GetPostByCode).Methods("GET")
+	router.HandleFunc("/deletepost/{postid}", api.DeletePost).Methods("GET")
   	log.Fatal(http.ListenAndServe(":12345", handlers.CORS(handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}), handlers.AllowedOrigins([]string{"*"}))(router)))
   
 }

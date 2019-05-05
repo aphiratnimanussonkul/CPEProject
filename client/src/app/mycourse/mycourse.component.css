@@ -99,8 +99,6 @@
 .panel3 {
     margin-top: 10px;
     margin-left: 70%;
-    margin-right: 5%;
-    float: left;
     position: absolute;
     height: 100vh;
     width: 25%;
@@ -301,5 +299,4 @@ tr.example-element-row:not(.example-expanded-row):active {
     margin-left: 20px;
     width: 150px;
 }
-
 

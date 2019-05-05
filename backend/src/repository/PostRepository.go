@@ -36,15 +36,15 @@ func (r *PostRepositoryMongo) Update(id string, post *models.Post) error{
 }
 
 //Delete
-func (r *PostRepositoryMongo) Delete(id string) error{
-	err := r.db.C(r.collection).Remove(bson.M{"id": id})
+func (r *PostRepositoryMongo) Delete(post *models.Post) error{
+	err := r.db.C(r.collection).Remove(bson.M{"_id": post.ID})
 	return err
 }
 
 //FindByID
-func (r *PostRepositoryMongo) FindByID(id string) (*models.Post, error){
+func (r *PostRepositoryMongo) FindByID(id bson.ObjectId) (*models.Post, error){
 	var post models.Post
-	err := r.db.C(r.collection).Find(nil).One(&post)
+	err := r.db.C(r.collection).Find(bson.M{"_id": id}).One(&post)
 
 	if err != nil {
 		return nil, err

@@ -28,6 +28,7 @@ import { MycourseComponent } from './mycourse/mycourse.component';
 import { SearchCourseComponent } from './search-course/search-course.component';
 import { MatChipsModule} from '@angular/material/chips';
 import { MatAutocompleteModule} from '@angular/material/autocomplete';
+import {SlideshowModule} from 'ng-simple-slideshow';
 
 const appRoutes: Routes = [
   {path: 'home/:email' , component: HomeComponent},
@@ -41,7 +42,7 @@ const appRoutes: Routes = [
     AppComponent,
     HomeComponent,
     MycourseComponent,
-    SearchCourseComponent
+    SearchCourseComponent,
 
   ],
   imports: [
@@ -80,7 +81,8 @@ const appRoutes: Routes = [
     MatTooltipModule,
     MatTabsModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    SlideshowModule
   ],
   providers: [PostService],
   bootstrap: [AppComponent]

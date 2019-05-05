@@ -52,4 +52,7 @@ export class PostService {
   getSubjectByCode(code): Observable<any> {
     return this.http.get(this.API + '/subjectbycode/' + code);
   }
+  getFacultyTableByEmail(email): Observable <FacultyComponent[]> {
+    return this.http.get<FacultyComponent[]>(this.API + '/facultyemail/' + email);
+  }
 }

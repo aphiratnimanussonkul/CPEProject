@@ -43,10 +43,6 @@ export interface Post {
     ],
 })
 export class MycourseComponent implements OnInit {
-    // table
-    dataSource = new FacultyDataSource(this.postService);
-    columnsToDisplay = ['สำนักวิชา'];
-
     constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
                 private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
                 private router: Router) {
@@ -60,9 +56,10 @@ export class MycourseComponent implements OnInit {
             'logout',
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
         this.posts.user.email = this.route.snapshot.paramMap.get('email');
+        this.tempEmail = this.route.snapshot.paramMap.get('email');
         this.codeSubject = this.route.snapshot.paramMap.get('code');
     }
-
+    tempEmail: string;
     // upload vdo many
     count: number;
     tempVdoLink: string[] = ['', '', '', '', ''];
@@ -85,19 +82,6 @@ export class MycourseComponent implements OnInit {
     // FileUpload
     ref: AngularFireStorageReference;
     task: AngularFireUploadTask;
-    uploadProgress: Observable<number>[] = [null, null, null, null, null];
-    downloadURL: Observable<string>[] = [null, null, null, null, null];
-    uploadState: Observable<string>[] = [null, null, null, null, null];
-    // Picturee Upload
-    uploadProgressPic: Observable<number>[] = [null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null];
-    downloadURLPic: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null];
-    uploadStatePic: Observable<string>[] = [null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null];
     //
     nameSubject: string;
     codeSubject: string;
@@ -125,6 +109,9 @@ export class MycourseComponent implements OnInit {
             code: ''
         }
     };
+    // table faculty
+    dataSource = new FacultyDataSource(this.postService, this.posts.user.email);
+    columnsToDisplay = ['สำนักวิชา'];
     // post
     isPost: boolean;
     isUpload: boolean;
@@ -135,6 +122,7 @@ export class MycourseComponent implements OnInit {
     countFileStatus: number;
     countPicStatus: number;
     ngOnInit() {
+        console.log(this.dataSource);
         this.countPicChoose = 0;
         this.countFileChoose = 0;
         this.countFileStatus = 0;
@@ -162,9 +150,6 @@ export class MycourseComponent implements OnInit {
             this.posts.user.firstname = data.firstname;
             this.posts.user.lastname = data.lastname;
         });
-        this.postService.getFaculty().subscribe(data => {
-            this.faculty = data;
-        });
     }
 
     UPLOAD() {
@@ -191,25 +176,31 @@ export class MycourseComponent implements OnInit {
     }
 
     UPLOADPIC() {
-        console.log('Picture');
-        this.picture.forEach(pictures => {
-            this.ref = this.storage.ref(pictures.name);
-            this.ref.put(pictures).then((result) => {
-                if (result.state !== 'success') {
-                    console.log('checkStatus');
-                    this.checkPicture(result.state);
-                } else {
-                    this.ref.getDownloadURL().subscribe(
-                        data => {
-                            console.log('push');
-                            this.posts.picture.push(data);
-                            this.countPicStatus += 1;
-                            console.log(this.countPicStatus);
-                        }
-                    );
-                }
+        if (this.countFileChoose !== this.countFileStatus) {
+            setTimeout( () => {
+                this.UPLOADPIC();
+            }, 200);
+        } else {
+            this.picture.forEach(pictures => {
+                this.ref = this.storage.ref(pictures.name);
+                this.ref.put(pictures).then((result) => {
+                    if (result.state !== 'success') {
+                        console.log('checkStatus');
+                        this.checkPicture(result.state);
+                    } else {
+                        this.ref.getDownloadURL().subscribe(
+                            data => {
+                                console.log('push');
+                                this.posts.picture.push(data);
+                                this.countPicStatus += 1;
+                                console.log(this.countPicStatus);
+                            }
+                        );
+                    }
+                });
             });
-        });
+        }
+
     }
 
     UPLOADALL() {
@@ -222,6 +213,7 @@ export class MycourseComponent implements OnInit {
                     alert(data);
                 } else {
                     alert('success');
+                    this.isPost = false;
                     this.getFeed(this.codeSubject, this.nameSubject);
                 }
             },
@@ -239,55 +231,40 @@ export class MycourseComponent implements OnInit {
     }
 
     test() {
-        console.log(this.countFileStatus);
-        console.log(this.countPicStatus);
+        if (this.countPicChoose !== 0 || this.countFileChoose !== 0){
+            alert('Uploading...');
+        }
         if (this.countFileChoose !== 0) {
             this.UPLOAD();
         }
-        console.log(this.file[0]);
-        if (this.countFileChoose !== 0) {
+        if (this.countPicChoose !== 0) {
             this.UPLOADPIC();
         }
-        console.log(this.picture);
-        console.log(this.countFileStatus);
-        console.log(this.countPicStatus);
         this.checkSuccess();
-        console.log(this.countFileStatus);
-        console.log(this.countPicStatus);
     }
     checkFile(state) {
-        console.log(this.countFileStatus);
-        console.log(this.countPicStatus);
         if (state !== 'success') {
-            setTimeout(this.checkFile, 5000);
+            setTimeout(this.checkFile, 300);
             console.log('wait');
         } else {
             console.log('successFile');
         }
     }
     checkPicture(state) {
-        console.log(this.countFileStatus);
-        console.log(this.countPicStatus);
         if (state !== 'success') {
             console.log('wait');
-            setTimeout(this.checkPicture, 5000);
+            setTimeout(this.checkPicture, 300);
         } else {
             console.log('successPicture');
         }
     }
     checkSuccess() {
-        console.log(this.countFileStatus);
-        console.log(this.countPicStatus);
         if (this.countPicStatus === this.countPicChoose && this.countFileStatus === this.countFileChoose) {
-            console.log('post');
             this.UPLOADALL();
         } else {
             setTimeout( () => {
                 this.checkSuccess();
-            }, 4000);
-            console.log('upload again');
-            console.log(this.countFileStatus);
-            console.log(this.countPicStatus);
+            }, 300);
         }
     }
     getMajor(facultyName) {
@@ -329,24 +306,28 @@ export class MycourseComponent implements OnInit {
     }
 
     upload(event, index) {
-        this.file[index] = (event.target.files[0]);
-        this.countFileChoose += 1;
-        if (this.file[index].name.includes('pdf', 0) ||
-            this.file[index].name.includes('doc', 0) ||
-            this.file[index].name.includes('ppt', 0) ||
-            this.file[index].name.includes('xls', 0) ||
-            this.file[index].name.includes('zip', 0) ||
-            this.file[index].name.includes('rar', 0)
-        ) {
+        if (event.target.files[0].size > 2500000) {
+            alert('The file you have selected is too large. The maximum size is 25MB. Please compress file');
         } else {
-            alert('Please choose file as type : pdf, word , exel, ppt, rar and zip');
+            this.file[index] = event.target.files[0];
+            this.countFileChoose += 1;
+            if (this.file[index].name.includes('pdf', 0) ||
+                this.file[index].name.includes('doc', 0) ||
+                this.file[index].name.includes('ppt', 0) ||
+                this.file[index].name.includes('xls', 0) ||
+                this.file[index].name.includes('zip', 0) ||
+                this.file[index].name.includes('rar', 0)
+            ) {
+            } else {
+                alert('Please choose file as type : pdf, word , exel, ppt, rar and zip');
+            }
         }
     }
 
     refresh() {
         this.postService.getFacultyTable().subscribe((res) => {
             this.faculty = res;
-            this.dataSource = new FacultyDataSource(this.postService);
+            this.dataSource = new FacultyDataSource(this.postService, this.posts.user.email);
         });
     }
 
@@ -421,15 +402,19 @@ export class MycourseComponent implements OnInit {
     }
 
     uploadPic(event, index) {
-        this.picture[index] = event.target.files[0];
-        this.countPicChoose += 1;
-        if (this.picture[index].name.includes('png', 0) ||
-            this.picture[index].name.includes('PNG', 0) ||
-            this.picture[index].name.includes('jpg', 0) ||
-            this.picture[index].name.includes('JPG', 0)
-        ) {
+        if (event.target.files[0].size > 100000) {
+            alert('The picture you have selected is too large. The maximum size is 1MB.');
         } else {
-            alert('Please choose picture as type : png or jpg');
+            this.picture[index] = event.target.files[0];
+            this.countPicChoose += 1;
+            if (this.picture[index].name.includes('png', 0) ||
+                this.picture[index].name.includes('PNG', 0) ||
+                this.picture[index].name.includes('jpg', 0) ||
+                this.picture[index].name.includes('JPG', 0)
+            ) {
+            } else {
+                alert('Please choose picture as type : png or jpg');
+            }
         }
     }
 
@@ -443,16 +428,27 @@ export class MycourseComponent implements OnInit {
     isUploadFunc() {
         this.isUpload = !this.isUpload;
     }
+
+    delete(postid) {
+        this.httpClient.get('http://localhost:12345/deletepost/' + postid, postid).subscribe(
+            data => {
+                if (!data) {
+                    alert('Deleted');
+                }
+            }
+        );
+    }
 }
 
 export class FacultyDataSource extends DataSource<any> {
-    constructor(private postService: PostService) {
+    email: string
+    constructor(private postService: PostService, email: string) {
         super();
-        //   this.name = this.memberUserName;
+        this.email = email;
     }
 
     connect(): Observable<FacultyComponent[]> {
-        return this.postService.getFacultyTable();
+        return this.postService.getFacultyTableByEmail(this.email);
     }
 
     disconnect() {
