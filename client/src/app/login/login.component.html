@@ -1,0 +1,16 @@
+<mat-card *ngIf="!user" class="login-card">
+    <h2 class="title-name">Course Online Login</h2>
+    <br>
+<!--Facebook-->
+<button *ngIf="!user" (click)="LoginWithFacebook()" type="button" mdbBtn class="btn-fb waves-light" mdbWavesEffect><i class="fab fa-facebook-f left"></i>Facebook</button>
+
+<!--Google +-->
+<button *ngIf="!user" (click)="LoginWithGoogle()" type="button" mdbBtn class="btn-gplus waves-light" mdbWavesEffect><i class="fab fa-google-plus left"></i>Google+</button>
+
+<!--Twitter-->
+<button *ngIf="!user" (click)="LoginWithTwitter()" type="button" mdbBtn class="btn-tw waves-light" mdbWavesEffect><i class="fab fa-twitter left"></i>Twitter</button>
+
+<!--Github-->
+<button *ngIf="!user" (click)="LoginWithGithub()" type="button" mdbBtn class="btn-git waves-light" mdbWavesEffect><i class="fab fa-github left"></i>Github</button>
+
+</mat-card>

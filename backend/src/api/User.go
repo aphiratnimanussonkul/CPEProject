@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -28,8 +29,7 @@ func AddUser(w http.ResponseWriter, req *http.Request)  {
 
 
 	var p models.User
-	p.Firstname = firstName
-	p.Lastname = lastName
+	p.Name = firstName + " " + lastName
 	p.Email = Email
 	userRepository.Save(&p)
 
@@ -74,8 +74,7 @@ func AddUserSubject(w http.ResponseWriter, req *http.Request)  {
 	var codeSubject = string(params["code"])
 	subject, err := subjectRepository.FindByCode(codeSubject)
 	var p models.User
-	p.Firstname = firstName
-	p.Lastname = lastName
+	p.Name = firstName + " " + lastName
 	p.Email = Email
 	userRepository.SaveSubject(subject, &p)
 
@@ -107,4 +106,36 @@ func FollowSubject(w http.ResponseWriter, req *http.Request)  {
 		user.Subject = append(user.Subject, subject)
 		userRepository.Update(user)
 	}
+}
+func CreateUser(w http.ResponseWriter, req *http.Request) {
+	b, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+	}
+	// Unmarshal
+	var msg models.User
+	err = json.Unmarshal(b, &msg)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+	}
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	userRepository := repository.NewUserRepository(db, "User")
+
+	userTemp, err := userRepository.FindByEmail(msg.Email)
+	if userTemp == nil {
+		var user models.User
+		user.Email = msg.Email
+		user.Name = msg.Name
+		user.Picture = msg.Picture
+		user.StudentId = msg.StudentId
+		user.Major = msg.Major
+		userRepository.Save(&user)
+	} else {
+		json.NewEncoder(w).Encode("Can not confirm account this email is already used!")
+	}
+
 }

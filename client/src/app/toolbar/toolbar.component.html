@@ -1,0 +1,36 @@
+<mat-toolbar 
+  *ngIf="user"
+  id="mainToolbar"
+  color="primary">
+  Course Online
+  <span class="toolbar-spacer"></span>
+
+  <button
+    mat-mini-fab
+    [matMenuTriggerFor]="avatarDropDown"
+    class="toolbar-avatar"
+    color="primary"
+    [ngStyle]="{ 'background-image': 'url(' + user?.photoURL + ')'}"
+  >
+  </button>
+</mat-toolbar>
+
+<mat-menu
+  #avatarDropDown="matMenu">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ user?.displayName }}</mat-card-title>
+      <mat-card-subtitle>{{ user?.email }}</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <button mat-menu-item (click)="profile()">
+    <mat-icon>account_box</mat-icon>
+    <span>Edit Profile</span>
+  </button>
+
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>exit_to_app</mat-icon>
+    <span>Sign out</span>
+  </button>
+</mat-menu>

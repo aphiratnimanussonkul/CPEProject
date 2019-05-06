@@ -1,0 +1,63 @@
+<mat-toolbar 
+  *ngIf="user"
+  id="mainToolbar"
+  color="primary">
+  Course Online
+  <span class="toolbar-spacer"></span>
+
+  <button
+    mat-mini-fab
+    [matMenuTriggerFor]="avatarDropDown"
+    class="toolbar-avatar"
+    color="primary"
+    [ngStyle]="{ 'background-image': 'url(' + user?.photoURL + ')'}"
+  >
+  </button>
+</mat-toolbar>
+
+<mat-menu
+  #avatarDropDown="matMenu">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ user?.displayName }}</mat-card-title>
+      <mat-card-subtitle>{{ user?.email }}</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <button mat-menu-item (click)="profile()">
+    <mat-icon>account_box</mat-icon>
+    <span>Edit Profile</span>
+  </button>
+
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>exit_to_app</mat-icon>
+    <span>Sign out</span>
+  </button>
+</mat-menu>
+<br>
+<h1 class="title" *ngIf="user">"Confirm Account"</h1>
+<br>
+<mat-card class="example-card" *ngIf="user">
+    <img mat-card-image [src]="picURL">
+    <mat-card-header>
+      <mat-card-title>{{ user?.displayName }}</mat-card-title>
+      <mat-card-subtitle>{{ user?.email }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <form class="my-form">
+          <mat-form-field class="full-width">
+                <mat-label>Student ID.</mat-label>
+                <input  matInput  [(ngModel)]="input.stuid" placeholder="Student ID." name="studentId"  required>
+             </mat-form-field>
+             <mat-form-field class="full-width">
+              <mat-label>Major</mat-label>
+              <input  matInput  [(ngModel)]="input.major" placeholder="Major" name="major"   required>
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <mat-card-actions>
+          <button mat-raised-button (click)="confirm()" color="primary">Confirm your identity</button>
+        </mat-card-actions>
+      </mat-card-actions>
+</mat-card>

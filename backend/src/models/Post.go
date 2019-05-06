@@ -14,6 +14,7 @@ type Post struct {
 	FileName	[]string	`json:"filename"`
 	Picture	    []string 	`json:"picture"`
 	Subject		*Subject	`bson:"subject" json:"subject"`
+	Comments     []*Comments
 }
 
 type Posts []Post

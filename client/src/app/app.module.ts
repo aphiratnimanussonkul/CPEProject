@@ -1,90 +1,90 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule, MatTableModule,
-MatSidenavModule, MatCheckboxModule, MatDialogModule, MatTreeModule, MatProgressBarModule } from '@angular/material';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatNativeDateModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule, MatTableModule,
+  MatSidenavModule, MatCheckboxModule, MatDialogModule, MatBadgeModule, MatIconModule, MatSelectModule,  MatDatepickerModule,
+  MatGridListModule, MatNativeDateModule, MatMenuModule, MatRadioModule} from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatMenuModule } from '@angular/material/menu';
+
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { FormsModule } from '@angular/forms';
+import { LoginComponent } from './login/login.component';
+
+import { environment } from '../environments/environment';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+
+import { AuthenService } from './service/authen.service';
+import { ProfileService } from './service/profile.service';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import { ProfileComponent } from './profile/profile.component';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
-
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireStorageModule } from 'angularfire2/storage';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import {MatTabsModule} from '@angular/material/tabs';
-
-import { HomeComponent } from './home/home.component';
-import { PostService } from './service/post.service';
-import { MycourseComponent } from './mycourse/mycourse.component';
-import { SearchCourseComponent } from './search-course/search-course.component';
 import { MatChipsModule} from '@angular/material/chips';
 import { MatAutocompleteModule} from '@angular/material/autocomplete';
-import {SlideshowModule} from 'ng-simple-slideshow';
+import { HomeComponent } from './home/home.component';
+import { MycourseComponent } from './mycourse/mycourse.component';
+import {PostService} from './service/post.service';
 
 const appRoutes: Routes = [
-  {path: 'home/:email' , component: HomeComponent},
-  {path: 'mycourse/:email/:code' , component: MycourseComponent},
-  {path: 'search/:code' , component: SearchCourseComponent}
+  {path: 'login' , component: LoginComponent},
+  {path: 'profile' , component: ProfileComponent},
+  {path: 'home' , component: HomeComponent},
+  {path: 'mycourse/:code' , component: MycourseComponent}
 ];
-
 
 @NgModule({
   declarations: [
     AppComponent,
+    LoginComponent,
+    ToolbarComponent,
+    ProfileComponent,
     HomeComponent,
-    MycourseComponent,
-    SearchCourseComponent,
-
+    MycourseComponent
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
     MatCardModule,
     MatInputModule,
+    MatIconModule,
     MatListModule,
-    MatToolbarModule,
-    MatSelectModule,
+    MatMenuModule,
+    MatRadioModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    FormsModule,
-    MatTableModule,
-    MatCheckboxModule,
-    MatSidenavModule,
-    MatIconModule,
     MatGridListModule,
-    MatRadioModule,
+    MatSelectModule,
+    MatToolbarModule,
+    MatTableModule,
+    MatSidenavModule,
+    MatCheckboxModule,
     MatDialogModule,
-    MatMenuModule,
-    MatExpansionModule,
-    MatTreeModule,
-    MatProgressBarModule,
+    MatBadgeModule,
+    RouterModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
+    NoopAnimationsModule,
+    MDBBootstrapModule.forRoot(),
     RouterModule.forRoot(appRoutes),
-    ReactiveFormsModule,
-    AngularFireModule.initializeApp({
-      apiKey: 'AIzaSyAS9Y5HsByA2leqctQkuVnANVpR8hS7vEY',
-      authDomain: 'cpeproject.firebaseapp.com',
-      storageBucket: 'cpeproject.appspot.com',
-      projectId: 'cpeproject',
-    }),
+    AngularFireModule.initializeApp( environment.firebase),
+    AngularFireAuthModule,
     AngularFireStorageModule,
-    MatTooltipModule,
+    FormsModule,
+    HttpClientModule,
     MatTabsModule,
+    MatExpansionModule,
+    MatTooltipModule,
+    ReactiveFormsModule,
     MatChipsModule,
-    MatAutocompleteModule,
-    SlideshowModule
+    MatAutocompleteModule
   ],
-  providers: [PostService],
+  providers: [AuthenService, ProfileService, PostService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

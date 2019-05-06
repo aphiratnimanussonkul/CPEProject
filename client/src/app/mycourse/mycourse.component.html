@@ -2,7 +2,7 @@
     <mat-toolbar-row class="navbar">
         <h1>SUT Course Online</h1>
         <span class="spacer"></span>
-        <div class="nameNavbar">{{posts.user.firstname}} {{posts.user.lastname}}</div>
+        <div class="nameNavbar">{{posts.user.email}}</div>
         <div mat-card-avatar class="example-header-image"></div>
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
                 class="moreBackground">
@@ -189,7 +189,7 @@
                             <span class="spacer"></span>
                             <button mat-icon-button [matMenuTriggerFor]="menu"
                                     aria-label="Example icon-button with a menu"
-                                    class="moreBackground" class="morePost" *ngIf="posts.user.email === tempEmail">
+                                    class="moreBackground" class="morePost" *ngIf="posts.user.email === user.email">
                                 <mat-icon>more_horiz</mat-icon>
                             </button>
                             <mat-menu yPosition="below" xPosition="after" #menu="matMenu">

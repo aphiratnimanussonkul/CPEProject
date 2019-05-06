@@ -38,25 +38,6 @@ func AddMajor(w http.ResponseWriter, req *http.Request)  {
 }
 
 
-//Default data Major
-func AddMajorDefault(majorName string, facultyname string)  {
-	db, err := config.GetMongoDB()
-	if err != nil {
-		fmt.Println(err)
-	}
-	majorRepository := repository.NewMajorRepository(db, "Major")
-	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
-
-	faculty, err2 := facultyRepository.FindByName(facultyname)
-	if err2 != nil {
-		fmt.Println(err)
-	}
-	var p models.Major
-	p.Name = majorName
-	p.Faculty = faculty
-	majorRepository.Save(&p)
-}
-
 func GetMajorByFaculty(w http.ResponseWriter, req *http.Request)  {
 	//
 	db, err := config.GetMongoDB()
@@ -74,5 +55,42 @@ func GetMajorByFaculty(w http.ResponseWriter, req *http.Request)  {
 	}
 	json.NewEncoder(w).Encode(major)
 
+
+}
+
+func GetMajorByFacultyEmail(w http.ResponseWriter, req *http.Request)  {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	majorRepository := repository.NewMajorRepository(db, "Major")
+	userRepository := repository.NewUserRepository(db, "User")
+	params := mux.Vars(req)
+	var facultyName = string(params["facultyName"])
+	var email = string(params["email"])
+	user, err := userRepository.FindByEmail(email)
+	var majors models.MajorPointer
+	var isHave = false
+	var tempMajor []string
+	for i := 0; i < len(user.Subject); i++ {
+		major, err := majorRepository.FindByName(user.Subject[i].Major.Name)
+		if err != nil {
+		}
+		for j := 0; j < len(tempMajor); j++ {
+			if majors[j].Name == major.Name {
+				isHave = true
+			} else {
+				isHave = false
+				continue
+			}
+		}
+		if major.Faculty.Name == facultyName && !isHave{
+			tempMajor = append(tempMajor, major.Name)
+			majors = append(majors, major)
+		}
+	}
+	json.NewEncoder(w).Encode(majors)
 
 }

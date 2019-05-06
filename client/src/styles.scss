@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+  @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+  @import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+  body {
+   margin: 0;
+   font-family: 'Kanit', sans-serif;
+  }
+  html { background-color: rgb(233, 233, 233); }
+ #mainToolbar .toolbar-spacer {
+    flex: 1 1 auto;
+ }
+ 
+ #mainToolbar .toolbar-icon {
+    margin: 0 4px;
+    cursor: pointer;
+ }
+ 
+ #mainToolbar .toolbar-avatar {
+    background-size: cover;
+    box-shadow: none;
+ }
+

@@ -9,3 +9,4 @@ type Subject struct {
 	Major       *Major       `bson:"major" json:"major"`
 }
 type Subjects []Subject
+type SubjectPointer []*Subject 

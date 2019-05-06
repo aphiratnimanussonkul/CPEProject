@@ -7,6 +7,8 @@ import {Observable} from 'rxjs/Observable';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {DataSource} from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AuthenService } from '../service/authen.service';
+
 export interface FacultyComponent {
     name: string;
 }
@@ -31,7 +33,8 @@ export class HomeComponent implements OnInit {
 
     //
     constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
-                private sanitizer: DomSanitizer, private route: ActivatedRoute, private router: Router) {
+                private sanitizer: DomSanitizer, private route: ActivatedRoute, private router: Router,
+                private service: AuthenService) {
         iconRegistry.addSvgIcon(
             'more',
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -43,28 +46,33 @@ export class HomeComponent implements OnInit {
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
         this.email = this.route.snapshot.paramMap.get('email');
     }
+    // Firebase Authen
+    user: firebase.User;
+    //
     code: string;
     faculty: Array<any>;
     major: Array<any>;
     subject: Array<any>;
     post: Array<any>;
-    user: any = {
-        firstname: '',
-        lastname: ''
+    users: any = {
+        name: '',
+        email: ''
     };
     select: any = {
         text: ''
     };
     email: string;
     ngOnInit() {
-        this.code = '';
+      this.service.getLoggedInUser()
+        .subscribe( user => {
+          console.log( user );
+          this.user = user;
+          this.users.email = user.email;
+        });
+      this.code = '';
         this.refresh();
         this.postService.getPost().subscribe(data => {
             this.post = data;
-        });
-        this.postService.getUser(this.email).subscribe(data => {
-            this.user.firstname = data.firstname;
-            this.user.lastname = data.lastname;
         });
         this.postService.getFaculty().subscribe(data => {
             this.faculty = data;
@@ -98,7 +106,7 @@ export class HomeComponent implements OnInit {
         }
     }
     follow(code) {
-        this.httpClient.get('http://localhost:12345/follow/' + this.email + '/' + code).subscribe(
+        this.httpClient.get('http://localhost:12345/follow/' + this.user.email + '/' + code).subscribe(
             data => {
                 if (!data) {
                     alert('Follow success');
@@ -110,7 +118,7 @@ export class HomeComponent implements OnInit {
         );
     }
     getfeed(code) {
-        this.router.navigate(['/mycourse', this.email, code]);
+        this.router.navigate(['/mycourse', code]);
     }
 }
 

@@ -32,6 +32,7 @@ func main() {
 	router.HandleFunc("/subject/{majorName}", api.GetSubjectByMajor).Methods("GET")
 	router.HandleFunc("/subjectbycode/{code}", api.GetSubjectByCode).Methods("GET")
 	router.HandleFunc("/subjects", api.GetSubjectAll).Methods("GET")
+	router.HandleFunc("/subjectbyemail/{major}/{email}", api.GetSubjectByMajorEmail).Methods("GET")
   	//Faculty
   	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
 	router.HandleFunc("/facultyemail/{email}", api.GetFacultyByEmail).Methods("GET")
@@ -42,6 +43,9 @@ func main() {
 	//Major
   	router.HandleFunc("/major/{name}/{facultyName}", api.AddMajor).Methods("GET")
 	router.HandleFunc("/major/{facultyName}", api.GetMajorByFaculty).Methods("GET")
+	router.HandleFunc("/majorbyemail/{facultyName}/{email}", api.GetMajorByFacultyEmail).Methods("GET")
+	// User Ping
+	router.HandleFunc("/createuser", api.CreateUser).Methods("POST")
 	//User
 	router.HandleFunc("/user/{Email}", api.GetUserByEmail).Methods("GET")
 	router.HandleFunc("/follow/{email}/{code}", api.FollowSubject).Methods("GET")

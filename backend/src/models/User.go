@@ -4,8 +4,10 @@ import "gopkg.in/mgo.v2/bson"
 
 type User struct {
 	ID        bson.ObjectId `json:"id" bson:"_id,omitempty"`
-	Firstname	string `json:"firstname"`
-	Lastname 	string `json:"lastname"`
+	Picture	string `json:"picture"`
+	StudentId	string `json:"studentId"`
+	Name	string `json:"name"`
+	Major 	string `json:"major"`
 	Email		string `json:"email"`
 	Subject 	[]*Subject `json:"subject" bson:"subject"`
 }

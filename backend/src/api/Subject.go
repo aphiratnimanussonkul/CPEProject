@@ -59,25 +59,6 @@ func GetSubjectByMajor(w http.ResponseWriter, req *http.Request)  {
 
 }
 
-//Default data Major
-func AddSubjectDefault(subjectName string, code string, majorName string)  {
-	db, err := config.GetMongoDB()
-	if err != nil {
-		fmt.Println(err)
-	}
-	subjectRepository := repository.NewSubjectRepository(db, "Subject")
-	majorRepository := repository.NewMajorRepository(db, "Major")
-	major, err2 := majorRepository.FindByName(majorName)
-	if err2 != nil {
-		fmt.Println(err2)
-	}
-	var p models.Subject
-	p.Name = subjectName
-	p.Code = code
-	p.Major = major
-	subjectRepository.Save(&p)
-}
-
 func GetSubjectByCode(w http.ResponseWriter, req *http.Request)  {
 	//
 	db, err := config.GetMongoDB()
@@ -111,4 +92,28 @@ func GetSubjectAll(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err2)
 	}
 	json.NewEncoder(w).Encode(post)
+}
+
+
+func GetSubjectByMajorEmail(w http.ResponseWriter, req *http.Request)  {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	userRepository := repository.NewUserRepository(db, "User")
+	params := mux.Vars(req)
+	var majorName = string(params["major"])
+	var email = string(params["email"])
+
+	user, err := userRepository.FindByEmail(email)
+	var subjects models.SubjectPointer
+	for i := 0; i < len(user.Subject); i++ {
+		if user.Subject[i].Major.Name == majorName {
+			subjects = append(subjects, user.Subject[i])
+		}
+	}
+	json.NewEncoder(w).Encode(subjects)
+
 }

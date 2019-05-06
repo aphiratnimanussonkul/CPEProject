@@ -9,3 +9,4 @@ type Major struct {
 }
 
 type Majors []Major
+type MajorPointer []*Major
