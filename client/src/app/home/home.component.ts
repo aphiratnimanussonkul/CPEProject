@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
     //
     constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
                 private sanitizer: DomSanitizer, private route: ActivatedRoute, private router: Router,
-                private service: AuthenService) {
+                private authenService: AuthenService) {
         iconRegistry.addSvgIcon(
             'more',
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -56,18 +56,24 @@ export class HomeComponent implements OnInit {
     post: Array<any>;
     users: any = {
         name: '',
-        email: ''
+        email: '',
+        displayName: ''
     };
     select: any = {
         text: ''
     };
     email: string;
     ngOnInit() {
-      this.service.getLoggedInUser()
+      this.authenService.getLoggedInUser()
         .subscribe( user => {
           console.log( user );
           this.user = user;
           this.users.email = user.email;
+          if (user.displayName !== null) {
+            this.users.displayName = user.displayName;
+          } else {
+              this.users.displayName = user.email;
+          }
         });
       this.code = '';
         this.refresh();
@@ -120,6 +126,10 @@ export class HomeComponent implements OnInit {
     getfeed(code) {
         this.router.navigate(['/mycourse', code]);
     }
+    logout() {
+        this.router.navigate(['/login']);
+        this.authenService.logout();
+      }
 }
 
 export class FacultyDataSource extends DataSource<any> {

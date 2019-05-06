@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthenService } from '../service/authen.service';
 import { ProfileService } from '../service/profile.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { PostService } from '../service/post.service';
 
 export interface User {
   name: string;
@@ -31,7 +32,9 @@ export class ProfileComponent implements OnInit {
     picture: '',
     major: ''
   }
-  constructor(private authenService: AuthenService, private profileService: ProfileService, private route: ActivatedRoute, private router: Router) { }
+  getUser: Array<any>;
+  constructor(private authenService: AuthenService, private profileService: ProfileService,
+    private route: ActivatedRoute, private router: Router, private postService: PostService) { }
   picURL: string;
   ngOnInit() {
     this.authenService.getLoggedInUser()
@@ -42,6 +45,15 @@ export class ProfileComponent implements OnInit {
         this.users.email = this.user.email;
         this.users.name = this.user.displayName;
         this.users.picture = this.picURL;
+        this.postService.getUser(user.email).subscribe(
+          data => {
+            console.log(data);
+            this.getUser = data;
+            if (this.getUser !== null) {
+              this.router.navigate(['/home']);
+            }
+          }
+        )
         console.log(this.picURL);
       });
   }
@@ -76,7 +88,7 @@ export class ProfileComponent implements OnInit {
     this.authenService.logout();
   }
 
-  profile(){
+  profile() {
     this.router.navigate(['/profile']);
   }
 

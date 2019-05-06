@@ -2,10 +2,10 @@
     <mat-toolbar-row class="navbar">
         <h1>SUT Course Online</h1>
         <span class="spacer"></span>
-        <div class="nameNavbar">{{posts.user.email}}</div>
-        <div mat-card-avatar class="example-header-image"></div>
+        <div class="nameNavbar">{{disPlayName}}</div>
+        <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + user?.photoURL + ')' }" class="headerimage"></div>
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
-                class="moreBackground">
+            class="moreBackground">
             <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
         </button>
         <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
@@ -17,7 +17,7 @@
                 <mat-icon>add</mat-icon>
                 <span>Add Course</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item (click)="logout()">
                 <mat-icon svgIcon="logout"></mat-icon>
                 <span>log out</span>
             </button>
@@ -53,7 +53,7 @@
                 <ng-container matColumnDef="expandedDetail">
                     <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
                         <div class="example-element-detail"
-                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                             <mat-accordion>
                                 <mat-expansion-panel *ngFor="let head of major">
                                     <mat-expansion-panel-header (click)="getSubject(head.name)" class="courseStep2">
@@ -90,8 +90,8 @@
             </mat-toolbar>
             <mat-card class="postCard" *ngIf="isPost">
                 <mat-card-header>
-                    <div mat-card-avatar class="example-header-image"></div>
-                    <mat-card-title>{{user.firstname}} {{user.lastname}}</mat-card-title>
+                    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + user?.photoURL + ')' }" class="headerimage"></div>
+                    <mat-card-title>{{user.displayName}} {{user.email}}</mat-card-title>
                 </mat-card-header>
                 <mat-form-field class="comment">
                     <mat-placeholder>say somthing</mat-placeholder>
@@ -108,7 +108,7 @@
                             <ng-container *ngFor="let vdo2 of tempVdoLink2; let i = index">
                                 <mat-form-field class="VdoLink" *ngIf="vdo2" name="VdoLink">
                                     <input matInput [(ngModel)]="tempVdoLink[i]"
-                                           placeholder="support for link on youtube only!">
+                                        placeholder="support for link on youtube only!">
                                 </mat-form-field>
                             </ng-container>
                             <button mat-mini-fab class="addVdoLink" (click)="isAddFunc()">
@@ -129,7 +129,7 @@
                             <ng-container *ngFor="let file of tempFileLink2; let j = index">
                                 <div *ngIf="file">
                                     <input type="file" (change)="upload($event, j)"
-                                           accept=".pdf, .doc, .docx, .rar, .zip"/>
+                                        accept=".pdf, .doc, .docx, .rar, .zip" />
                                     <br>
                                     <br>
                                 </div>
@@ -152,7 +152,7 @@
                             <ng-container *ngFor="let pic of tempPicLink2; let p = index">
                                 <div *ngIf="pic">
                                     <input type="file" (change)="uploadPic($event, p)"
-                                           accept=".png, .jpg, .PNG, .JPG"/>
+                                        accept=".png, .jpg, .PNG, .JPG" />
                                     <br><br>
                                     <br>
                                 </div>
@@ -169,9 +169,8 @@
                 </mat-tab-group>
                 <br>
                 <button mat-button class="postButton" (click)="test()">Post</button>
-                <button mat-button class="postButton" *ngIf="!isUpload"
-                        (click)="isUploadFunc()"
-                        matTooltip="ex: png, jpg, pdf, word">Upload File & Video
+                <button mat-button class="postButton" *ngIf="!isUpload" (click)="isUploadFunc()"
+                    matTooltip="ex: png, jpg, pdf, word">Upload File & Video
                 </button>
                 <!--<button mat-button class="postButton">Audio</button>-->
                 <br>
@@ -183,13 +182,12 @@
                 <ng-container *ngFor="let posts of post.slice().reverse(); let i = index">
                     <mat-card class="postCard">
                         <mat-card-header>
-                            <div mat-card-avatar class="example-header-image"
-                                 src="https://material.angular.io/assets/img/examples/shiba1.jpg"></div>
-                            <mat-card-title>{{posts.user.firstname}} {{posts.user.lastname}}</mat-card-title>
+                            <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + posts.user.picture + ')' }" class="headerimage"></div>
+                            <mat-card-title>{{posts.user.name}} {{posts.user.email}}</mat-card-title>
                             <span class="spacer"></span>
                             <button mat-icon-button [matMenuTriggerFor]="menu"
-                                    aria-label="Example icon-button with a menu"
-                                    class="moreBackground" class="morePost" *ngIf="posts.user.email === user.email">
+                                aria-label="Example icon-button with a menu" class="moreBackground" class="morePost"
+                                *ngIf="posts.user.email === user.email">
                                 <mat-icon>more_horiz</mat-icon>
                             </button>
                             <mat-menu yPosition="below" xPosition="after" #menu="matMenu">
@@ -214,12 +212,11 @@
                                     <br>
                                     <div *ngFor="let vdo of posts.vdoLink; let j = index">
                                         <div style="text-align: center;" *ngIf="posts.vdoLink[j]">
-                                        <span>
-                                            <iframe width=100% height="235" [src]="getEmbedUrl(posts.vdoLink[j])"
-                                                    frameborder="0"
-                                                    allowfullscreen>
-                                            </iframe>
-                                        </span>
+                                            <span>
+                                                <iframe width=100% height="235" [src]="getEmbedUrl(posts.vdoLink[j])"
+                                                    frameborder="0" allowfullscreen>
+                                                </iframe>
+                                            </span>
                                         </div>
                                         <div class="separator" style="clear: both; text-align: center;"></div>
                                     </div>
@@ -233,7 +230,7 @@
                                     <div *ngFor="let files of posts.file; let k = index">
                                         <div>
                                             <a [href]="files" target="_blank"
-                                               rel="noopener noreferrer">{{posts.filename[k]}}</a>
+                                                rel="noopener noreferrer">{{posts.filename[k]}}</a>
                                         </div>
                                     </div>
                                 </mat-tab>
@@ -244,13 +241,12 @@
                                     </ng-template>
                                     <br>
                                     <div *ngFor="let pics of posts.picture; let x = index">
-                                        <a [href]="posts.picture[x]" target="_blank"
-                                           rel="noopener noreferrer">
+                                        <a [href]="posts.picture[x]" target="_blank" rel="noopener noreferrer">
                                             <img [src]="posts.picture[x]" width=100%>
                                         </a>
                                     </div>
 
-                                       <!-- <slideshow
+                                    <!-- <slideshow
                                                 [minHeight]="'300px'"
                                                 [autoPlay]="true"
                                                 [showArrows]="true"
@@ -290,12 +286,11 @@
     </div>
     <div class="panel3">
         <div class="insidepanel3">
-            <div >
+            <div>
                 <iframe
-                        src="//www.facebook.com/plugins/likebox.php?href=http://https://www.facebook.com/SUT-Computer-Club-837427779776860?show_faces=true&colorscheme=light&stream=false&show_border=false&header=false&appId=123849637763517"
-                        scrolling="no" frameborder="0"
-                        style="border:none; overflow:hidden"
-                        allowtransparency="true" class="facebookPage"></iframe>
+                    src="//www.facebook.com/plugins/likebox.php?href=http://https://www.facebook.com/SUT-Computer-Club-837427779776860?show_faces=true&colorscheme=light&stream=false&show_border=false&header=false&appId=123849637763517"
+                    scrolling="no" frameborder="0" style="border:none; overflow:hidden" allowtransparency="true"
+                    class="facebookPage"></iframe>
             </div>
         </div>
     </div>

@@ -18,8 +18,8 @@ export interface FacultyComponent {
 export interface Post {
   text: string;
   user: {
-    name: string
-    email: string
+    name: string;
+    email: string;
   };
   vdolink: string[];
   file: string[];
@@ -46,7 +46,7 @@ export interface Post {
 export class MycourseComponent implements OnInit {
   constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
               private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
-              private router: Router, private service: AuthenService) {
+              private router: Router, private authenService: AuthenService) {
     iconRegistry.addSvgIcon(
       'more',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -121,12 +121,17 @@ export class MycourseComponent implements OnInit {
   countPicChoose: number;
   countFileStatus: number;
   countPicStatus: number;
-
+  disPlayName: string;
   ngOnInit() {
-    this.service.getLoggedInUser().subscribe(user => {
+    this.authenService.getLoggedInUser().subscribe(user => {
       console.log(user);
       this.user = user;
       this.posts.user.email = user.email;
+      if (user.displayName !== null) {
+        this.disPlayName = user.displayName;
+      } else {
+          this.disPlayName = user.email;
+      }
     });
     this.countPicChoose = 0;
     this.countFileChoose = 0;
@@ -457,6 +462,10 @@ export class MycourseComponent implements OnInit {
         }
       }
     );
+  }
+  logout() {
+    this.router.navigate(['/login']);
+    this.authenService.logout();
   }
 }
 

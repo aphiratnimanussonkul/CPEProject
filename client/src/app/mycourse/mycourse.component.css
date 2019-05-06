@@ -122,8 +122,11 @@
     background-color: rgb(255, 255, 255);
 }
 
-.example-header-image {
+/* .example-header-image {
     background-image: url('../../assets/aphiratprofile.jpg');
+    background-size: cover;
+} */
+.headerimage {
     background-size: cover;
 }
 

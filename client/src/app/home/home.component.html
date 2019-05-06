@@ -2,8 +2,8 @@
     <mat-toolbar-row class="navbar">
         <h1>SUT Course Online</h1>
         <span class="spacer"></span>
-        <div class="nameNavbar">{{users.email}}</div>
-        <div mat-card-avatar class="headerimage"></div>
+        <div class="nameNavbar">{{users.displayName}}</div>
+        <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + user?.photoURL + ')' }" class="headerimage"></div>
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
                 class="moreBackground">
             <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
@@ -17,7 +17,7 @@
                 <mat-icon>add</mat-icon>
                 <span>Add Course</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item (click)="logout()">
                 <mat-icon svgIcon="logout"></mat-icon>
                 <span>log out</span>
             </button>

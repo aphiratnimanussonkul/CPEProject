@@ -94,8 +94,7 @@
   background-color: rgb(233, 233, 233);
 }
 
-.example-header-image {
-  background-image: url('../../assets/aphiratprofile.jpg');
+.headerimage {
   background-size: cover;
 }
 
