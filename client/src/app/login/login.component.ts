@@ -41,6 +41,12 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/profile']); 
   }
 
+  LoginWithTwitter(){
+    console.log('Login...Twitter');
+    this.service.logintwitter();
+    this.router.navigate(['/profile']); 
+  }
+
   logout(){
     this.service.logout();
   }

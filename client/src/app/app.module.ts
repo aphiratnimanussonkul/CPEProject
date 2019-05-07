@@ -28,15 +28,21 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule} from '@angular/material/chips';
 import { MatAutocompleteModule} from '@angular/material/autocomplete';
+
+
 import { HomeComponent } from './home/home.component';
 import { MycourseComponent } from './mycourse/mycourse.component';
 import {PostService} from './service/post.service';
+import { SearchCourseComponent } from './search-course/search-course.component';
+import { VdoComponent, dialog } from './vdo/vdo.component';
 
 const appRoutes: Routes = [
   {path: 'login' , component: LoginComponent},
   {path: 'profile' , component: ProfileComponent},
   {path: 'home' , component: HomeComponent},
-  {path: 'mycourse/:code' , component: MycourseComponent}
+  {path: 'mycourse/:code/:name' , component: MycourseComponent},
+  {path: 'searchcourse/:code' , component: SearchCourseComponent},
+  {path: '' , component: VdoComponent}
 ];
 
 @NgModule({
@@ -46,7 +52,10 @@ const appRoutes: Routes = [
     ToolbarComponent,
     ProfileComponent,
     HomeComponent,
-    MycourseComponent
+    MycourseComponent,
+    SearchCourseComponent,
+    VdoComponent,
+    dialog
   ],
   imports: [
     BrowserModule,
@@ -83,7 +92,9 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     MatChipsModule,
     MatAutocompleteModule
+    
   ],
+  entryComponents: [dialog],
   providers: [AuthenService, ProfileService, PostService],
   bootstrap: [AppComponent]
 })

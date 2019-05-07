@@ -15,9 +15,9 @@ export interface FacultyComponent {
 
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css'],
+    selector: 'app-search-course',
+    templateUrl: './search-course.component.html',
+    styleUrls: ['./search-course.component.scss'],
     animations: [
         trigger('detailExpand', [
             state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
@@ -26,7 +26,7 @@ export interface FacultyComponent {
         ]),
     ],
 })
-export class HomeComponent implements OnInit {
+export class SearchCourseComponent implements OnInit {
     // table
     dataSource = new FacultyDataSource(this.postService);
     columnsToDisplay = ['สำนักวิชา'];
@@ -44,11 +44,13 @@ export class HomeComponent implements OnInit {
         iconRegistry.addSvgIcon(
             'logout',
             this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
+        this.code = this.route.snapshot.paramMap.get('code');
     }
     // Firebase Authen
     user: firebase.User;
     //
     code: string;
+    inputCode: string;
     faculty: Array<any>;
     major: Array<any>;
     subject: Array<any>;
@@ -62,56 +64,48 @@ export class HomeComponent implements OnInit {
         text: ''
     };
     ngOnInit() {
-        this.authenService.getLoggedInUser()
-            .subscribe(user => {
+        this.inputCode = '';
+        this.authenService.getLoggedInUser().subscribe(
+            user => {
                 console.log(user);
                 this.user = user;
                 this.users.email = user.email;
-                console.log(this.users.email);
                 if (user.displayName !== null) {
                     this.users.displayName = user.displayName;
                 } else {
                     this.users.displayName = user.email;
                 }
             });
-        this.code = '';
-        this.refresh();
-        this.postService.getPost().subscribe(data => {
-            this.post = data;
-        });
-        this.postService.getFaculty().subscribe(data => {
-            this.faculty = data;
-        });
-    }
-    
-    getMajor(facultyName) {
-        this.major = null;
-        this.postService.getMajor(facultyName).subscribe(data => {
-            this.major = data;
-        });
+        this.postService.getSubjectByCode(this.code).subscribe(
+            data => {
+                this.subject = data;
+                
+            }
+        )
 
     }
-    getSubject(majorName) {
-        this.subject = null;
-        this.postService.getSubject(majorName).subscribe(data => {
-            this.subject = data;
-        });
-    }
-    refresh() {
-        this.postService.getFacultyTable().subscribe((res) => {
-            this.faculty = res;
-            this.dataSource = new FacultyDataSource(this.postService);
-        });
-    }
     search() {
-        if (this.code === '') {
+        if (this.inputCode === '') {
             alert('Please enter subject code or subject name');
         } else {
-            this.router.navigate(['/searchcourse', this.code]);
+            this.postService.getSubjectByCode(this.inputCode).subscribe(
+                data => {
+                    this.subject = data;
+                    this.inputCode = '';
+                    console.log(data);
+                }
+            )
         }
     }
-    follow(code) {
-        this.httpClient.get('http://localhost:12345/follow/' + this.user.email + '/' + code).subscribe(
+    getfeed(code, name) {
+        this.router.navigate(['/mycourse', code, name]);
+    }
+    logout() {
+        this.router.navigate(['/login']);
+        this.authenService.logout();
+    }
+    follow() {
+        this.httpClient.get('http://localhost:12345/follow/' + this.users.email + '/' + this.code).subscribe(
             data => {
                 if (!data) {
                     alert('Follow success');
@@ -121,13 +115,6 @@ export class HomeComponent implements OnInit {
             },
             error => { }
         );
-    }
-    getfeed(code, name) {
-        this.router.navigate(['/mycourse', code, name]);
-    }
-    logout() {
-        this.router.navigate(['/login']);
-        this.authenService.logout();
     }
 }
 

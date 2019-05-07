@@ -9,11 +9,11 @@
             <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
         </button>
         <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
-            <button mat-menu-item>
+            <button mat-menu-item >
                 <mat-icon>person</mat-icon>
                 <span>about me</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item [routerLink]="['/home']">
                 <mat-icon>add</mat-icon>
                 <span>Add Course</span>
             </button>
@@ -74,7 +74,7 @@
                                     </mat-expansion-panel-header>
                                     <mat-list>
                                         <mat-list-item *ngFor="let head of subject" class="cardExpansion">
-                                            <h4 mat-line (click)="getfeed(head.code)">{{head.name}}: {{head.code}}</h4>
+                                            <h4 mat-line (click)="getfeed(head.code, head.name)">{{head.name}}: {{head.code}}</h4>
                                             <button mat-icon-button class="addCourse" (click)="follow(head.code)">
                                                 <mat-icon mat-list-icon matTooltip="follow"
                                                           aria-label="Button that displays a tooltip when focused or hovered over"

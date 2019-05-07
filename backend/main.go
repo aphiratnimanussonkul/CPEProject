@@ -51,6 +51,7 @@ func main() {
 	router.HandleFunc("/follow/{email}/{code}", api.FollowSubject).Methods("GET")
 	router.HandleFunc("/user/{firstName}/{lastName}/{Email}", api.AddUser).Methods("GET")
 	router.HandleFunc("/user/{firstName}/{lastName}/{Email}/{code}", api.AddUserSubject).Methods("GET")
+	router.HandleFunc("/unfollow/{email}/{code}", api.UnfollowSubject).Methods("GET")
 	//Post
 	router.HandleFunc("/postvdo/{text}/{email}/{code}/{vdoLink}", api.AddPost).Methods("GET")
 	router.HandleFunc("/postfile/{text}/{email}/{code}/{name}/{token}", api.AddPost).Methods("GET")

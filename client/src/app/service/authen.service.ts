@@ -26,6 +26,11 @@ export class AuthenService {
     this.afAuth.auth.signInWithRedirect(new auth.GithubAuthProvider());
   }
 
+  logintwitter(){
+    console.log('Redirecting to Github login provider');
+    this.afAuth.auth.signInWithRedirect(new auth.TwitterAuthProvider());
+  }
+
   logout() {
     this.afAuth.auth.signOut();
   }

@@ -13,7 +13,7 @@
                 <mat-icon>person</mat-icon>
                 <span>about me</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item [routerLink]="['/home']">
                 <mat-icon>add</mat-icon>
                 <span>Add Course</span>
             </button>
@@ -63,6 +63,12 @@
                                         <mat-list-item *ngFor="let head of subject" class="cardExpansion">
                                             <h4 mat-line (click)="getFeed(head.code, head.name)">{{head.name}}
                                                 : {{head.code}}</h4>
+                                                <button mat-icon-button class="addCourse" (click)="unfollow(head.code)">
+                                                        <mat-icon mat-list-icon matTooltip="unfollow"
+                                                                  aria-label="Button that displays a tooltip when focused or hovered over"
+                                                        >indeterminate_check_box
+                                                        </mat-icon>
+                                                    </button>
                                         </mat-list-item>
                                     </mat-list>
                                 </mat-expansion-panel>
@@ -89,8 +95,12 @@
                 <span class="title-center">{{nameSubject}} {{codeSubject}}</span>
             </mat-toolbar>
             <mat-card class="postCard" *ngIf="isPost">
+                <div class="progress" *ngIf="isPosting">
+                    <div class="indeterminate"></div>
+                </div>
                 <mat-card-header>
-                    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + user?.photoURL + ')' }" class="headerimage"></div>
+                    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + user?.photoURL + ')' }"
+                        class="headerimage"></div>
                     <mat-card-title>{{user.displayName}} {{user.email}}</mat-card-title>
                 </mat-card-header>
                 <mat-form-field class="comment">
@@ -182,7 +192,8 @@
                 <ng-container *ngFor="let posts of post.slice().reverse(); let i = index">
                     <mat-card class="postCard">
                         <mat-card-header>
-                            <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + posts.user.picture + ')' }" class="headerimage"></div>
+                            <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + posts.user.picture + ')' }"
+                                class="headerimage"></div>
                             <mat-card-title>{{posts.user.name}} {{posts.user.email}}</mat-card-title>
                             <span class="spacer"></span>
                             <button mat-icon-button [matMenuTriggerFor]="menu"

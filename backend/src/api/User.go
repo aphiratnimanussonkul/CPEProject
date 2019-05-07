@@ -139,3 +139,25 @@ func CreateUser(w http.ResponseWriter, req *http.Request) {
 	}
 
 }
+func UnfollowSubject(w http.ResponseWriter, req *http.Request)  {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	userRepository := repository.NewUserRepository(db, "User")
+
+	//get variable by path
+	params := mux.Vars(req)
+	var email = string(params["email"])
+	var codeSubject = string(params["code"])
+	user, err := userRepository.FindByEmail(email)
+	var subjects models.SubjectPointer
+	for i := 0; i < len(user.Subject); i++ {
+		if user.Subject[i].Code != codeSubject {
+			subjects = append(subjects, user.Subject[i])
+		}
+	}
+	user.Subject = subjects
+	userRepository.Update(user);
+}

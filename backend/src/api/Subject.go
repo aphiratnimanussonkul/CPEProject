@@ -69,12 +69,11 @@ func GetSubjectByCode(w http.ResponseWriter, req *http.Request)  {
 	//get variable by path
 	params := mux.Vars(req)
 	var code = string(params["code"])
-
-	subject, err2 := subjectRepository.FindByCode(code)
+	subject, err2 := subjectRepository.FindByCodeEx(code)
 	if err2 != nil {
 		fmt.Println(err2)
 	}
-	json.NewEncoder(w).Encode(subject.Name)
+	json.NewEncoder(w).Encode(subject)
 
 }
 

@@ -1,14 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MatIconRegistry} from '@angular/material';
-import {HttpClient} from '@angular/common/http';
-import {PostService} from '../service/post.service';
-import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from '@angular/fire/storage';
-import {Observable} from 'rxjs/Observable';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {DataSource} from '@angular/cdk/collections';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AuthenService} from '../service/authen.service';
+import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
+import { PostService } from '../service/post.service';
+import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
+import { Observable } from 'rxjs/Observable';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { DataSource } from '@angular/cdk/collections';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenService } from '../service/authen.service';
 import set = Reflect.set;
 
 export interface FacultyComponent {
@@ -37,16 +37,16 @@ export interface Post {
   styleUrls: ['./mycourse.component.css'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
-      state('expanded', style({height: '*'})),
+      state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
+      state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
 export class MycourseComponent implements OnInit {
   constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
-              private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
-              private router: Router, private authenService: AuthenService) {
+    private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
+    private router: Router, private authenService: AuthenService) {
     iconRegistry.addSvgIcon(
       'more',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -57,6 +57,7 @@ export class MycourseComponent implements OnInit {
       'logout',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
     this.codeSubject = this.route.snapshot.paramMap.get('code');
+    this.nameSubject = this.route.snapshot.paramMap.get('name');
   }
 
   // Firebase Authen
@@ -122,6 +123,9 @@ export class MycourseComponent implements OnInit {
   countFileStatus: number;
   countPicStatus: number;
   disPlayName: string;
+  isPosting: boolean;
+
+  countEmbedUrl: number;
   ngOnInit() {
     this.authenService.getLoggedInUser().subscribe(user => {
       console.log(user);
@@ -130,15 +134,20 @@ export class MycourseComponent implements OnInit {
       if (user.displayName !== null) {
         this.disPlayName = user.displayName;
       } else {
-          this.disPlayName = user.email;
+        this.disPlayName = user.email;
       }
     });
+    this.posts.subject.code = this.codeSubject;
+    this.posts.subject.name = this.nameSubject;
+
+    this.countEmbedUrl = 0;
     this.countPicChoose = 0;
     this.countFileChoose = 0;
     this.countFileStatus = 0;
     this.countPicStatus = 0;
     this.isUpload = false;
     this.isPost = false;
+    this.isPosting = false;
     this.isFile = true;
     this.isPic = true;
     this.isAddVdo = true;
@@ -146,12 +155,7 @@ export class MycourseComponent implements OnInit {
     this.countFile = 0;
     this.countPic = 0;
     this.refresh();
-    this.postService.getSubjectByCode(this.codeSubject).subscribe(data => {
-        this.posts.subject.code = this.codeSubject;
-        this.posts.subject.name = this.nameSubject;
-        this.nameSubject = data;
-      }
-    );
+
     this.postService.getFeed(this.codeSubject).subscribe(data => {
       this.post = data;
     });
@@ -219,6 +223,7 @@ export class MycourseComponent implements OnInit {
         } else {
           alert('success');
           this.isPost = false;
+          this.isPosting = false;
           this.getFeed(this.codeSubject, this.nameSubject);
         }
       },
@@ -242,6 +247,7 @@ export class MycourseComponent implements OnInit {
   }
 
   test() {
+    this.isPosting = true;
     if (this.countPicChoose !== 0 || this.countFileChoose !== 0) {
       alert('Uploading...');
     }
@@ -467,6 +473,20 @@ export class MycourseComponent implements OnInit {
     this.router.navigate(['/login']);
     this.authenService.logout();
   }
+  unfollow(code) {
+    this.httpClient.get('http://localhost:12345/unfollow/' + this.posts.user.email + '/' + code).subscribe(
+        data => {
+            if (!data) {
+                alert('Unfollow success');
+                this.postService.getFacultyTableByEmail(this.posts.user.email).subscribe((res) => {
+                  this.faculty = res;
+                  this.dataSource = new FacultyDataSource(this.postService, this.posts.user.email);
+                });
+            } 
+        },
+        error => { }
+    );
+}
 }
 
 export class FacultyDataSource extends DataSource<any> {
