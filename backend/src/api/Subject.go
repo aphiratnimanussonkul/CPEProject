@@ -116,3 +116,22 @@ func GetSubjectByMajorEmail(w http.ResponseWriter, req *http.Request)  {
 	json.NewEncoder(w).Encode(subjects)
 
 }
+
+func GetSubjectFromUser(w http.ResponseWriter, req *http.Request)  {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	userRepository := repository.NewUserRepository(db, "User")
+	params := mux.Vars(req)
+	var email = string(params["email"])
+
+	user, err := userRepository.FindByEmail(email)
+	var subjects models.SubjectPointer
+	for i := 0; i < len(user.Subject); i++ {
+			subjects = append(subjects, user.Subject[i])
+	}
+	json.NewEncoder(w).Encode(subjects)
+}

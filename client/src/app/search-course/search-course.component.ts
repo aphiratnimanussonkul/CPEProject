@@ -79,7 +79,6 @@ export class SearchCourseComponent implements OnInit {
         this.postService.getSubjectByCode(this.code).subscribe(
             data => {
                 this.subject = data;
-                
             }
         )
 
@@ -88,11 +87,10 @@ export class SearchCourseComponent implements OnInit {
         if (this.inputCode === '') {
             alert('Please enter subject code or subject name');
         } else {
+            this.router.navigate(['/searchcourse', this.inputCode]);
             this.postService.getSubjectByCode(this.inputCode).subscribe(
                 data => {
                     this.subject = data;
-                    this.inputCode = '';
-                    console.log(data);
                 }
             )
         }
@@ -104,8 +102,8 @@ export class SearchCourseComponent implements OnInit {
         this.router.navigate(['/login']);
         this.authenService.logout();
     }
-    follow() {
-        this.httpClient.get('http://localhost:12345/follow/' + this.users.email + '/' + this.code).subscribe(
+    follow(code) {
+        this.httpClient.get('http://localhost:12345/follow/' + this.users.email + '/' + code).subscribe(
             data => {
                 if (!data) {
                     alert('Follow success');

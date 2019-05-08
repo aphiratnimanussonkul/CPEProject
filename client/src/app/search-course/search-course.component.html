@@ -70,7 +70,7 @@
                         <h5 class="cardcontent">
                             รายวิชานี้ เป็นรายวิชาที่เปิดสอนในสาขาวิชา {{subjects.major.name}}
                         </h5>
-                        <button mat-icon-button class="addCourse" (click)="follow()">
+                        <button mat-icon-button class="addCourse" (click)="follow(subjects.code)">
                             <mat-icon mat-list-icon matTooltip="follow"
                                 aria-label="Button that displays a tooltip when focused or hovered over">library_add
                             </mat-icon>

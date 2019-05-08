@@ -28,7 +28,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule} from '@angular/material/chips';
 import { MatAutocompleteModule} from '@angular/material/autocomplete';
-
+import { CarouselModule } from 'angular-bootstrap-md'
 
 import { HomeComponent } from './home/home.component';
 import { MycourseComponent } from './mycourse/mycourse.component';
@@ -91,7 +91,8 @@ const appRoutes: Routes = [
     MatTooltipModule,
     ReactiveFormsModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    CarouselModule
     
   ],
   entryComponents: [dialog],

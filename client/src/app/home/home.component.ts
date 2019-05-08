@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit {
     faculty: Array<any>;
     major: Array<any>;
     subject: Array<any>;
-    post: Array<any>;
+    subjectFromUser: Array<any>;
     users: any = {
         name: '',
         email: '',
@@ -76,14 +76,36 @@ export class HomeComponent implements OnInit {
             });
         this.code = '';
         this.refresh();
-        this.postService.getPost().subscribe(data => {
-            this.post = data;
-        });
         this.postService.getFaculty().subscribe(data => {
             this.faculty = data;
         });
+        if(this.users.email === '') {
+            setTimeout(() => {
+                this.getSubejctFromUser();
+            }, 50)
+        } else {
+            this.postService.getSubjectFromUser(this.users.email).subscribe(
+                data => {
+                    this.subjectFromUser = data;
+                    console.log(this.subjectFromUser);
+                }
+            )
+        }
     }
-    
+    getSubejctFromUser () {
+        if(this.users.email === '') {
+            setTimeout(() => {
+                this.getSubejctFromUser();
+            }, 50)
+        } else {
+            this.postService.getSubjectFromUser(this.users.email).subscribe(
+                data => {
+                    this.subjectFromUser = data;
+                    console.log(this.subjectFromUser);
+                }
+            )
+        }
+    }
     getMajor(facultyName) {
         this.major = null;
         this.postService.getMajor(facultyName).subscribe(data => {
@@ -115,6 +137,7 @@ export class HomeComponent implements OnInit {
             data => {
                 if (!data) {
                     alert('Follow success');
+                    this.getSubejctFromUser();
                 } else {
                     alert('You have followed this course');
                 }
@@ -123,7 +146,17 @@ export class HomeComponent implements OnInit {
         );
     }
     getfeed(code, name) {
-        this.router.navigate(['/mycourse', code, name]);
+        let status = false;
+        for (let i = 0; i < this.subjectFromUser.length; i++) {
+            if (this.subjectFromUser[i].code === code) {
+                status = true;
+            }
+        }
+        if (status) {
+            this.router.navigate(['/mycourse', code, name]);
+        } else {
+            alert('Please follow this course');
+        }
     }
     logout() {
         this.router.navigate(['/login']);

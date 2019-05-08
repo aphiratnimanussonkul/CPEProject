@@ -446,3 +446,6 @@ tr.example-element-row:not(.example-expanded-row):active {
         right: -8%;
     }
 }
+iframe{
+    widows: 100vh;
+}

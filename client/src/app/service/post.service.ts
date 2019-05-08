@@ -61,4 +61,8 @@ export class PostService {
   getMajorByEmail(facultyName, email): Observable<any> {
     return this.http.get(this.API + '/majorbyemail/' + facultyName + '/' + email);
   }
+
+  getSubjectFromUser(email): Observable<any> {
+    return this.http.get(this.API + '/subjectfromuser/'+ email);
+  }
 }

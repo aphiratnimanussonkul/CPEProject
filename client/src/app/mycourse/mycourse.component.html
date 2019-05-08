@@ -61,14 +61,14 @@
                                     </mat-expansion-panel-header>
                                     <mat-list>
                                         <mat-list-item *ngFor="let head of subject" class="cardExpansion">
-                                            <h4 mat-line (click)="getFeed(head.code, head.name)">{{head.name}}
-                                                : {{head.code}}</h4>
-                                                <button mat-icon-button class="addCourse" (click)="unfollow(head.code)">
-                                                        <mat-icon mat-list-icon matTooltip="unfollow"
-                                                                  aria-label="Button that displays a tooltip when focused or hovered over"
-                                                        >indeterminate_check_box
-                                                        </mat-icon>
-                                                    </button>
+                                            <h4 mat-line (click)="getFeed(head.code, head.name)">{{head.name}}</h4>
+                                            <h4 mat-line (click)="getFeed(head.code, head.name)">{{head.code}}</h4>
+                                            <button mat-icon-button class="addCourse" (click)="unfollow(head.code)">
+                                                <mat-icon mat-list-icon matTooltip="unfollow"
+                                                    aria-label="Button that displays a tooltip when focused or hovered over">
+                                                    indeterminate_check_box
+                                                </mat-icon>
+                                            </button>
                                         </mat-list-item>
                                     </mat-list>
                                 </mat-expansion-panel>
@@ -101,7 +101,7 @@
                 <mat-card-header>
                     <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + user?.photoURL + ')' }"
                         class="headerimage"></div>
-                    <mat-card-title>{{user.displayName}} {{user.email}}</mat-card-title>
+                    <mat-card-title>{{user.displayName}}</mat-card-title>
                 </mat-card-header>
                 <mat-form-field class="comment">
                     <mat-placeholder>say somthing</mat-placeholder>
@@ -194,7 +194,7 @@
                         <mat-card-header>
                             <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + posts.user.picture + ')' }"
                                 class="headerimage"></div>
-                            <mat-card-title>{{posts.user.name}} {{posts.user.email}}</mat-card-title>
+                            <mat-card-title>{{posts.user.name}}</mat-card-title>
                             <span class="spacer"></span>
                             <button mat-icon-button [matMenuTriggerFor]="menu"
                                 aria-label="Example icon-button with a menu" class="moreBackground" class="morePost"
@@ -225,7 +225,7 @@
                                         <div style="text-align: center;" *ngIf="posts.vdoLink[j]">
                                             <span>
                                                 <iframe width=100% height="235" [src]="getEmbedUrl(posts.vdoLink[j])"
-                                                    frameborder="0" allowfullscreen>
+                                                    frameborder="0">
                                                 </iframe>
                                             </span>
                                         </div>
@@ -251,11 +251,14 @@
                                         Picture
                                     </ng-template>
                                     <br>
-                                    <div *ngFor="let pics of posts.picture; let x = index">
-                                        <a [href]="posts.picture[x]" target="_blank" rel="noopener noreferrer">
-                                            <img [src]="posts.picture[x]" width=100%>
-                                        </a>
-                                    </div>
+                                    <mdb-carousel [animation]="'slide'" data-interval="false">
+                                        <mdb-carousel-item *ngFor="let pic of posts.picture; let x = index">
+                                            <a [href]="posts.picture[x]" target="_blank" rel="noopener noreferrer">
+                                                <img [src]="posts.picture[x]" width=100%>
+                                            </a>
+                                        </mdb-carousel-item>
+                                    </mdb-carousel>
+
 
                                     <!-- <slideshow
                                                 [minHeight]="'300px'"
