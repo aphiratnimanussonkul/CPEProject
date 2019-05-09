@@ -9,6 +9,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { DataSource } from '@angular/cdk/collections';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenService } from '../service/authen.service';
+
 import set = Reflect.set;
 import { empty } from 'rxjs';
 
@@ -127,7 +128,7 @@ export class MycourseComponent implements OnInit {
   disPlayName: string;
   isPosting: boolean;
 
-  countEmbedUrl: number;
+  inputCode: '';
   ngOnInit() {
     this.authenService.getLoggedInUser().subscribe(user => {
       console.log(user);
@@ -142,7 +143,6 @@ export class MycourseComponent implements OnInit {
     this.posts.subject.code = this.codeSubject;
     this.posts.subject.name = this.nameSubject;
 
-    this.countEmbedUrl = 0;
     this.countPicChoose = 0;
     this.countFileChoose = 0;
     this.countFileStatus = 0;
@@ -245,9 +245,14 @@ export class MycourseComponent implements OnInit {
     this.countPicStatus = 0;
     this.countPic = 0;
     this.countFile = 0;
-    this.count = 0;
+    
     this.ref.splice(0);
     this.refFile.splice(0);
+    for (let i = 0; i < this.count; i++) {
+      this.tempVdoLink[i] = '';
+      this.tempVdoLink2[i] = '';
+    }
+    this.count = 0;
   }
 
   test() {
@@ -364,14 +369,12 @@ export class MycourseComponent implements OnInit {
   }
 
   isAddFunc() {
-    if (this.tempVdoLink.length === this.count) {
+    if (5 === this.count) {
       alert('Limited video at 5 link');
     } else {
       if (this.isAddVdo === true) {
         this.tempVdoLink2[this.count] = '1';
         this.count += 1;
-        console.log(this.tempVdoLink);
-        console.log(this.count);
       }
     }
   }
@@ -492,6 +495,15 @@ export class MycourseComponent implements OnInit {
       error => { }
     );
   }
+  search() {
+    console.log(this.inputCode);
+    if (this.inputCode === '') {
+        alert('Please enter subject code or subject name');
+    } else {
+        this.router.navigate(['/searchcourse', this.inputCode]);
+        this.inputCode = '';
+    }
+}
 }
 
 export class FacultyDataSource extends DataSource<any> {

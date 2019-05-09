@@ -60,11 +60,8 @@ export class SearchCourseComponent implements OnInit {
         email: '',
         displayName: ''
     };
-    select: any = {
-        text: ''
-    };
     ngOnInit() {
-        this.inputCode = '';
+        this.inputCode = this.code;
         this.authenService.getLoggedInUser().subscribe(
             user => {
                 console.log(user);
@@ -76,11 +73,7 @@ export class SearchCourseComponent implements OnInit {
                     this.users.displayName = user.email;
                 }
             });
-        this.postService.getSubjectByCode(this.code).subscribe(
-            data => {
-                this.subject = data;
-            }
-        )
+        this.search();
 
     }
     search() {
@@ -90,13 +83,32 @@ export class SearchCourseComponent implements OnInit {
             this.router.navigate(['/searchcourse', this.inputCode]);
             this.postService.getSubjectByCode(this.inputCode).subscribe(
                 data => {
+                    if (!data) {
+                        this.inputCode = '';
+                        alert('Can not find any subject. Please  check your code or Subject name')
+                    }
                     this.subject = data;
                 }
             )
         }
     }
     getfeed(code, name) {
-        this.router.navigate(['/mycourse', code, name]);
+        let status = false;
+        console.log(this.postService.subjectFromUser);
+        if (this.postService.subjectFromUser !== null) {
+            for (let i = 0; i < this.postService.subjectFromUser.length; i++) {
+                if (this.postService.subjectFromUser[i].code === code) {
+                    status = true;
+                }
+            }
+            if (status) {
+                this.router.navigate(['/mycourse', code, name]);
+            } else {
+                alert('Please follow this course');
+            }
+        } else {
+            alert('Please follow this course');
+        }
     }
     logout() {
         this.router.navigate(['/login']);

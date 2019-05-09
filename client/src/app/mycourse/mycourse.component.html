@@ -1,6 +1,20 @@
 <mat-toolbar>
     <mat-toolbar-row class="navbar">
-        <h1>SUT Course Online</h1>
+        <a href="home" class="courseOnline">SUT Course Online</a>
+        <mat-icon class="bookicon">book</mat-icon>
+        <div class="search">
+            <form>
+                <div class="form-row">
+                    <div class="col">
+                        <input mdbInput [(ngModel)]="inputCode" name="inputCode" class="form-control" placeholder="Search"
+                            matTooltip="Example : 523101 or Computer Programing or 523">
+                    </div>
+                </div>
+            </form>
+            <button mat-icon-button (click)="search()" class="searchicon">
+                <mat-icon>search</mat-icon>
+            </button>
+        </div>
         <span class="spacer"></span>
         <div class="nameNavbar">{{disPlayName}}</div>
         <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + user?.photoURL + ')' }" class="headerimage"></div>
@@ -30,19 +44,6 @@
 
     <div class="panel1">
         <div class="insidepanel1">
-            <div>
-                <p class="favCourse">Your Favorite Course</p>
-                <!-- find course -->
-                <button mat-menu-item (click)="search = !search">
-                    <mat-icon class="searchIcon">search</mat-icon>
-                </button>
-            </div>
-            <form *ngIf="search">
-                <mat-form-field class="serachInput">
-                    <input matInput placeholder="Ex:523353 or Computer Graphic">
-                </mat-form-field>
-            </form>
-
             <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
                 <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
                     <th mat-header-cell *matHeaderCellDef> {{column}} </th>

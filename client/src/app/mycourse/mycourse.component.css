@@ -304,6 +304,7 @@ table */
 
 table {
     width: 94%;
+    margin-top: 3%;
     margin-left: 3%;
     margin-right: 3%;
 }
@@ -448,4 +449,32 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 iframe{
     widows: 100vh;
+}
+.search {
+    margin-left: calc(50% - 200px);
+    position: absolute;
+}
+.form-control{
+    position: absolute;
+    width: 400px;
+}
+.searchicon{
+    color: white;
+    margin-left: 410px;
+}
+.bookicon{
+    color: white;
+    margin-left: calc(50% - 240px);
+    position: absolute;
+}
+.courseOnline{
+    margin-left: 4%;
+    display: inline-block;
+    font-size: 27px;
+    font-weight: bold;
+    color: rgb(255, 19, 149);
+}
+.courseOnline:hover{
+    font-size: 28px;
+    color: rgb(255, 0, 140);
 }

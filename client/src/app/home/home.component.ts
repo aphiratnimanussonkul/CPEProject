@@ -52,7 +52,6 @@ export class HomeComponent implements OnInit {
     faculty: Array<any>;
     major: Array<any>;
     subject: Array<any>;
-    subjectFromUser: Array<any>;
     users: any = {
         name: '',
         email: '',
@@ -84,12 +83,8 @@ export class HomeComponent implements OnInit {
                 this.getSubejctFromUser();
             }, 50)
         } else {
-            this.postService.getSubjectFromUser(this.users.email).subscribe(
-                data => {
-                    this.subjectFromUser = data;
-                    console.log(this.subjectFromUser);
-                }
-            )
+            this.postService.getSubjectParseToArray(this.users.email);
+            
         }
     }
     getSubejctFromUser () {
@@ -98,12 +93,7 @@ export class HomeComponent implements OnInit {
                 this.getSubejctFromUser();
             }, 50)
         } else {
-            this.postService.getSubjectFromUser(this.users.email).subscribe(
-                data => {
-                    this.subjectFromUser = data;
-                    console.log(this.subjectFromUser);
-                }
-            )
+            this.postService.getSubjectParseToArray(this.users.email);
         }
     }
     getMajor(facultyName) {
@@ -130,6 +120,7 @@ export class HomeComponent implements OnInit {
             alert('Please enter subject code or subject name');
         } else {
             this.router.navigate(['/searchcourse', this.code]);
+            this.code = '';
         }
     }
     follow(code) {
@@ -147,13 +138,17 @@ export class HomeComponent implements OnInit {
     }
     getfeed(code, name) {
         let status = false;
-        for (let i = 0; i < this.subjectFromUser.length; i++) {
-            if (this.subjectFromUser[i].code === code) {
-                status = true;
+        if (this.postService.subjectFromUser !== null) {
+            for (let i = 0; i < this.postService.subjectFromUser.length; i++) {
+                if (this.postService.subjectFromUser[i].code === code) {
+                    status = true;
+                }
             }
-        }
-        if (status) {
-            this.router.navigate(['/mycourse', code, name]);
+            if (status) {
+                this.router.navigate(['/mycourse', code, name]);
+            } else {
+                alert('Please follow this course');
+            }
         } else {
             alert('Please follow this course');
         }

@@ -8,8 +8,9 @@ import { FacultyComponent, Post } from '../mycourse/mycourse.component';
 })
 export class PostService {
   constructor(private http: HttpClient) { }
+  subjectFromUser: Array<any>;
   public API = '//localhost:12345';
-  getPost(): Observable<any> {
+  getPost(): Object {
     return this.http.get(this.API + '/posts');
   }
 
@@ -64,5 +65,12 @@ export class PostService {
 
   getSubjectFromUser(email): Observable<any> {
     return this.http.get(this.API + '/subjectfromuser/'+ email);
+  }
+  getSubjectParseToArray(email) {
+    this.getSubjectFromUser(email).subscribe(
+      data => {
+        this.subjectFromUser = data;
+        console.log(this.subjectFromUser);
+      }); 
   }
 }

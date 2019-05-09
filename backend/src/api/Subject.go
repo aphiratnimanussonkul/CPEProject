@@ -8,6 +8,8 @@ import (
 	"CPEProject/src/models"
 	"CPEProject/config"
 	"CPEProject/src/repository"
+	"strconv"
+	"strings"
 )
 
 
@@ -69,12 +71,19 @@ func GetSubjectByCode(w http.ResponseWriter, req *http.Request)  {
 	//get variable by path
 	params := mux.Vars(req)
 	var code = string(params["code"])
-	subject, err2 := subjectRepository.FindByCodeEx(code)
-	if err2 != nil {
-		fmt.Println(err2)
+	if _, err := strconv.Atoi(code); err == nil || strings.Contains(code, "*") {
+		subject, err2 := subjectRepository.FindByCodeEx(code)
+		json.NewEncoder(w).Encode(subject)
+		if err2 != nil {
+			fmt.Println(err2)
+		}
+	} else {
+		subject, err2 := subjectRepository.FindByNameEx(code)
+		json.NewEncoder(w).Encode(subject)
+		if err2 != nil {
+			fmt.Println(err2)
+		}
 	}
-	json.NewEncoder(w).Encode(subject)
-
 }
 
 func GetSubjectAll(w http.ResponseWriter, req *http.Request) {

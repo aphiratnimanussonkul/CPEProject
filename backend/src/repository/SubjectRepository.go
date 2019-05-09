@@ -110,3 +110,14 @@ func (r *SubjectRepositoryMongo) FindByCodeEx(code string) (models.Subjects, err
 
 	return subject, nil
 }
+
+func (r *SubjectRepositoryMongo) FindByNameEx(name string) (models.Subjects, error){
+	var subject models.Subjects
+	err := r.db.C(r.collection).Find(bson.M{"name": bson.RegEx{name, ""}}).All(&subject)
+
+	if err != nil {
+
+	}
+
+	return subject, nil
+}

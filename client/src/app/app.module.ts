@@ -29,6 +29,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule} from '@angular/material/chips';
 import { MatAutocompleteModule} from '@angular/material/autocomplete';
 import { CarouselModule } from 'angular-bootstrap-md'
+import { InputsModule, WavesModule, ButtonsModule } from 'angular-bootstrap-md'
 
 import { HomeComponent } from './home/home.component';
 import { MycourseComponent } from './mycourse/mycourse.component';
@@ -92,8 +93,10 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     MatChipsModule,
     MatAutocompleteModule,
-    CarouselModule
-    
+    CarouselModule,
+    InputsModule,
+    WavesModule,
+    ButtonsModule
   ],
   entryComponents: [dialog],
   providers: [AuthenService, ProfileService, PostService],

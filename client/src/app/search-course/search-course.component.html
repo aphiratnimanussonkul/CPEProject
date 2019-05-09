@@ -1,6 +1,6 @@
 <mat-toolbar>
     <mat-toolbar-row class="navbar">
-        <h1>SUT Course Online</h1>
+        <a href="home" class="courseOnline">SUT Course Online</a>
         <span class="spacer"></span>
         <div class="nameNavbar">{{users.displayName}}</div>
         <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + user?.photoURL + ')' }" class="headerimage"></div>
@@ -47,7 +47,8 @@
                 <div class="search2">
                     <p class="SearchInput">
                         <mat-form-field appearance="outline" floatLabel="never">
-                            <input matInput placeholder="Search" [(ngModel)]="inputCode" name="code">
+                            <input matInput placeholder="Search" [(ngModel)]="inputCode" name="code"
+                                matTooltip="Example : 523101 or Computer Programing or 523">
                             <mat-icon matPrefix>book</mat-icon>
                         </mat-form-field>
                         <button mat-icon-button (click)="search()">
@@ -59,29 +60,30 @@
             </div>
             <ng-container *ngFor="let subjects of subject">
                 <mat-card class="card">
-                <mat-card-header>
-                    <mat-card-title>
-                            <button mat-button (click)="getfeed(subjects.code, subjects.name)" class="subject">{{subjects.name}} : {{subjects.code}}
+                    <mat-card-header>
+                        <mat-card-title>
+                            <button mat-button (click)="getfeed(subjects.code, subjects.name)"
+                                class="subject">{{subjects.name}} : {{subjects.code}}
                             </button>
-                    </mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <div>
-                        <h5 class="cardcontent">
-                            รายวิชานี้ เป็นรายวิชาที่เปิดสอนในสาขาวิชา {{subjects.major.name}}
-                        </h5>
-                        <button mat-icon-button class="addCourse" (click)="follow(subjects.code)">
-                            <mat-icon mat-list-icon matTooltip="follow"
-                                aria-label="Button that displays a tooltip when focused or hovered over">library_add
-                            </mat-icon>
-                        </button>
-                    </div>
-                    <br><br>
-                </mat-card-content>
-            </mat-card>
-            <br>
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div>
+                            <h5 class="cardcontent">
+                                รายวิชานี้ เป็นรายวิชาที่เปิดสอนในสาขาวิชา {{subjects.major.name}}
+                            </h5>
+                            <button mat-icon-button class="addCourse" (click)="follow(subjects.code)">
+                                <mat-icon mat-list-icon matTooltip="follow"
+                                    aria-label="Button that displays a tooltip when focused or hovered over">library_add
+                                </mat-icon>
+                            </button>
+                        </div>
+                        <br><br>
+                    </mat-card-content>
+                </mat-card>
+                <br>
             </ng-container>
-            
+
         </div>
     </div>
     <div class="panelright">

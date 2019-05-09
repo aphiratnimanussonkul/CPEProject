@@ -50,22 +50,22 @@
   position: fixed;
   float: left;
   height: 100vh;
-  width: 10%;
+  width: 15%;
   background-color: rgb(233, 233, 233);
 }
 .panel1 {
   margin-top: 10px;
   height: 100vh;
   position: absolute;
-  margin-left: 5%;
-  width: 25%;
+  margin-left: 10%;
+  width: 298px;
 }
 
 .insidepanel1 {
   position: fixed;
   border-radius: 20px;
   border-radius: 2px;
-  width: 25%;
+  width: 298px;
   background-color: rgb(189, 189, 189);
 }
 
@@ -76,7 +76,7 @@
   float: left;
   position: absolute;
   height: 100vh;
-  width: 65%;
+  width: 60%;
 }
 
 .insidepanel2 {
@@ -212,4 +212,15 @@ tr.example-element-row:not(.example-expanded-row):active {
 .headerimage{
   background-image: url('https://firebasestorage.googleapis.com/v0/b/cpeproject.appspot.com/o/49610433_513634159046415_4070154654594367488_n.jpg?alt=media&token=ab09a34b-4f85-4db5-9808-784b348e5ccd');
   background-size: cover;
+}
+.courseOnline{
+  margin-left: 4%;
+  display: inline-block;
+  font-size: 27px;
+  font-weight: bold;
+  color: rgb(255, 19, 149);
+}
+.courseOnline:hover{
+  font-size: 28px;
+  color: rgb(255, 0, 140);
 }
