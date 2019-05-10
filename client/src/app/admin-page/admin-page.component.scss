@@ -1,0 +1,102 @@
+.panelMaster{
+    width: 100%;
+    height: 100vh;
+}
+.panel1{
+    box-shadow: 5px 1px 4px -3px rgba(0,0,0,0.08), 5px 1px 4px -3px rgba(0,0,0,0.08), 5px 1px 4px -3px rgba(0,0,0,0.08);
+    width: 20%;
+    height: 100vh;
+    background-color: #ef0078;
+    position: absolute;
+}
+.panel2{
+    margin-left: 20%;
+    width: 80%;
+    height: 100vh;
+    background-color: white;
+    position: absolute;
+}
+mat-list-item{
+    cursor: pointer;
+}
+h3 {
+    margin: 20px;
+}
+h1{
+    font-size: 24px;
+    margin-left: 5px;
+    color: white;
+}
+span{
+    flex: 1;
+}
+.signicon{
+    color: white;
+    position: absolute;
+    margin-left: calc(100% - 75px);
+}
+mat-toolbar{
+    background-color: #c7006e;
+}
+mat-icon{
+    color: white;
+}
+mat-list-item:hover{
+    background-color: #FF80AB;
+}
+.insidepanel2{
+  box-shadow: 0px 0px 10px -3px rgba(0,0,0,0.08), 0px 0px 10px -3px rgba(0,0,0,0.08), 0px 0px 10px -3px rgba(0,0,0,0.08);
+  height: calc(100% - 90px);
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 20px;
+  width: 90%;
+  border-radius: 10px;
+  background-color: white;
+
+}
+mat-tab{
+  margin: 20px;
+}
+
+.adddata{
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+.form-control{
+  width: 90%;
+}
+.inputpanel{
+  margin-left: 20px;
+}
+.text{
+  margin-top: 8px;
+  width: 15%;
+  position: absolute;
+}
+.headerMenu{
+  font-weight: bold;
+  margin-top: 10px;
+  margin-left: 5%;
+  font-size: 32px;
+}
+.input{
+  width: 60%;
+  margin-left: 15%;
+  position: absolute;
+}
+.addicon{
+  color: white;
+  background-color: #F50057;
+  margin-left: calc(100% - 80px);
+}
+table {
+  width: 100%;
+}
+.deleteicon{
+  background-color: #ef0078;
+}
+.deleteicon:hover{
+  background-color: #F50057;
+}

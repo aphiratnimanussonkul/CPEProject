@@ -105,3 +105,14 @@ func GetFacultyByEmail(w http.ResponseWriter, req *http.Request) {
 	}
 	json.NewEncoder(w).Encode(facultyAll)
 }
+func DeleteFaculty(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("Go Mongo Db")
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	facultyRepository := repository.NewFacultyRepositoryMongo(db, "Faculty")
+	params := mux.Vars(req)
+	var facultyName = string(params["facultyname"])
+	facultyRepository.DeleteByName(facultyName)
+}

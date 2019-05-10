@@ -99,7 +99,7 @@
 .insidepanel3 {
     position: fixed;
     margin-top: 0%;
-    width: 25%;
+    width: 300px;
     background-color: rgb(240, 240, 240);
 }
 
@@ -108,7 +108,7 @@
     margin-left: 70%;
     position: absolute;
     height: 100vh;
-    width: 25%;
+    width: 300px;
 }
 
 .panelright {
@@ -334,7 +334,6 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .facebookPage {
     height: 315px;
-    margin-left: calc(50% - 151.25px);
 }
 
 .chip-code {
@@ -457,7 +456,7 @@ iframe{
 .form-control{
     position: absolute;
     width: 400px;
-}
+} 
 .searchicon{
     color: white;
     margin-left: 410px;
@@ -478,3 +477,4 @@ iframe{
     font-size: 28px;
     color: rgb(255, 0, 140);
 }
+

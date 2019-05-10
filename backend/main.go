@@ -38,6 +38,7 @@ func main() {
   	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
 	router.HandleFunc("/facultyemail/{email}", api.GetFacultyByEmail).Methods("GET")
 	router.HandleFunc("/faculties", api.GetFacultyAll).Methods("GET")
+	router.HandleFunc("/deletefaculty/{facultyname}", api.DeleteFaculty).Methods("GET")
 	//Chip
 	router.HandleFunc("/chip/{name}", api.AddChip).Methods("GET")
 	router.HandleFunc("/chips", api.GetChipAll).Methods("GET")

@@ -81,17 +81,16 @@ export class HomeComponent implements OnInit {
         if(this.users.email === '') {
             setTimeout(() => {
                 this.getSubejctFromUser();
-            }, 50)
+            }, 50);
         } else {
             this.postService.getSubjectParseToArray(this.users.email);
-            
         }
     }
     getSubejctFromUser () {
         if(this.users.email === '') {
             setTimeout(() => {
                 this.getSubejctFromUser();
-            }, 50)
+            }, 50);
         } else {
             this.postService.getSubjectParseToArray(this.users.email);
         }

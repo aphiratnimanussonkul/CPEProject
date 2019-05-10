@@ -47,8 +47,8 @@ func (r *FacultyRepositoryMongo) Update(faculty *models.Faculty) error{
 
 
 //Delete
-func (r *FacultyRepositoryMongo) Delete(id string) error{
-  err := r.db.C(r.collection).Remove(bson.M{"id": id})
+func (r *FacultyRepositoryMongo) Delete(id bson.ObjectId) error{
+  err := r.db.C(r.collection).Remove(bson.M{"_id": id})
   return err
 }
 
@@ -86,4 +86,8 @@ func (r *FacultyRepositoryMongo) FindByName(name string) (*models.Faculty, error
   }
 
   return &faculty, nil
+}
+func (r *FacultyRepositoryMongo) DeleteByName(name string) error{
+  err := r.db.C(r.collection).Remove(bson.M{"name": name})
+  return err
 }

@@ -140,7 +140,8 @@
                             <ng-container *ngFor="let file of tempFileLink2; let j = index">
                                 <div *ngIf="file">
                                     <input type="file" (change)="upload($event, j)"
-                                        accept=".pdf, .doc, .docx, .rar, .zip" />
+                                        accept=".pdf, .doc, .docx, .rar, .zip"  class="inputfile"/>
+                                
                                     <br>
                                     <br>
                                 </div>

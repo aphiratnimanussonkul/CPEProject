@@ -3,12 +3,11 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule, MatTableModule,
   MatSidenavModule, MatCheckboxModule, MatDialogModule, MatBadgeModule, MatIconModule, MatSelectModule,  MatDatepickerModule,
-  MatGridListModule, MatNativeDateModule, MatMenuModule, MatRadioModule} from '@angular/material';
+  MatGridListModule, MatNativeDateModule, MatMenuModule, MatRadioModule, MatPaginatorModule} from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
-
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
@@ -28,14 +27,16 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule} from '@angular/material/chips';
 import { MatAutocompleteModule} from '@angular/material/autocomplete';
-import { CarouselModule } from 'angular-bootstrap-md'
-import { InputsModule, WavesModule, ButtonsModule } from 'angular-bootstrap-md'
+import { CarouselModule } from 'angular-bootstrap-md';
+import { InputsModule, WavesModule, ButtonsModule } from 'angular-bootstrap-md';
 
 import { HomeComponent } from './home/home.component';
 import { MycourseComponent } from './mycourse/mycourse.component';
 import {PostService} from './service/post.service';
 import { SearchCourseComponent } from './search-course/search-course.component';
 import { VdoComponent, dialog } from './vdo/vdo.component';
+import { AdminPageComponent } from './admin-page/admin-page.component';
+import { AdminService } from './service/admin.service';
 
 const appRoutes: Routes = [
   {path: 'login' , component: LoginComponent},
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
   {path: 'home' , component: HomeComponent},
   {path: 'mycourse/:code/:name' , component: MycourseComponent},
   {path: 'searchcourse/:code' , component: SearchCourseComponent},
-  {path: '' , component: VdoComponent}
+  {path: '' , component: VdoComponent},
+  {path: 'admin' , component: AdminPageComponent}
 ];
 
 @NgModule({
@@ -56,7 +58,8 @@ const appRoutes: Routes = [
     MycourseComponent,
     SearchCourseComponent,
     VdoComponent,
-    dialog
+    dialog,
+    AdminPageComponent
   ],
   imports: [
     BrowserModule,
@@ -96,10 +99,11 @@ const appRoutes: Routes = [
     CarouselModule,
     InputsModule,
     WavesModule,
-    ButtonsModule
+    ButtonsModule,
+    MatPaginatorModule
   ],
   entryComponents: [dialog],
-  providers: [AuthenService, ProfileService, PostService],
+  providers: [AuthenService, ProfileService, PostService, AdminService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
