@@ -86,3 +86,7 @@ func (r *MajorRepositoryMongo) FindByFaculty(facultyName string) (models.Majors,
 	return major, nil
 }
 
+func (r *MajorRepositoryMongo) DeleteByName(name string) error{
+	err := r.db.C(r.collection).Remove(bson.M{"name": name})
+	return err
+}

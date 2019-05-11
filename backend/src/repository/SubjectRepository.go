@@ -121,3 +121,7 @@ func (r *SubjectRepositoryMongo) FindByNameEx(name string) (models.Subjects, err
 
 	return subject, nil
 }
+func (r *SubjectRepositoryMongo) DeleteByCode(code string) error{
+	err := r.db.C(r.collection).Remove(bson.M{"code": code})
+	return err
+}

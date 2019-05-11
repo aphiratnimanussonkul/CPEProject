@@ -144,3 +144,14 @@ func GetSubjectFromUser(w http.ResponseWriter, req *http.Request)  {
 	}
 	json.NewEncoder(w).Encode(subjects)
 }
+func DeleteSubject(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("Go Mongo Db")
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	subjectRepository := repository.NewSubjectRepository(db, "Subject")
+	params := mux.Vars(req)
+	var code = string(params["code"])
+	subjectRepository.DeleteByCode(code)
+}

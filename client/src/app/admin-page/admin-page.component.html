@@ -8,59 +8,240 @@
 </mat-toolbar>
 <div class="panelMaster">
   <div class="panel2">
-    <p class="headerMenu">Faculty</p>
-    <div class="insidepanel2">
-      <div class="adddata">
-        <br>
-        <p>ADD DATA</p>
-        <mat-divider></mat-divider>
-        <br>
-        <div class="inputpanel">
-          <div class="text">
-            <p>ชื่อสำนักวิชา :</p>
-          </div>
-          <div class="input">
-            <form>
-              <div class="form-row">
-                <div class="col">
-                  <input mdbInput [(ngModel)]="facultyname" name="facultyname" class="form-control"
-                         placeholder="สำนักวิชา"
-                         matTooltip="Example : 523101 or Computer Programing or 523">
+    <div *ngIf="isFaculty">
+      <p class="headerMenu">Faculty</p>
+      <div class="insidepanel2">
+        <div class="adddata">
+          <br>
+          <p>ADD DATA</p>
+          <mat-divider></mat-divider>
+          <br>
+          <div class="inputpanel">
+            <div class="text">
+              <p>ชื่อสำนักวิชา :</p>
+            </div>
+            <div class="input">
+              <form>
+                <div class="form-row">
+                  <div class="col">
+                    <input mdbInput [(ngModel)]="facultyname" name="facultyname" class="form-control"
+                           placeholder="สำนักวิชา"
+                           matTooltip="Example : 523101 or Computer Programing or 523">
+                  </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
+            <button mat-button class="addicon" (click)="addFaculty()">ADD</button>
           </div>
-          <button mat-button class="addicon" (click)="addFaculty()">ADD</button>
+        </div>
+        <div class="adddata">
+          <br>
+          <p>SHOW DATA</p>
+          <mat-divider></mat-divider>
+          <br>
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource">
+              <ng-container matColumnDef="ลำดับ">
+                <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{i+1}}</td>
+              </ng-container>
+              <ng-container matColumnDef="สำนักวิชา">
+                <th mat-header-cell *matHeaderCellDef>สำนักวิชา</th>
+                <td mat-cell *matCellDef="let element">{{element.name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="หมายเหตุ">
+                <th mat-header-cell *matHeaderCellDef>หมายเหตุ</th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deleteFaculty(element.name)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+          </div>
+          <br>
         </div>
       </div>
-      <div class="adddata">
-        <br>
-        <p>SHOW DATA</p>
-        <mat-divider></mat-divider>
-        <br>
-        <div class="mat-elevation-z8">
-          <table mat-table [dataSource]="dataSource">
-            <ng-container matColumnDef="ลำดับ">
-              <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
-              <td mat-cell *matCellDef="let element;let i = index">{{i+1}}</td>
-            </ng-container>
-            <ng-container matColumnDef="สำนักวิชา">
-              <th mat-header-cell *matHeaderCellDef>สำนักวิชา</th>
-              <td mat-cell *matCellDef="let element">{{element.name}}</td>
-            </ng-container>
-            <ng-container matColumnDef="หมายเหตุ">
-              <th mat-header-cell *matHeaderCellDef>หมายเหตุ</th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deleteFaculty(element.name)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
+    </div>
+    <div *ngIf="isMajor">
+      <p class="headerMenu">Major</p>
+      <div class="insidepanel2">
+        <div class="adddata">
+          <br>
+          <p>ADD DATA</p>
+          <mat-divider></mat-divider>
+          <br>
+          <div class="inputpanel">
+            <div class="text">
+              <p>สำนักวิชา :</p>
+            </div>
+            <div class="selectFaculty">
+              <select [(ngModel)]="select.selectFaculty" class="browser-default custom-select" name="selectFaculty">
+                <option  *ngFor="let faculty of facultyArray" [value]="faculty.name" placeholder="สำนักวิชา">{{faculty.name}}</option>
+              </select>
+            </div>
+            <br>
+            <br>
+            <div class="text">
+              <p>ชื่อสาขาวิชา :</p>
+            </div>
+            <div class="input">
+              <form>
+                <div class="form-row">
+                  <div class="col">
+                    <input mdbInput [(ngModel)]="majorname" name="majorname" class="form-control"
+                           placeholder="สาขาวิชา"
+                           matTooltip="Example : 523101 or Computer Programing or 523">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <button mat-button class="addicon" (click)="addMajor()">ADD</button>
+          </div>
+        </div>
+        <div class="adddata">
+          <br>
+          <p>SHOW DATA</p>
+          <mat-divider></mat-divider>
+          <br>
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSourceMajor">
+              <ng-container matColumnDef="ลำดับ">
+                <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{i+1}}</td>
+              </ng-container>
+              <ng-container matColumnDef="สาขาวิชา">
+                <th mat-header-cell *matHeaderCellDef>สำนักวิชา</th>
+                <td mat-cell *matCellDef="let element">{{element.name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="สำนักวิชา">
+                <th mat-header-cell *matHeaderCellDef>สำนักวิชา</th>
+                <td mat-cell *matCellDef="let element">{{element.faculty.name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="หมายเหตุ">
+                <th mat-header-cell *matHeaderCellDef>หมายเหตุ</th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deleteMajor(element.name)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsMajor"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsMajor;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>
 
-          <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+    <div *ngIf="isSubject">
+      <p class="headerMenu">Subject</p>
+      <div class="insidepanel2">
+        <div class="adddata">
+          <br>
+          <p>ADD DATA</p>
+          <mat-divider></mat-divider>
+          <br>
+          <div class="inputpanel">
+            <div class="text">
+              <p>สำนักวิชา :</p>
+            </div>
+            <div class="selectFaculty">
+              <mat-select [(ngModel)]="select.selectFaculty" class="browser-default custom-select" name="selectFaculty">
+                <mat-option  *ngFor="let faculty of facultyArray" (click)="getMajorArray(faculty.name)" [value]="faculty.name">{{faculty.name}}</mat-option>
+              </mat-select>
+            </div>
+            <br>
+            <br>
+            <div class="text">
+              <p>สาขาวิชา :</p>
+            </div>
+            <div class="selectFaculty">
+              <select [(ngModel)]="select.selectMajor" class="browser-default custom-select" name="selectMajor">
+                <option  *ngFor="let major of majorArray" [value]="major.name" placeholder="สาขาวิชา">{{major.name}}</option>
+              </select>
+            </div>
+            <br>
+            <br>
+            <div class="text">
+              <p>ชื่อวิชา :</p>
+            </div>
+            <div class="input">
+              <form>
+                <div class="form-row">
+                  <div class="col">
+                    <input mdbInput [(ngModel)]="subjectname" name="subjectname" class="form-control"
+                           placeholder="ชื่อวิชา"
+                           matTooltip="Example : 523101 or Computer Programing or 523">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <br><br>
+            <div class="text">
+              <p>รหัสวิชา :</p>
+            </div>
+            <div class="input">
+              <form>
+                <div class="form-row">
+                  <div class="col">
+                    <input mdbInput [(ngModel)]="subjectcode" name="subjectcode" class="form-control"
+                           placeholder="รหัสวิชา"
+                           matTooltip="Example : 523101 or Computer Programing or 523">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <button mat-button class="addicon" (click)="addSubject()">ADD</button>
+
+          </div>
+        </div>
+        <div class="adddata">
+          <br>
+          <p>SHOW DATA</p>
+          <mat-divider></mat-divider>
+          <br>
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSourceSubject">
+              <ng-container matColumnDef="ลำดับ">
+                <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{i+1}}</td>
+              </ng-container>
+              <ng-container matColumnDef="ชื่อวิชา">
+                <th mat-header-cell *matHeaderCellDef>ชื่อวิชา</th>
+                <td mat-cell *matCellDef="let element">{{element.name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="รหัสวิชา">
+                <th mat-header-cell *matHeaderCellDef>รหัสวิชา</th>
+                <td mat-cell *matCellDef="let element">{{element.code}}</td>
+              </ng-container>
+              <ng-container matColumnDef="สาขาวิชา">
+                <th mat-header-cell *matHeaderCellDef>สำนักวิชา</th>
+                <td mat-cell *matCellDef="let element">{{element.major.name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="สำนักวิชา">
+                <th mat-header-cell *matHeaderCellDef>สำนักวิชา</th>
+                <td mat-cell *matCellDef="let element">{{element.major.faculty.name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="หมายเหตุ">
+                <th mat-header-cell *matHeaderCellDef>หมายเหตุ</th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deleteSubject(element.code)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsSubject"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsSubject;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+          </div>
+          <br>
         </div>
       </div>
     </div>
@@ -69,17 +250,17 @@
   <div class="panel1">
     <h3>Menu</h3>
     <mat-list>
-      <mat-list-item>
+      <mat-list-item (click)="chooseFaculty()">
         <mat-icon mat-list-icon>people</mat-icon>
         <h1 mat-line>Faculty</h1>
       </mat-list-item>
       <mat-divider></mat-divider>
-      <mat-list-item>
+      <mat-list-item (click)="chooseMajor()">
         <mat-icon mat-list-icon>book</mat-icon>
         <h1 mat-line>Major</h1>
       </mat-list-item>
       <mat-divider></mat-divider>
-      <mat-list-item>
+      <mat-list-item (click)="chooseSubject()">
         <mat-icon mat-list-icon>import_contacts</mat-icon>
         <h1 mat-line>Subject</h1>
       </mat-list-item>

@@ -92,5 +92,31 @@ func GetMajorByFacultyEmail(w http.ResponseWriter, req *http.Request)  {
 		}
 	}
 	json.NewEncoder(w).Encode(majors)
+}
+func DeleteMajor(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("Go Mongo Db")
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	majorRepository := repository.NewMajorRepository(db, "Major")
+	params := mux.Vars(req)
+	var majorName = string(params["majorname"])
+	majorRepository.DeleteByName(majorName)
+}
 
+func GetMajorAll(w http.ResponseWriter, req *http.Request) {
+
+	//
+	fmt.Println("Go Mongo Db")
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	majorRepository := repository.NewMajorRepository(db, "Major")
+	major, err2 := majorRepository.FindAll()
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	json.NewEncoder(w).Encode(major)
 }
