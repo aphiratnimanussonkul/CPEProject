@@ -52,7 +52,7 @@ export class PostService {
   getSubjectByCode(code): Observable<any> {
     return this.http.get(this.API + '/subjectbycode/' + code);
   }
-  //Get Faculty by Email Get Major by Email and Get Subject by Email
+  // Get Faculty by Email Get Major by Email and Get Subject by Email
   getFacultyTableByEmail(email): Observable<FacultyComponent[]> {
     return this.http.get<FacultyComponent[]>(this.API + '/facultyemail/' + email);
   }
@@ -71,6 +71,6 @@ export class PostService {
       data => {
         this.subjectFromUser = data;
         console.log(this.subjectFromUser);
-      }); 
+      });
   }
 }

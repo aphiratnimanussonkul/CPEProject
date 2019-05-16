@@ -60,7 +60,7 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 15, 20, 25, 30]" showFirstLastButtons></mat-paginator>
           </div>
           <br>
         </div>
@@ -132,7 +132,7 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumnsMajor"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumnsMajor;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 15, 20, 25, 30]" showFirstLastButtons></mat-paginator>
           </div>
           <br>
         </div>
@@ -239,7 +239,105 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumnsSubject"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumnsSubject;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 15, 20, 25, 30]" showFirstLastButtons></mat-paginator>
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isPost">
+      <p class="headerMenu">Subject</p>
+      <div class="insidepanel2">
+        <div class="adddata">
+          <br>
+          <p>POSTs</p>
+          <mat-divider></mat-divider>
+          <br>
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSourcePost" multiTemplateDataRows class="mat-elevation-z8">
+              <ng-container matColumnDef="ข้อความ">
+                <th mat-header-cell *matHeaderCellDef>ข้อความ</th>
+                <td mat-cell *matCellDef="let element" (click)="getPostDetail(element.id)">{{element.text}}</td>
+              </ng-container>
+              <ng-container matColumnDef="ผู้ใช้">
+                <th mat-header-cell *matHeaderCellDef>ผู้ใช้</th>
+                <td mat-cell *matCellDef="let element" (click)="getPostDetail(element.id)">{{element.user.email}}</td>
+              </ng-container>
+              <ng-container matColumnDef="ชื่อวิชา">
+                <th mat-header-cell *matHeaderCellDef>ชื่อวิชา</th>
+                <td mat-cell *matCellDef="let element" (click)="getPostDetail(element.id)">{{element.subject.name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="รหัสวิชา">
+                <th mat-header-cell *matHeaderCellDef>รหัสวิชา</th>
+                <td mat-cell *matCellDef="let element" (click)="getPostDetail(element.id)">{{element.subject.code}}</td>
+              </ng-container>
+              <ng-container matColumnDef="หมายเหตุ">
+                <th mat-header-cell *matHeaderCellDef>หมายเหตุ</th>
+                <td mat-cell *matCellDef="let element" (click)="getPostDetail(element.id)">
+                  <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deletePost(element.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+              <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsPost.length">
+                  <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                    <mat-card *ngIf="posts.vdoLink[0] || posts.file[0] || posts.picture[0]">
+                      <mat-card-content>
+                        <mat-tab-group >
+                          <mat-tab *ngIf="posts.vdoLink[0]">
+                            <ng-template mat-tab-label>
+                              <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
+                              Youtube
+                            </ng-template>
+                            <br>
+                            <div *ngFor="let vdo of posts.vdoLink; let j = index">
+                              <a [href]="vdo" target="_blank"
+                                 rel="noopener noreferrer">{{vdo}}</a>
+                            </div>
+                          </mat-tab>
+                          <mat-tab *ngIf="posts.file[0]">
+                            <ng-template mat-tab-label>
+                              <mat-icon class="example-tab-icon">attach_file</mat-icon>
+                              File
+                            </ng-template>
+                            <br>
+                            <div *ngFor="let files of posts.file; let k = index">
+                                <a [href]="files" target="_blank"
+                                   rel="noopener noreferrer">{{posts.filename[k]}}</a>
+                            </div>
+                          </mat-tab>
+                          <mat-tab *ngIf="posts.picture[0]">
+                            <ng-template mat-tab-label>
+                              <mat-icon class="example-tab-icon">photo_library</mat-icon>
+                              Picture
+                            </ng-template>
+                            <br>
+                            <mdb-carousel [animation]="'slide'" data-interval="false">
+                              <mdb-carousel-item *ngFor="let pic of posts.picture; let x = index">
+                                <a [href]="posts.picture[x]" target="_blank" rel="noopener noreferrer">
+                                  <img [src]="posts.picture[x]" width=100%>
+                                </a>
+                              </mdb-carousel-item>
+                            </mdb-carousel>
+                          </mat-tab>
+                        </mat-tab-group>
+                      </mat-card-content>
+                    </mat-card>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsPost"></tr>
+              <tr mat-row *matRowDef="let element; columns: displayedColumnsPost;"
+                  class="example-element-row"
+                  [class.example-expanded-row]="expandedElement === element"
+                  (click)="expandedElement = expandedElement === element ? null : element">
+              </tr>
+              <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 15, 20, 25, 30]" showFirstLastButtons></mat-paginator>
           </div>
           <br>
         </div>
@@ -265,7 +363,7 @@
         <h1 mat-line>Subject</h1>
       </mat-list-item>
       <mat-divider></mat-divider>
-      <mat-list-item>
+      <mat-list-item (click)="choosePost()">
         <mat-icon mat-list-icon>desktop_mac</mat-icon>
         <h1 mat-line>Post</h1>
       </mat-list-item>

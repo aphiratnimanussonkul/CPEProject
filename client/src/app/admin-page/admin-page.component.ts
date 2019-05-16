@@ -4,7 +4,11 @@ import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenService} from '../service/authen.service';
 import {AdminService} from '../service/admin.service';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
+export interface Post {
+  text: string;
+}
 export interface Faculty {
   name: string;
 }
@@ -17,7 +21,14 @@ export interface Subject {
 @Component({
   selector: 'app-admin-page',
   templateUrl: './admin-page.component.html',
-  styleUrls: ['./admin-page.component.scss']
+  styleUrls: ['./admin-page.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class AdminPageComponent implements OnInit {
   faculty: Faculty[];
@@ -32,6 +43,7 @@ export class AdminPageComponent implements OnInit {
     selectFaculty: '',
     selectMajor: ''
   };
+  posts: Array<any>;
   subjectcode: '';
   subjectname: '';
   majorname: '';
@@ -40,9 +52,11 @@ export class AdminPageComponent implements OnInit {
   dataSource:  MatTableDataSource<any>;
   dataSourceMajor:  MatTableDataSource<any>;
   dataSourceSubject:  MatTableDataSource<any>;
+  dataSourcePost:  MatTableDataSource<any>;
   displayedColumns = ['ลำดับ', 'สำนักวิชา', 'หมายเหตุ'];
   displayedColumnsMajor = ['ลำดับ', 'สาขาวิชา', 'สำนักวิชา', 'หมายเหตุ'];
   displayedColumnsSubject = ['ลำดับ', 'ชื่อวิชา', 'รหัสวิชา', 'สาขาวิชา', 'สำนักวิชา', 'หมายเหตุ'];
+  displayedColumnsPost = ['ข้อความ', 'ผู้ใช้', 'ชื่อวิชา', 'รหัสวิชา', 'หมายเหตุ'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   ngOnInit() {
     this.isComment = this.isFaculty = this.isMajor = this.isUser = this.isPost = this.isSubject = false;
@@ -199,6 +213,38 @@ export class AdminPageComponent implements OnInit {
         } else {
           alert('ไม่สามารถลบวิชา');
         }
+      }
+    );
+  }
+  // Post
+  choosePost() {
+    this.getPost();
+    this.isPost = true;
+    this.isComment = this.isFaculty = this.isUser = this.isSubject = this.isMajor = false;
+  }
+  getPost() {
+    this.adminService.getPostTable().subscribe(data => {
+      this.dataSourcePost = new MatTableDataSource(data);
+      this.dataSourcePost.paginator = this.paginator;
+    });
+  }
+  deletePost(postid) {
+    this.httpClient.get('http://localhost:12345/deletepost/' + postid).subscribe(
+      data => {
+        if (!data) {
+          alert('ลบวิชา โพสสำเร็จ');
+          this.getPost();
+        } else {
+          alert('ไม่สามารถลบโพส');
+        }
+      }
+    );
+  }
+  getPostDetail(postid) {
+    this.adminService.getPostById(postid).subscribe(
+      data => {
+        this.posts = data;
+        console.log(data);
       }
     );
   }

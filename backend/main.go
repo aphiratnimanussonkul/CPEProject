@@ -63,10 +63,10 @@ func main() {
 	router.HandleFunc("/postfull/{text}/{email}/{code}/{vdoLink}/{name}/{token}", api.AddPost).Methods("GET")
 	router.HandleFunc("/post/{text}/{email}/{code}", api.AddPost).Methods("POST")
 	router.HandleFunc("/post", api.AddPost).Methods("POST")
-	router.HandleFunc("/postPic", api.UploadFileChunk)
 	router.HandleFunc("/posts", api.GetPostAll).Methods("GET")
 	router.HandleFunc("/post/{code}", api.GetPostByCode).Methods("GET")
 	router.HandleFunc("/deletepost/{postid}", api.DeletePost).Methods("GET")
+	router.HandleFunc("/getpost/{postid}", api.GetPostById).Methods("GET")
   	log.Fatal(http.ListenAndServe(":12345", handlers.CORS(handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}), handlers.AllowedOrigins([]string{"*"}))(router)))
   
 }

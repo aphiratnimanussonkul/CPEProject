@@ -158,48 +158,6 @@ func GetPostByCode(w http.ResponseWriter, req *http.Request) {
 
 }
 
-func UploadFileChunk(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("File Upload Endpoint Hit")
-
-	r.ParseMultipartForm(10 << 20)
-
-	file, handler, err := r.FormFile("profile")
-	if err != nil {
-		fmt.Println("error can not get data")
-		fmt.Println(err)
-		return
-	}
-
-	//name := strings.Split(handler.Filename, ".")
-	fmt.Println(handler, file)
-	//
-	//db, err := config.GetMongoDB()
-	//if err != nil {
-	//
-	//}
-	//
-	//src, err := handler.Open()
-	//if err != nil {
-	//
-	//	return
-	//}
-	//defer src.Close()
-	//
-	//
-	//dst, err := os.Create("./img/" + handler.Filename)
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
-	//defer dst.Close()
-	//
-	//io.Copy(dst, src)
-	//
-	//imgRepository := repository.NewImgRepository(db, "Img")
-	//imgRepository.Save(img)
-	//json.NewEncoder(w).Encode(img.ID)
-}
-
 func DeletePost(w http.ResponseWriter, req *http.Request) {
 	//
 	db, err := config.GetMongoDB()
@@ -216,4 +174,22 @@ func DeletePost(w http.ResponseWriter, req *http.Request) {
 	err = postRepository.Delete(post)
 	if err != nil {
 	}
+}
+func GetPostById(w http.ResponseWriter, req *http.Request) {
+	//
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	postRepository := repository.NewPostRepository(db, "Post")
+
+	params := mux.Vars(req)
+	var postid = string(params["postid"])
+	post, err2 := postRepository.FindByID(bson.ObjectIdHex(postid))
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	json.NewEncoder(w).Encode(post)
+
 }
