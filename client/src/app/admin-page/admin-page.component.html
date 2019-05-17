@@ -275,7 +275,7 @@
               <ng-container matColumnDef="หมายเหตุ">
                 <th mat-header-cell *matHeaderCellDef>หมายเหตุ</th>
                 <td mat-cell *matCellDef="let element" (click)="getPostDetail(element.id)">
-                  <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deletePost(element.id)">
+                  <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deletePost(element.id, element.picture, element.file)">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </td>

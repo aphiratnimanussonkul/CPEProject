@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenService} from '../service/authen.service';
 import {AdminService} from '../service/admin.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {AngularFireStorage, AngularFireStorageReference} from "@angular/fire/storage";
 
 export interface Post {
   text: string;
@@ -35,8 +36,9 @@ export class AdminPageComponent implements OnInit {
   major: Major[];
   constructor(private adminService: AdminService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
               private route: ActivatedRoute, private router: Router,
-              private authenService: AuthenService) {
+              private authenService: AuthenService, private storage: AngularFireStorage) {
   }
+  ref: AngularFireStorageReference;
   isFaculty; isMajor; isSubject; isPost; isComment; isUser: boolean;
   facultyname: '';
   select: any = {
@@ -228,7 +230,21 @@ export class AdminPageComponent implements OnInit {
       this.dataSourcePost.paginator = this.paginator;
     });
   }
-  deletePost(postid) {
+  deletePost(postid, picture, file) {
+    if (picture.length !== 0) {
+      for (let i = 0; i < picture.length; i++) {
+        let temp = (<string>picture[i]).split('/');
+        let picname = temp[7].split('?');
+        this.storage.ref(picname[0]).delete();
+      }
+    }
+    if (file.length !== 0) {
+      for (let i = 0; i < file.length; i++) {
+        let temp = (<string>file[i]).split('/');
+        let filename = temp[7].split('?');
+        this.storage.ref(filename[0]).delete();
+      }
+    }
     this.httpClient.get('http://localhost:12345/deletepost/' + postid).subscribe(
       data => {
         if (!data) {
