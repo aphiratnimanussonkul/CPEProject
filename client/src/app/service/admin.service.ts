@@ -33,4 +33,11 @@ export class AdminService {
   getPostById(postid): Observable<any> {
     return this.http.get('http://localhost:12345/getpost/' + postid);
   }
+  createSubject(subject: Subject): Observable<Major> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    headers.append('Content-Type', 'application/json');
+    return this.http.post<Subject>(this.API + '/subject', JSON.stringify(subject), { headers });
+  }
 }

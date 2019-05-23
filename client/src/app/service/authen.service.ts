@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase';
+import {PostService} from "./post.service";
 // import { HttpClient, HttpHeaders} from '@angular/common/http';
 
 
@@ -8,8 +9,9 @@ import { auth } from 'firebase';
   providedIn: 'root'
 })
 export class AuthenService {
+  public user: firebase.User;
   public API = '//localhost:12345';
-  constructor(private afAuth: AngularFireAuth) { }
+  constructor(private afAuth: AngularFireAuth, private postService: PostService) { }
 
   logingoogle() {
     console.log('Redirecting to Google login provider');
@@ -37,6 +39,11 @@ export class AuthenService {
   getLoggedInUser() {
     return this.afAuth.authState;
   }
-
+  getUserAndSaveOnsService() {
+    this.getLoggedInUser().subscribe(user => {
+      this.user = user;
+      this.postService.getSubjectParseToArray(user.email);
+    });
+  }
 
 }

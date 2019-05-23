@@ -5,19 +5,29 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenService} from '../service/authen.service';
 import {AdminService} from '../service/admin.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {AngularFireStorage, AngularFireStorageReference} from '@angular/fire/storage';
 
 export interface Post {
   text: string;
 }
+
 export interface Faculty {
   name: string;
 }
+
 export interface Major {
   name: string;
 }
+
 export interface Subject {
   name: string;
+  code: string;
+  picture: string;
+  major: {
+    name: string;
+  };
 }
+
 @Component({
   selector: 'app-admin-page',
   templateUrl: './admin-page.component.html',
@@ -33,39 +43,60 @@ export interface Subject {
 export class AdminPageComponent implements OnInit {
   faculty: Faculty[];
   major: Major[];
+
   constructor(private adminService: AdminService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
               private route: ActivatedRoute, private router: Router,
-              private authenService: AuthenService) {
+              private authenService: AuthenService, private storage: AngularFireStorage) {
   }
-  isFaculty; isMajor; isSubject; isPost; isComment; isUser: boolean;
+
+  ref: AngularFireStorageReference;
+  picture: File;
+  isFaculty;
+  isMajor;
+  isSubject;
+  isPost;
+  isComment;
+  isUser: boolean;
   facultyname: '';
   select: any = {
     selectFaculty: '',
     selectMajor: ''
   };
+  subject: Subject = {
+    name: '',
+    picture: '',
+    code: '',
+    major: {
+      name: ''
+    }
+  };
+  isPosting: boolean;
   posts: Array<any>;
   subjectcode: '';
   subjectname: '';
   majorname: '';
   facultyArray: Array<any>;
   majorArray: Array<any>;
-  dataSource:  MatTableDataSource<any>;
-  dataSourceMajor:  MatTableDataSource<any>;
-  dataSourceSubject:  MatTableDataSource<any>;
-  dataSourcePost:  MatTableDataSource<any>;
+  dataSource: MatTableDataSource<any>;
+  dataSourceMajor: MatTableDataSource<any>;
+  dataSourceSubject: MatTableDataSource<any>;
+  dataSourcePost: MatTableDataSource<any>;
   displayedColumns = ['ลำดับ', 'สำนักวิชา', 'หมายเหตุ'];
   displayedColumnsMajor = ['ลำดับ', 'สาขาวิชา', 'สำนักวิชา', 'หมายเหตุ'];
   displayedColumnsSubject = ['ลำดับ', 'ชื่อวิชา', 'รหัสวิชา', 'สาขาวิชา', 'สำนักวิชา', 'หมายเหตุ'];
   displayedColumnsPost = ['ข้อความ', 'ผู้ใช้', 'ชื่อวิชา', 'รหัสวิชา', 'หมายเหตุ'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
   ngOnInit() {
+    this.isPosting = false;
     this.isComment = this.isFaculty = this.isMajor = this.isUser = this.isPost = this.isSubject = false;
     this.chooseFaculty();
     this.adminService.getFacultyTable().subscribe(data => {
-        this.dataSource = new MatTableDataSource(data);
-        this.dataSource.paginator = this.paginator;
+      this.dataSource = new MatTableDataSource(data);
+      this.dataSource.paginator = this.paginator;
     });
   }
+
   addFaculty() {
     if (this.facultyname === '') {
       alert('กรุณาใส่ชื่อสำนักวิชา');
@@ -83,12 +114,14 @@ export class AdminPageComponent implements OnInit {
       );
     }
   }
+
   getFaculty() {
     this.adminService.getFacultyTable().subscribe(data => {
       this.dataSource = new MatTableDataSource(data);
       this.dataSource.paginator = this.paginator;
     });
   }
+
   deleteFaculty(facultyname) {
     this.httpClient.get('http://localhost:12345/deletefaculty/' + facultyname).subscribe(
       data => {
@@ -101,16 +134,19 @@ export class AdminPageComponent implements OnInit {
       }
     );
   }
+
   chooseFaculty() {
     this.isFaculty = true;
     this.isComment = this.isMajor = this.isUser = this.isPost = this.isSubject = false;
   }
+
   chooseMajor() {
     this.getFacultyArray();
     this.getMajor();
     this.isMajor = true;
     this.isComment = this.isFaculty = this.isUser = this.isPost = this.isSubject = false;
   }
+
   chooseSubject() {
     this.select.selectFaculty = '';
     this.getFacultyArray();
@@ -118,6 +154,7 @@ export class AdminPageComponent implements OnInit {
     this.isSubject = true;
     this.isComment = this.isFaculty = this.isUser = this.isPost = this.isMajor = false;
   }
+
   // Major
   getFacultyArray() {
     this.adminService.getFaculty().subscribe(
@@ -126,12 +163,14 @@ export class AdminPageComponent implements OnInit {
       }
     );
   }
+
   getMajor() {
     this.adminService.getMajorTable().subscribe(data => {
       this.dataSourceMajor = new MatTableDataSource(data);
       this.dataSourceMajor.paginator = this.paginator;
     });
   }
+
   addMajor() {
     if (this.majorname === '') {
       alert('กรุณาใส่ชื่อสาขานักวิชา');
@@ -151,6 +190,7 @@ export class AdminPageComponent implements OnInit {
       );
     }
   }
+
   deleteMajor(majorname) {
     this.httpClient.get('http://localhost:12345/deletemajor/' + majorname).subscribe(
       data => {
@@ -163,6 +203,7 @@ export class AdminPageComponent implements OnInit {
       }
     );
   }
+
   // Subject
   getMajorArray(faculty) {
     this.adminService.getMajorFaculty(faculty).subscribe(
@@ -172,12 +213,14 @@ export class AdminPageComponent implements OnInit {
       }
     );
   }
+
   getSubject() {
     this.adminService.getSubjectTable().subscribe(data => {
       this.dataSourceSubject = new MatTableDataSource(data);
       this.dataSourceSubject.paginator = this.paginator;
     });
   }
+
   addSubject() {
     if (this.subjectname === '') {
       alert('กรุณาใส่ชื่อวิชา');
@@ -187,10 +230,13 @@ export class AdminPageComponent implements OnInit {
       alert('กรุณาเลือกสำนักวิชา');
     } else if (this.select.selectMajor === '') {
       alert('กรุณาเลือกสาขาวิชา');
+    } else if (this.subject.picture === '') {
+      alert('กรุณาเลือกรุปภาพ');
     } else {
-      this.httpClient.get('http://localhost:12345/subject/' + this.subjectname + '/'
-        + this.subjectcode + '/'
-        + this.select.selectMajor).subscribe(
+      this.subject.name = this.subjectname;
+      this.subject.code = this.subjectcode;
+      this.subject.major.name = this.select.selectMajor;
+      this.adminService.createSubject(this.subject).subscribe(
         data => {
           if (!data) {
             alert('เพิ่มวิชา สำเร็จ');
@@ -204,6 +250,7 @@ export class AdminPageComponent implements OnInit {
       );
     }
   }
+
   deleteSubject(code) {
     this.httpClient.get('http://localhost:12345/deletesubject/' + code).subscribe(
       data => {
@@ -216,19 +263,36 @@ export class AdminPageComponent implements OnInit {
       }
     );
   }
+
   // Post
   choosePost() {
     this.getPost();
     this.isPost = true;
     this.isComment = this.isFaculty = this.isUser = this.isSubject = this.isMajor = false;
   }
+
   getPost() {
     this.adminService.getPostTable().subscribe(data => {
       this.dataSourcePost = new MatTableDataSource(data);
       this.dataSourcePost.paginator = this.paginator;
     });
   }
-  deletePost(postid) {
+
+  deletePost(postid, picture, file) {
+    if (picture.length !== 0) {
+      for (let i = 0; i < picture.length; i++) {
+        let temp = (<string>picture[i]).split('/');
+        let picname = temp[7].split('?');
+        this.storage.ref(picname[0]).delete();
+      }
+    }
+    if (file.length !== 0) {
+      for (let i = 0; i < file.length; i++) {
+        let temp = (<string>file[i]).split('/');
+        let filename = temp[7].split('?');
+        this.storage.ref(filename[0]).delete();
+      }
+    }
     this.httpClient.get('http://localhost:12345/deletepost/' + postid).subscribe(
       data => {
         if (!data) {
@@ -240,6 +304,7 @@ export class AdminPageComponent implements OnInit {
       }
     );
   }
+
   getPostDetail(postid) {
     this.adminService.getPostById(postid).subscribe(
       data => {
@@ -247,6 +312,49 @@ export class AdminPageComponent implements OnInit {
         console.log(data);
       }
     );
+  }
+
+  uploadPic(event) {
+    this.isPosting = true;
+    if (event.target.files[0].size > 1000000) {
+      alert('The picture you have selected is too large. The maximum size is 1MB.');
+    } else {
+      this.picture = event.target.files[0];
+      if (this.picture.name.includes('png', 0) ||
+        this.picture.name.includes('PNG', 0) ||
+        this.picture.name.includes('jpg', 0) ||
+        this.picture.name.includes('JPEG', 0) ||
+        this.picture.name.includes('JPG', 0)
+      ) {
+        this.ref = this.storage.ref('PicMajor/' + this.dateAsYYYYMMDDHHNNSS(new Date()));
+        this.ref.put(this.picture).then((result) => {
+          this.ref.getDownloadURL().subscribe(
+            data => {
+              this.subject.picture = data;
+              if (this.subject.picture !== '') {
+                this.isPosting = false;
+              }
+            }
+          );
+        });
+      } else {
+        alert('Please choose picture as type : png or jpg');
+      }
+    }
+  }
+
+  dateAsYYYYMMDDHHNNSS(date): string {
+    return date.getFullYear()
+      + '-' + this.leftpad(date.getMonth() + 1, 2)
+      + '-' + this.leftpad(date.getDate(), 2)
+      + '-' + this.leftpad(date.getHours(), 2)
+      + '-' + this.leftpad(date.getMinutes(), 2)
+      + '-' + this.leftpad(date.getSeconds(), 2);
+  }
+
+  leftpad(val, resultLength = 2, leftpadChar = '0'): string {
+    return (String(leftpadChar).repeat(resultLength)
+      + String(val)).slice(String(val).length);
   }
 }
 

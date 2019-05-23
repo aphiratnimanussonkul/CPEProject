@@ -1,17 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material';
-import { HttpClient } from '@angular/common/http';
-import { PostService } from '../service/post.service';
-import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
-import { Observable } from 'rxjs/Observable';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { DataSource } from '@angular/cdk/collections';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenService } from '../service/authen.service';
-
-import set = Reflect.set;
-import { empty } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
+import {MatIconRegistry} from '@angular/material';
+import {HttpClient} from '@angular/common/http';
+import {PostService} from '../service/post.service';
+import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from '@angular/fire/storage';
+import {Observable} from 'rxjs/Observable';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {DataSource} from '@angular/cdk/collections';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthenService} from '../service/authen.service';
 
 export interface FacultyComponent {
   name: string;
@@ -39,16 +36,16 @@ export interface Post {
   styleUrls: ['./mycourse.component.css'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
-      state('expanded', style({ height: '*' })),
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
 export class MycourseComponent implements OnInit {
   constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
-    private router: Router, private authenService: AuthenService) {
+              private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
+              private router: Router, private authenService: AuthenService) {
     iconRegistry.addSvgIcon(
       'more',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -129,20 +126,15 @@ export class MycourseComponent implements OnInit {
   isPosting: boolean;
 
   inputCode: '';
+
   ngOnInit() {
+    this.authenService.getUserAndSaveOnsService();
     this.authenService.getLoggedInUser().subscribe(user => {
-      console.log(user);
-      this.user = user;
       this.posts.user.email = user.email;
-      if (user.displayName !== null) {
-        this.disPlayName = user.displayName;
-      } else {
-        this.disPlayName = user.email;
-      }
     });
     this.posts.subject.code = this.codeSubject;
     this.posts.subject.name = this.nameSubject;
-
+    this.refresh();
     this.countPicChoose = 0;
     this.countFileChoose = 0;
     this.countFileStatus = 0;
@@ -166,7 +158,7 @@ export class MycourseComponent implements OnInit {
   UPLOAD() {
     console.log('File');
     for (let i = 0; i < this.countFileChoose; i++) {
-      this.refFile[i] = this.storage.ref(this.file[i].name);
+      this.refFile[i] = this.storage.ref('File' + this.dateAsYYYYMMDDHHNNSS(new Date()).concat(i.toString()));
       this.refFile[i].put(this.file[i]).then((result) => {
         if (result.state !== 'success') {
           this.checkFile(result.state);
@@ -194,7 +186,7 @@ export class MycourseComponent implements OnInit {
       }, 200);
     } else {
       for (let i = 0; i < this.countPicChoose; i++) {
-        this.ref[i] = this.storage.ref(this.picture[i].name);
+        this.ref[i] = this.storage.ref('Pic' + this.dateAsYYYYMMDDHHNNSS(new Date()).concat(i.toString()));
         this.ref[i].put(this.picture[i]).then((result) => {
           if (result.state !== 'success') {
             this.checkPicture(result.state);
@@ -245,7 +237,7 @@ export class MycourseComponent implements OnInit {
     this.countPicStatus = 0;
     this.countPic = 0;
     this.countFile = 0;
-    
+
     this.ref.splice(0);
     this.refFile.splice(0);
     for (let i = 0; i < this.count; i++) {
@@ -299,7 +291,7 @@ export class MycourseComponent implements OnInit {
 
   getMajor(facultyName) {
     this.major = null;
-    this.postService.getMajorByEmail(facultyName, this.posts.user.email).subscribe(data => {
+    this.postService.getMajorByEmail(facultyName, this.authenService.user.email).subscribe(data => {
       this.major = data;
     });
 
@@ -307,7 +299,7 @@ export class MycourseComponent implements OnInit {
 
   getSubject(majorName) {
     this.subject = null;
-    this.postService.getSubjectByEmail(majorName, this.posts.user.email).subscribe(data => {
+    this.postService.getSubjectByEmail(majorName, this.authenService.user.email).subscribe(data => {
       this.subject = data;
     });
   }
@@ -341,7 +333,11 @@ export class MycourseComponent implements OnInit {
       alert('The file you have selected is too large. The maximum size is 25MB. Please compress file');
     } else {
       this.file[index] = event.target.files[0];
-      this.countFileChoose += 1;
+      if (this.countFileChoose === 0) {
+        this.countFileChoose += 1;
+      } else if (index >= this.countFileChoose) {
+        this.countFileChoose += 1;
+      }
       if (this.file[index].name.includes('pdf', 0) ||
         this.file[index].name.includes('doc', 0) ||
         this.file[index].name.includes('ppt', 0) ||
@@ -359,11 +355,11 @@ export class MycourseComponent implements OnInit {
     if (this.posts.user.email === '') {
       setTimeout(() => {
         this.refresh();
-      }, 10);
+      }, 50);
     } else {
-      this.postService.getFacultyTableByEmail(this.posts.user.email).subscribe((res) => {
+      this.postService.getFacultyTableByEmail(this.authenService.user.email).subscribe((res) => {
         this.faculty = res;
-        this.dataSource = new FacultyDataSource(this.postService, this.posts.user.email);
+        this.dataSource = new FacultyDataSource(this.postService, this.authenService.user.email);
       });
     }
   }
@@ -443,11 +439,15 @@ export class MycourseComponent implements OnInit {
       alert('The picture you have selected is too large. The maximum size is 1MB.');
     } else {
       this.picture[index] = event.target.files[0];
-      console.log(this.picture);
-      this.countPicChoose += 1;
+      if (this.countPicChoose === 0) {
+        this.countPicChoose += 1;
+      } else if (index >= this.countPicChoose) {
+        this.countPicChoose += 1;
+      }
       if (this.picture[index].name.includes('png', 0) ||
         this.picture[index].name.includes('PNG', 0) ||
         this.picture[index].name.includes('jpg', 0) ||
+        this.picture[index].name.includes('JPEG', 0) ||
         this.picture[index].name.includes('JPG', 0)
       ) {
       } else {
@@ -467,7 +467,22 @@ export class MycourseComponent implements OnInit {
     this.isUpload = !this.isUpload;
   }
 
-  delete(postid) {
+  delete(postid, picture, file) {
+    if (picture.length !== 0) {
+      for (let i = 0; i < picture.length; i++) {
+        let temp = (<string>picture[i]).split('/');
+        let picname = temp[7].split('?');
+        this.storage.ref(picname[0]).delete();
+      }
+    }
+    if (file.length !== 0) {
+      for (let i = 0; i < file.length; i++) {
+        let temp = (<string>file[i]).split('/');
+        let filename = temp[7].split('?');
+        console.log(filename[0]);
+        this.storage.ref(filename[0]).delete();
+      }
+    }
     this.httpClient.get('http://localhost:12345/deletepost/' + postid, postid).subscribe(
       data => {
         if (!data) {
@@ -477,33 +492,51 @@ export class MycourseComponent implements OnInit {
       }
     );
   }
+
   logout() {
     this.router.navigate(['/login']);
     this.authenService.logout();
   }
+
   unfollow(code) {
-    this.httpClient.get('http://localhost:12345/unfollow/' + this.posts.user.email + '/' + code).subscribe(
+    this.httpClient.get('http://localhost:12345/unfollow/' + this.authenService.user.email + '/' + code).subscribe(
       data => {
         if (!data) {
           alert('Unfollow success');
-          this.postService.getFacultyTableByEmail(this.posts.user.email).subscribe((res) => {
+          this.postService.getFacultyTableByEmail(this.authenService.user.email).subscribe((res) => {
             this.faculty = res;
-            this.dataSource = new FacultyDataSource(this.postService, this.posts.user.email);
+            this.dataSource = new FacultyDataSource(this.postService, this.authenService.user.email);
           });
         }
       },
-      error => { }
+      error => {
+      }
     );
   }
+
   search() {
     console.log(this.inputCode);
     if (this.inputCode === '') {
-        alert('Please enter subject code or subject name');
+      alert('Please enter subject code or subject name');
     } else {
-        this.router.navigate(['/searchcourse', this.inputCode]);
-        this.inputCode = '';
+      this.router.navigate(['/searchcourse', this.inputCode]);
+      this.inputCode = '';
     }
-}
+  }
+
+  dateAsYYYYMMDDHHNNSS(date): string {
+    return date.getFullYear()
+      + '-' + this.leftpad(date.getMonth() + 1, 2)
+      + '-' + this.leftpad(date.getDate(), 2)
+      + '-' + this.leftpad(date.getHours(), 2)
+      + '-' + this.leftpad(date.getMinutes(), 2)
+      + '-' + this.leftpad(date.getSeconds(), 2);
+  }
+
+  leftpad(val, resultLength = 2, leftpadChar = '0'): string {
+    return (String(leftpadChar).repeat(resultLength)
+      + String(val)).slice(String(val).length);
+  }
 }
 
 export class FacultyDataSource extends DataSource<any> {

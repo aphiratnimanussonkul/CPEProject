@@ -7,6 +7,7 @@ type Subject struct {
 	Name		string 		`json:"name"`
 	Code		string			`json:"code"`
 	Major       *Major       `bson:"major" json:"major"`
+	Picture		string		`json:"picture"`
 }
 type Subjects []Subject
 type SubjectPointer []*Subject 

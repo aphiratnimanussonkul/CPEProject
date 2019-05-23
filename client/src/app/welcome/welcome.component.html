@@ -1,0 +1,47 @@
+<mat-toolbar>
+  <mat-toolbar-row class="navbar">
+    <a href="home" class="courseOnline">SUT Course Online</a>
+    <span class="spacer"></span>
+    <div class="nameNavbar">{{authenService.user.displayName}}</div>
+    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + authenService.user?.photoURL + ')' }"
+         class="headerimage"></div>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
+            class="moreBackground">
+      <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
+    </button>
+    <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon>
+        <span>about me</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/home']">
+        <mat-icon>add</mat-icon>
+        <span>Add Course</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon svgIcon="logout"></mat-icon>
+        <span>log out</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="panelMaster">
+  <div class="panelleft">
+  </div>
+  <div class="panel1">
+    <mat-grid-list cols="3" rowHeight="380px">
+      <mat-grid-tile class="grid" *ngFor="let subject of postService.subjectFromUser">
+        <mat-card class="subjectCard">
+          <img mat-card-image [src]="subject.picture">
+          <mat-card-title (click)="getFeed(subject.code, subject.name)">{{subject.name}}</mat-card-title>
+          <mat-card-subtitle>{{subject.code}}</mat-card-subtitle>
+          <mat-divider></mat-divider>
+          <button mat-button (click)="getFeed(subject.code, subject.name)">See</button>
+          <button mat-button (click)="unfollow(subject.code)">Unfollow</button>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+  <div class="panelright">
+  </div>
+</div>

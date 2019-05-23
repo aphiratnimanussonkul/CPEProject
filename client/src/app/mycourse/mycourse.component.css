@@ -67,21 +67,21 @@
     height: 100vh;
     position: absolute;
     margin-left: 5%;
-    width: 25%;
+    width: 26%;
 }
 
 .insidepanel1 {
     position: fixed;
     border-radius: 20px;
     border-radius: 2px;
-    width: 25%;
+    width: 26%;
     background-color: rgb(189, 189, 189);
 }
 
 .panel2 {
     min-width: 370px;
     margin-top: 10px;
-    margin-left: 30%;
+    margin-left: 31%;
     float: left;
     position: absolute;
     height: 100vh;
@@ -105,7 +105,7 @@
 
 .panel3 {
     margin-top: 10px;
-    margin-left: 70%;
+    margin-left: 71%;
     position: absolute;
     height: 100vh;
     width: 300px;
@@ -477,4 +477,3 @@ iframe{
     font-size: 28px;
     color: rgb(255, 0, 140);
 }
-

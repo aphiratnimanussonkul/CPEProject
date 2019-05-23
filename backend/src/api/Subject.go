@@ -1,13 +1,14 @@
 package api
 
 import (
+	"CPEProject/config"
+	"CPEProject/src/models"
+	"CPEProject/src/repository"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"io/ioutil"
 	"net/http"
-	"CPEProject/src/models"
-	"CPEProject/config"
-	"CPEProject/src/repository"
 	"strconv"
 	"strings"
 )
@@ -154,4 +155,36 @@ func DeleteSubject(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	var code = string(params["code"])
 	subjectRepository.DeleteByCode(code)
+}
+
+func CreateSubject(w http.ResponseWriter, req *http.Request) {
+	b, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+	}
+	// Unmarshal
+	var msg models.Subject
+	err = json.Unmarshal(b, &msg)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+	}
+
+	db, err := config.GetMongoDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+	subjectRepository := repository.NewSubjectRepository(db, "Subject")
+	majorRepository := repository.NewMajorRepository(db, "Major")
+
+	major, err2 := majorRepository.FindByName(msg.Major.Name)
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	var p models.Subject
+	p.Name = msg.Name
+	p.Code = msg.Code
+	p.Picture = msg.Picture
+	p.Major = major
+	subjectRepository.Save(&p)
 }

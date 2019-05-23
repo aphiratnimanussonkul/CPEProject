@@ -74,7 +74,22 @@ export class SearchCourseComponent implements OnInit {
                 }
             });
         this.search();
-
+        if (this.users.email === '') {
+          setTimeout(() => {
+            this.getSubjectFromUser();
+          }, 50);
+        } else {
+          this.postService.getSubjectParseToArray(this.users.email);
+        }
+    }
+    getSubjectFromUser() {
+      if (this.users.email === '') {
+        setTimeout(() => {
+          this.getSubjectFromUser();
+        }, 50);
+      } else {
+        this.postService.getSubjectParseToArray(this.users.email);
+      }
     }
     search() {
         if (this.inputCode === '') {
@@ -119,6 +134,7 @@ export class SearchCourseComponent implements OnInit {
             data => {
                 if (!data) {
                     alert('Follow success');
+                    this.postService.getSubjectParseToArray(this.users.email);
                 } else {
                     alert('You have followed this course');
                 }

@@ -35,6 +35,7 @@ func main() {
 	router.HandleFunc("/subjectbyemail/{major}/{email}", api.GetSubjectByMajorEmail).Methods("GET")
 	router.HandleFunc("/subjectfromuser/{email}", api.GetSubjectFromUser).Methods("GET")
 	router.HandleFunc("/deletesubject/{code}", api.DeleteSubject).Methods("GET")
+	router.HandleFunc("/subject", api.CreateSubject).Methods("POST")
   	//Faculty
   	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
 	router.HandleFunc("/facultyemail/{email}", api.GetFacultyByEmail).Methods("GET")

@@ -50,6 +50,7 @@ export class ProfileComponent implements OnInit {
             console.log(data);
             this.getUser = data;
             if (this.getUser !== null) {
+              this.authenService.getUserAndSaveOnsService();
               this.router.navigate(['/home']);
             }
           }
@@ -73,6 +74,7 @@ export class ProfileComponent implements OnInit {
             alert(data);
           } else {
             alert('success');
+            this.authenService.getUserAndSaveOnsService();
             this.router.navigate(['/home']);
           }
         },
