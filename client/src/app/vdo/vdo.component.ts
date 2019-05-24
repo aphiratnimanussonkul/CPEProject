@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-
+import { ModalDirective } from 'angular-bootstrap-md';
 export interface DialogData {
   animal: string;
   name: string;
@@ -13,7 +13,7 @@ export interface DialogData {
   styleUrls: ['./vdo.component.scss']
 })
 export class VdoComponent implements OnInit {
-
+  @ViewChild('basicModal') demoBasic: ModalDirective;
   constructor(private sanitizer: DomSanitizer, public dialog: MatDialog) { }
 
   animal: string;
@@ -35,6 +35,9 @@ export class VdoComponent implements OnInit {
       console.log('The dialog was closed');
       this.animal = result;
     });
+  }
+  shows() {
+    this.demoBasic.show();
   }
 }
 @Component({

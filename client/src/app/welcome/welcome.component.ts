@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AuthenService } from '../service/authen.service';
 import { PostService } from '../service/post.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FacultyDataSource} from "../mycourse/mycourse.component";
-import {HttpClient} from "@angular/common/http";
+import {FacultyDataSource} from '../mycourse/mycourse.component';
+import { HttpClient } from '@angular/common/http';
+import { MatIconRegistry } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-welcome',
@@ -13,15 +15,27 @@ import {HttpClient} from "@angular/common/http";
 export class WelcomeComponent implements OnInit {
 
   constructor(private authenService: AuthenService, private  postService: PostService,
-              private route: ActivatedRoute, private router: Router,
-              private httpClient: HttpClient) { }
+              private route: ActivatedRoute, private router: Router, iconRegistry: MatIconRegistry,
+              private httpClient: HttpClient, private sanitizer: DomSanitizer) {
+    iconRegistry.addSvgIcon(
+      'more',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
+    iconRegistry.addSvgIcon(
+      'hamIcon',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/hamIcon.svg'));
+    iconRegistry.addSvgIcon(
+      'logout',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
+  }
 
   email: string;
   ngOnInit() {
     this.authenService.getUserAndSaveOnsService();
     this.email = this.authenService.user.email;
+    if (!this.email) {
+      this.router.navigate(['/login']);
+    }
     this.getSubject();
-
   }
   getSubject () {
     if (this.email === null) {

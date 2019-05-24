@@ -248,7 +248,7 @@
               <ng-container matColumnDef="หมายเหตุ">
                 <th mat-header-cell *matHeaderCellDef>หมายเหตุ</th>
                 <td mat-cell *matCellDef="let element">
-                  <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deleteSubject(element.code)">
+                  <button mat-icon-button class="deleteicon" matTooltip="ลบ" (click)="deleteSubject(element.code, element.picture)">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </td>

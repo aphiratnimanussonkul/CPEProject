@@ -18,6 +18,10 @@
         <mat-icon>add</mat-icon>
         <span>Add Course</span>
       </button>
+      <button mat-menu-item [routerLink]="['/welcome']">
+        <mat-icon>book</mat-icon>
+        <span>My course</span>
+      </button>
       <button mat-menu-item (click)="logout()">
         <mat-icon svgIcon="logout"></mat-icon>
         <span>log out</span>

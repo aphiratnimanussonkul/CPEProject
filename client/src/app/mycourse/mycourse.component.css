@@ -151,6 +151,9 @@ mat-panel-title {
     width: 100%;
 }
 
+td:hover {
+  cursor: pointer;
+}
 .addVdoLink {
     color: white;
     box-shadow: none !important;
@@ -220,7 +223,7 @@ mat-panel-title {
     text-align: center;
     margin-bottom: 0px;
     height: 52px;
-    font-size: 24px;
+    font-size: 20px;
     color: white;
     text-shadow: 0px 2px rgb(0, 0, 0);
     background-color: rgb(139, 139, 139);
@@ -267,6 +270,7 @@ mat-panel-title {
 }
 
 .cardExpansion:hover {
+    cursor: pointer;
     background-color: ghostwhite;
     color: rgb(255, 19, 149);
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.17);
@@ -456,7 +460,7 @@ iframe{
 .form-control{
     position: absolute;
     width: 400px;
-} 
+}
 .searchicon{
     color: white;
     margin-left: 410px;
@@ -476,4 +480,10 @@ iframe{
 .courseOnline:hover{
     font-size: 28px;
     color: rgb(255, 0, 140);
+}
+h4 {
+  text-overflow: ellipsis
+}
+mat-list-item {
+  max-width: 200px;
 }

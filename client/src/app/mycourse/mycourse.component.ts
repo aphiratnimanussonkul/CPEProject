@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
@@ -9,6 +9,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {DataSource} from '@angular/cdk/collections';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenService} from '../service/authen.service';
+import { ModalDirective } from 'angular-bootstrap-md';
 
 export interface FacultyComponent {
   name: string;
@@ -43,6 +44,7 @@ export interface Post {
   ],
 })
 export class MycourseComponent implements OnInit {
+  @ViewChild('basicModal') basicModal: ModalDirective;
   constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
               private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
               private router: Router, private authenService: AuthenService) {
@@ -131,6 +133,9 @@ export class MycourseComponent implements OnInit {
     this.authenService.getUserAndSaveOnsService();
     this.authenService.getLoggedInUser().subscribe(user => {
       this.posts.user.email = user.email;
+      if (!this.posts.user.email) {
+        this.router.navigate(['/login']);
+      }
     });
     this.posts.subject.code = this.codeSubject;
     this.posts.subject.name = this.nameSubject;
@@ -305,6 +310,9 @@ export class MycourseComponent implements OnInit {
   }
 
   getFeed(code, name) {
+    if (this.isPosting) {
+      this.basicModal.show();
+    }
     this.router.navigate(['/mycourse', code, name]);
     this.postService.getFeed(code).subscribe(data => {
       this.post = data;
@@ -494,6 +502,9 @@ export class MycourseComponent implements OnInit {
   }
 
   logout() {
+    if (this.isPosting) {
+      this.basicModal.show();
+    }
     this.router.navigate(['/login']);
     this.authenService.logout();
   }
@@ -515,6 +526,9 @@ export class MycourseComponent implements OnInit {
   }
 
   search() {
+    if (this.isPosting) {
+      this.basicModal.show();
+    }
     console.log(this.inputCode);
     if (this.inputCode === '') {
       alert('Please enter subject code or subject name');

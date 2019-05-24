@@ -58,14 +58,14 @@
     height: 100vh;
     position: absolute;
     margin-left: 5%;
-    width: 25%;
+    width: 300px;
   }
   
   .insidepanel1 {
     position: fixed;
     border-radius: 20px;
     border-radius: 2px;
-    width: 25%;
+    width: 300px;
     background-color: rgb(189, 189, 189);
   }
   
@@ -127,6 +127,7 @@
   
   }
   .cardExpansion:hover{
+    cursor: pointer;
     background-color: ghostwhite;
     color: rgb(255, 19, 149);
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.17);
@@ -208,7 +209,6 @@
   /*facebook*/
   .facebookPage {
     height: 315px;
-    margin-left: calc(50% - 151.25px);
   }
   .card{
       width: 96%;

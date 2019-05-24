@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenService } from '../service/authen.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import {PostService} from "../service/post.service";
 
 @Component({
   selector: 'app-login',
@@ -12,42 +13,48 @@ export class LoginComponent implements OnInit {
   user: firebase.User;
 
   constructor(
-    private service: AuthenService, private route: ActivatedRoute, private router: Router
-  ) { }
-
+    private service: AuthenService, private route: ActivatedRoute, private router: Router,
+    private postService: PostService) { }
   ngOnInit() {
     this.service.getLoggedInUser()
-      .subscribe( user => {
-        console.log( user );
+      .subscribe(user => {
         this.user = user;
-      }); 
+        this.postService.getUser(user.email).subscribe(
+          data => {
+            if (data) {
+              this.service.getUserAndSaveOnsService();
+              this.router.navigate(['/welcome']);
+            }
+          }
+        );
+      });
   }
 
-  LoginWithGoogle(){
+  LoginWithGoogle() {
     console.log('Login...Google');
-    this.service.logingoogle(); 
+    this.service.logingoogle();
     this.router.navigate(['/profile']);
   }
 
-  LoginWithFacebook(){
+  LoginWithFacebook() {
     console.log('Login...Facebook');
-    this.service.loginfacebook(); 
+    this.service.loginfacebook();
     this.router.navigate(['/profile']);
   }
 
-  LoginWithGithub(){
+  LoginWithGithub() {
     console.log('Login...Github');
     this.service.logingithub();
-    this.router.navigate(['/profile']); 
+    this.router.navigate(['/profile']);
   }
 
-  LoginWithTwitter(){
+  LoginWithTwitter() {
     console.log('Login...Twitter');
     this.service.logintwitter();
-    this.router.navigate(['/profile']); 
+    this.router.navigate(['/profile']);
   }
 
-  logout(){
+  logout() {
     this.service.logout();
   }
 

@@ -251,7 +251,10 @@ export class AdminPageComponent implements OnInit {
     }
   }
 
-  deleteSubject(code) {
+  deleteSubject(code, picture) {
+    let temp = (<string>picture).split('/');
+    let picname = temp[7].split('?');
+    this.storage.ref(picname[0]).delete();
     this.httpClient.get('http://localhost:12345/deletesubject/' + code).subscribe(
       data => {
         if (!data) {

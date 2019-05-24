@@ -121,6 +121,7 @@
 
 }
 .cardExpansion:hover{
+  cursor: pointer;
   background-color: ghostwhite;
   color: rgb(255, 19, 149);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.17);
@@ -150,7 +151,9 @@ tr.example-element-row:not(.example-expanded-row):hover {
 tr.example-element-row:not(.example-expanded-row):active {
   background: #efefef;
 }
-
+td:hover {
+  cursor: pointer;
+}
 .example-element-row td {
   border-bottom-width: 0;
 }

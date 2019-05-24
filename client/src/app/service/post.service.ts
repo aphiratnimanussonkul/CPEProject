@@ -70,7 +70,6 @@ export class PostService {
     this.getSubjectFromUser(email).subscribe(
       data => {
         this.subjectFromUser = data;
-        console.log(this.subjectFromUser);
       });
   }
 }

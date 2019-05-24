@@ -57,23 +57,17 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     // this.getUserOnService();
     this.authenService.getUserAndSaveOnsService();
+    this.authenService.getLoggedInUser().subscribe(user => {
+      if (!user) {
+        this.router.navigate(['/login']);
+      }
+    })
     this.code = '';
     this.refresh();
     this.postService.getFaculty().subscribe(data => {
       this.faculty = data;
     });
   }
-
-  getUserOnService() {
-    if (this.authenService.user.email === null) {
-      setTimeout(() => {
-        this.getUserOnService();
-      }, 50);
-    } else {
-      this.authenService.getUserAndSaveOnsService();
-    }
-  }
-
   getMajor(facultyName) {
     this.major = null;
     this.postService.getMajor(facultyName).subscribe(data => {
