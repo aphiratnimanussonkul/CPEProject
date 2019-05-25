@@ -9,7 +9,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {DataSource} from '@angular/cdk/collections';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenService} from '../service/authen.service';
-import { ModalDirective } from 'angular-bootstrap-md';
+import {ModalDirective} from 'angular-bootstrap-md';
 
 export interface FacultyComponent {
   name: string;
@@ -45,6 +45,7 @@ export interface Post {
 })
 export class MycourseComponent implements OnInit {
   @ViewChild('basicModal') basicModal: ModalDirective;
+
   constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
               private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
               private router: Router, private authenService: AuthenService) {
@@ -128,6 +129,8 @@ export class MycourseComponent implements OnInit {
   isPosting: boolean;
 
   inputCode: '';
+  where: string;
+  isTerminate: boolean;
 
   ngOnInit() {
     this.authenService.getUserAndSaveOnsService();
@@ -140,6 +143,7 @@ export class MycourseComponent implements OnInit {
     this.posts.subject.code = this.codeSubject;
     this.posts.subject.name = this.nameSubject;
     this.refresh();
+    this.isTerminate = false;
     this.countPicChoose = 0;
     this.countFileChoose = 0;
     this.countFileStatus = 0;
@@ -161,8 +165,10 @@ export class MycourseComponent implements OnInit {
   }
 
   UPLOAD() {
-    console.log('File');
     for (let i = 0; i < this.countFileChoose; i++) {
+      if (this.isTerminate) {
+        break;
+      }
       this.refFile[i] = this.storage.ref('File' + this.dateAsYYYYMMDDHHNNSS(new Date()).concat(i.toString()));
       this.refFile[i].put(this.file[i]).then((result) => {
         if (result.state !== 'success') {
@@ -173,6 +179,7 @@ export class MycourseComponent implements OnInit {
               console.log('push');
               this.posts.file.push(data);
               this.posts.filename.push(this.file[i].name);
+              this.postService.file.push(data);
               this.countFileStatus += 1;
               console.log(this.countFileStatus);
               console.log(this.posts.file);
@@ -184,13 +191,15 @@ export class MycourseComponent implements OnInit {
   }
 
   UPLOADPIC() {
-    console.log('Pic');
-    if (this.countFileChoose !== this.countFileStatus) {
+    if (this.countFileChoose !== this.countFileStatus && !this.isTerminate) {
       setTimeout(() => {
         this.UPLOADPIC();
       }, 200);
     } else {
       for (let i = 0; i < this.countPicChoose; i++) {
+        if (this.isTerminate) {
+          break;
+        }
         this.ref[i] = this.storage.ref('Pic' + this.dateAsYYYYMMDDHHNNSS(new Date()).concat(i.toString()));
         this.ref[i].put(this.picture[i]).then((result) => {
           if (result.state !== 'success') {
@@ -200,6 +209,7 @@ export class MycourseComponent implements OnInit {
               data => {
                 console.log('push');
                 this.posts.picture.push(data);
+                this.postService.file.push(data)
                 this.countPicStatus += 1;
                 console.log(this.countPicStatus);
                 console.log(this.posts.picture);
@@ -212,49 +222,52 @@ export class MycourseComponent implements OnInit {
   }
 
   UPLOADALL() {
-    this.posts.text = this.select.text;
-    this.posts.vdolink = this.tempVdoLink;
-    this.postService.createArticle(this.posts).subscribe(
-      data => {
-        if (data) {
-          console.log(data);
-          alert(data);
-        } else {
-          alert('success');
-          this.isPost = false;
-          this.isPosting = false;
-          this.getFeed(this.codeSubject, this.nameSubject);
+    if (!this.isTerminate) {
+      this.posts.text = this.select.text;
+      this.posts.vdolink = this.tempVdoLink;
+      this.postService.createArticle(this.posts).subscribe(
+        data => {
+          if (data) {
+            console.log(data);
+            alert(data);
+          } else {
+            alert('success');
+            this.isPost = false;
+            this.isPosting = false;
+            this.getFeed(this.codeSubject, this.nameSubject);
+          }
+        },
+        error1 => {
         }
-      },
-      error1 => {
-      }
-    );
-    this.posts.text = '';
-    this.select.text = '';
-    this.posts.file.splice(0);
-    this.posts.vdolink.splice(0);
-    this.posts.picture.splice(0);
-    this.file.splice(0);
-    this.picture.splice(0);
-    this.countFileChoose = 0;
-    this.countFileStatus = 0;
-    this.countPicChoose = 0;
-    this.countPicStatus = 0;
-    this.countPic = 0;
-    this.countFile = 0;
+      );
+      this.posts.text = '';
+      this.select.text = '';
+      this.posts.file.splice(0);
+      this.posts.vdolink.splice(0);
+      this.posts.picture.splice(0);
+      this.file.splice(0);
+      this.picture.splice(0);
+      this.countFileChoose = 0;
+      this.countFileStatus = 0;
+      this.countPicChoose = 0;
+      this.countPicStatus = 0;
+      this.countPic = 0;
+      this.countFile = 0;
 
-    this.ref.splice(0);
-    this.refFile.splice(0);
-    for (let i = 0; i < this.count; i++) {
-      this.tempVdoLink[i] = '';
-      this.tempVdoLink2[i] = '';
+      this.ref.splice(0);
+      this.refFile.splice(0);
+      for (let i = 0; i < this.count; i++) {
+        this.tempVdoLink[i] = '';
+        this.tempVdoLink2[i] = '';
+      }
+      this.count = 0;
     }
-    this.count = 0;
   }
 
   test() {
     this.isPosting = true;
     if (this.countPicChoose !== 0 || this.countFileChoose !== 0) {
+      this.postService.isUploading = true;
       alert('Uploading...');
     }
     if (this.countFileChoose !== 0) {
@@ -285,8 +298,10 @@ export class MycourseComponent implements OnInit {
   }
 
   checkSuccess() {
-    if (this.countPicStatus === this.countPicChoose && this.countFileStatus === this.countFileChoose) {
-      this.UPLOADALL();
+    if (this.isTerminate && this.countFileChoose === this.countFileStatus) {
+        this.postService.isUploadSuccess = true;
+    } else if (this.countFileStatus === this.countFileChoose && this.countPicStatus === this.countPicChoose) {
+        this.UPLOADALL();
     } else {
       setTimeout(() => {
         this.checkSuccess();
@@ -550,6 +565,40 @@ export class MycourseComponent implements OnInit {
   leftpad(val, resultLength = 2, leftpadChar = '0'): string {
     return (String(leftpadChar).repeat(resultLength)
       + String(val)).slice(String(val).length);
+  }
+
+  goHome() {
+    this.where = 'home';
+    if (this.isPosting) {
+      this.basicModal.show();
+    } else {
+      this.router.navigate(['/'].concat(this.where));
+    }
+  }
+
+  goWelcome() {
+    this.where = 'welcome';
+    if (this.isPosting) {
+      this.basicModal.show();
+    } else {
+      this.router.navigate(['/'].concat(this.where));
+    }
+  }
+
+  goAboutMe() {
+    this.where = 'aboutme';
+    if (this.isPosting) {
+      this.basicModal.show();
+    } else {
+      this.router.navigate(['/'].concat(this.where));
+    }
+  }
+
+  leave() {
+    if (this.isPosting) {
+      this.isTerminate = true;
+    }
+    this.router.navigate(['/'].concat(this.where));
   }
 }
 

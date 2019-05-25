@@ -1,6 +1,6 @@
 <mat-toolbar>
   <mat-toolbar-row class="navbar">
-    <a href="home" class="courseOnline">SUT Course Online</a>
+    <h1 class="courseOnline" (click)="goHome()">SUT Course Online</h1>
     <mat-icon class="bookicon">book</mat-icon>
     <div class="search">
       <form>
@@ -24,15 +24,15 @@
       <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
     </button>
     <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
-      <button mat-menu-item>
+      <button mat-menu-item (click)="goAboutMe()">
         <mat-icon>person</mat-icon>
         <span>about me</span>
       </button>
-      <button mat-menu-item [routerLink]="['/home']">
+      <button mat-menu-item (click)="goHome()">
         <mat-icon>add</mat-icon>
         <span>Add Course</span>
       </button>
-      <button mat-menu-item [routerLink]="['/welcome']">
+      <button mat-menu-item (click)="goWelcome()">
         <mat-icon>book</mat-icon>
         <span>My course</span>
       </button>

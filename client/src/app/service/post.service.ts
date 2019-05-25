@@ -2,13 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FacultyComponent, Post } from '../mycourse/mycourse.component';
+import {AngularFireStorage} from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private storage: AngularFireStorage) { }
   subjectFromUser: Array<any>;
+  picture: Array<string> = new Array<string>();
+  file: Array<string> = new Array<string>();
+  isUploadSuccess: boolean;
+  isUploading: boolean;
+  countDelete: number;
   public API = '//localhost:12345';
   getPost(): Object {
     return this.http.get(this.API + '/posts');
@@ -64,12 +70,37 @@ export class PostService {
   }
 
   getSubjectFromUser(email): Observable<any> {
-    return this.http.get(this.API + '/subjectfromuser/'+ email);
+    return this.http.get(this.API + '/subjectfromuser/' + email);
   }
   getSubjectParseToArray(email) {
     this.getSubjectFromUser(email).subscribe(
       data => {
         this.subjectFromUser = data;
       });
+  }
+  checkUpload () {
+    if (!this.isUploadSuccess) {
+      setTimeout(() => {
+        this.checkUpload();
+      }, 500);
+    } else {
+      if (this.picture.length > 0) {
+        for (let i = 0; i < this.picture.length; i++) {
+          let temp = (<string>this.picture[i]).split('/');
+          let picname = temp[7].split('?');
+          this.storage.ref(picname[0]).delete();
+        }
+      }
+      if (this.file.length > 0) {
+        for (let i = 0; i < this.file.length; i++) {
+          let temp = (<string>this.file[i]).split('/');
+          let filename = temp[7].split('?');
+          this.storage.ref(filename[0]).delete();
+        }
+      }
+      this.file.splice(0);
+      this.picture.splice(0);
+      this.isUploadSuccess = this.isUploading = false;
+    }
   }
 }
