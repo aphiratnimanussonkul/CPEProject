@@ -216,3 +216,38 @@ td:hover {
   font-size: 28px;
   color: rgb(255, 0, 140);
 }
+
+
+
+
+.sideNav{
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+}
+.sideContent{
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(233, 233, 233);
+}
+.menuIcon{
+  color: white;
+  margin-bottom: 10px;
+}
+.menuIcon:hover{
+  cursor: pointer;
+}
+.sideHeader{
+  margin-left: 4%;
+  display: inline-block;
+  font-size: 27px;
+  font-weight: bold;
+  color: rgb(255, 19, 149);
+}
+.sideHeader:hover{
+  font-size: 28px;
+  color: rgb(255, 0, 140);
+}
+.sideSearch {
+  margin-left: calc(50% - 120px);
+}

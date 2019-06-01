@@ -8,7 +8,12 @@ import {AngularFireStorage} from '@angular/fire/storage';
   providedIn: 'root'
 })
 export class PostService {
-  constructor(private http: HttpClient, private storage: AngularFireStorage) { }
+  device: Array<string> = ['iPad', 'iPhone', 'Android'];
+  isDesktop: boolean;
+  isMobile: boolean;
+  constructor(private http: HttpClient, private storage: AngularFireStorage) {
+    this.isDesktop = this.isMobile = false;
+  }
   subjectFromUser: Array<any>;
   picture: Array<string> = new Array<string>();
   file: Array<string> = new Array<string>();
@@ -123,5 +128,14 @@ export class PostService {
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('Content-Type', 'application/json');
     return this.http.post<Request>(this.API + '/request', JSON.stringify(request), { headers });
+  }
+  checkDevice() {
+    for (let i = 0; i < this.device.length; i++) {
+      if (navigator.userAgent.includes(this.device[i])) {
+        this.isMobile = true;
+      } else {
+        this.isDesktop = true;
+      }
+    }
   }
 }

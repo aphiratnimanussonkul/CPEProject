@@ -54,6 +54,7 @@ export class HomeComponent implements OnInit {
     text: ''
   };
 
+
   ngOnInit() {
     // this.getUserOnService();
     this.authenService.getUserAndSaveOnsService();

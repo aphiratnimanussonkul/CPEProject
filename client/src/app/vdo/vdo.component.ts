@@ -20,6 +20,8 @@ export class VdoComponent implements OnInit {
   name: string;
 
   ngOnInit() {
+    let isWindows = navigator.userAgent;
+    console.log(isWindows);
   }
   getEmbedUrl() {
     return this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/SHG_RQml_lc');

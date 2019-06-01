@@ -50,6 +50,7 @@ export class AuthenService {
   }
 
   getUserAndSaveOnsService() {
+    this.postService.checkDevice();
     this.getLoggedInUser().subscribe(user => {
       this.postService.getUser(user.email).subscribe(
         data => {
