@@ -14,6 +14,7 @@ func AddFaculty(w http.ResponseWriter, req *http.Request) {
 
 	//
 	db, err := config.GetMongoDB()
+	fmt.Println(db)
 	if err != nil {
 		fmt.Println(err)
 	}

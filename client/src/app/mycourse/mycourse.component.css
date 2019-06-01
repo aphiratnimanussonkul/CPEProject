@@ -154,7 +154,9 @@ mat-panel-title {
 td:hover {
   cursor: pointer;
 }
-
+mat-card-subtitle{
+  font-size: 10px;
+}
 .addVdoLink {
   color: white;
   box-shadow: none !important;
@@ -338,7 +340,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 /*facebook*/
 
 .facebookPage {
-  height: 315px;
+  height: 205px;
 }
 
 .chip-code {
@@ -497,4 +499,69 @@ h4 {
 
 mat-list-item {
   max-width: 200px;
+}
+.courseOnline:hover{
+  font-size: 28px;
+  color: rgb(255, 0, 140);
+}
+.headerimage-comment {
+  margin-left: 9px;
+  margin-top: 9px;
+  background-size: cover;
+  position: absolute;
+}
+.commentName{
+  margin-top: 17px;
+  position: absolute;
+  margin-left: 55px;
+}
+.commentText{
+  margin-left: 55px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.feedBackButton {
+  font-size: 12px;
+  margin-left: 100px;
+  margin-top: 10px;
+  position: absolute;
+  float: center;
+  background-color: rgba(179, 24, 32, 0.952);
+  color: white;
+}
+.commentFeedBack {
+  margin-left: 8px;
+  margin-top: 50px;
+  width: 90%;
+}
+.postFeedback {
+  font-size: 12px;
+  margin-right: 20px;
+  margin-bottom: 15px;
+  float: right;
+  background-color: rgba(179, 24, 32, 0.952);
+  color: white;
+}
+.example-headers-align .mat-expansion-panel-header-title{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 33%;
+}
+.mat-form-field {
+margin-right: 12px;
+}
+.containerComment{
+  background-color: rgba(241, 241, 241, 0.952);
+  border-radius: 10px;
+}
+.requestInput{
+  width: 100%;
+}
+.showCommentAll{
+  color: #ef0078;
+  text-align: center;
+}
+.showCommentAll:hover{
+  cursor: pointer;
+  color: #d6006b;
 }

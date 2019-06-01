@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { AuthenService } from '../service/authen.service';
 import { PostService } from '../service/post.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -6,6 +6,7 @@ import {FacultyDataSource} from '../mycourse/mycourse.component';
 import { HttpClient } from '@angular/common/http';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
+import {ModalDirective} from "angular-bootstrap-md";
 
 @Component({
   selector: 'app-welcome',
@@ -13,7 +14,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent implements OnInit {
-
+  @ViewChild('basicModal') basicModal: ModalDirective;
   constructor(private authenService: AuthenService, private  postService: PostService,
               private route: ActivatedRoute, private router: Router, iconRegistry: MatIconRegistry,
               private httpClient: HttpClient, private sanitizer: DomSanitizer) {
@@ -30,22 +31,29 @@ export class WelcomeComponent implements OnInit {
 
   email: string;
   ngOnInit() {
-    this.authenService.getUserAndSaveOnsService();
+    this.getUser();
     this.email = this.authenService.user.email;
     if (!this.email) {
       this.router.navigate(['/login']);
     }
-    this.getSubject();
+  }
+  getUser() {
+    this.authenService.getUserAndSaveOnsService();
+    if (!this.authenService.check) {
+      setTimeout(() => {
+        this.getUser();
+      }, 100);
+    } else {
+      this.getSubject();
+    }
   }
   getSubject () {
-    if (this.email === null) {
-      setTimeout(() => {
-        this.getSubject();
-      }, 50);
-    } else {
       this.postService.getSubjectParseToArray(this.authenService.user.email);
-      console.log(this.postService.subjectFromUser);
-    }
+      setTimeout(() => {
+        if (!this.postService.subjectFromUser) {
+          this.basicModal.show();
+        }
+      }, 300);
   }
   logout() {
     this.router.navigate(['/login']);
@@ -59,11 +67,14 @@ export class WelcomeComponent implements OnInit {
       data => {
         if (!data) {
           alert('Unfollow success');
-          this.postService.getSubjectParseToArray(this.authenService.user.email);
+          this.getSubject();
         }
       },
       error => {
       }
     );
+  }
+  add() {
+    this.router.navigate(['/home']);
   }
 }

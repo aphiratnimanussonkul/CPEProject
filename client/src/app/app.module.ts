@@ -38,6 +38,7 @@ import { VdoComponent, dialog } from './vdo/vdo.component';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { AdminService } from './service/admin.service';
 import { WelcomeComponent } from './welcome/welcome.component';
+import {AboutmeComponent} from "./aboutme/aboutme.component";
 
 const appRoutes: Routes = [
   {path: 'login' , component: LoginComponent},
@@ -47,7 +48,8 @@ const appRoutes: Routes = [
   {path: 'searchcourse/:code' , component: SearchCourseComponent},
   {path: '' , component: VdoComponent},
   {path: 'admin' , component: AdminPageComponent},
-  {path: 'welcome' , component: WelcomeComponent}
+  {path: 'welcome' , component: WelcomeComponent},
+  {path: 'aboutme', component: AboutmeComponent}
 ];
 
 @NgModule({
@@ -62,7 +64,8 @@ const appRoutes: Routes = [
     VdoComponent,
     dialog,
     AdminPageComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    AboutmeComponent
   ],
   imports: [
     BrowserModule,

@@ -2,16 +2,16 @@
   <mat-toolbar-row class="navbar">
     <a href="home" class="courseOnline">SUT Course Online</a>
     <span class="spacer"></span>
-    <div class="nameNavbar">{{authenService.user.displayName}}</div>
-    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + authenService.user?.photoURL + ')' }" class="headerimage"></div>
+    <div class="nameNavbar">{{authenService.user.name}}</div>
+    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + authenService.user?.picture + ')' }" class="headerimage"></div>
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
             class="moreBackground">
       <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
     </button>
     <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
-      <button mat-menu-item>
+      <button mat-menu-item [routerLink]="['/aboutme']">
         <mat-icon>person</mat-icon>
-        <span>about me</span>
+        <span>About me</span>
       </button>
       <button mat-menu-item [routerLink]="['/home']">
         <mat-icon>add</mat-icon>
@@ -41,7 +41,8 @@
       </div>
     </div>
   </div>
-
+  <div class="panelright">
+  </div>
   <div class="panel2">
     <div class="insidepanel2">
       <div class="searchToolbar">
@@ -90,6 +91,5 @@
 
     </div>
   </div>
-  <div class="panelright">
-  </div>
+
 </div>

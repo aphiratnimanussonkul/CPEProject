@@ -11,10 +11,11 @@ import (
 
 	//"CPEProject/src/models"
 	//"CPEProject/src/repository"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -24,10 +25,10 @@ func main() {
 	//api.AddMajorDefault("Computer Engineering", "Computer Network")
 	//api.AddFacultyDefault("Engineering","Computer Engineering")
 
-  	router := mux.NewRouter()
+	router := mux.NewRouter()
 	//test
 	router.HandleFunc("/test", test).Methods("GET")
-  	//Subject
+	//Subject
 	router.HandleFunc("/subject/{name}/{code}/{majorName}", api.AddSubject).Methods("GET")
 	router.HandleFunc("/subject/{majorName}", api.GetSubjectByMajor).Methods("GET")
 	router.HandleFunc("/subjectbycode/{code}", api.GetSubjectByCode).Methods("GET")
@@ -36,8 +37,8 @@ func main() {
 	router.HandleFunc("/subjectfromuser/{email}", api.GetSubjectFromUser).Methods("GET")
 	router.HandleFunc("/deletesubject/{code}", api.DeleteSubject).Methods("GET")
 	router.HandleFunc("/subject", api.CreateSubject).Methods("POST")
-  	//Faculty
-  	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
+	//Faculty
+	router.HandleFunc("/faculty/{name}", api.AddFaculty).Methods("GET")
 	router.HandleFunc("/facultyemail/{email}", api.GetFacultyByEmail).Methods("GET")
 	router.HandleFunc("/faculties", api.GetFacultyAll).Methods("GET")
 	router.HandleFunc("/deletefaculty/{facultyname}", api.DeleteFaculty).Methods("GET")
@@ -45,7 +46,7 @@ func main() {
 	router.HandleFunc("/chip/{name}", api.AddChip).Methods("GET")
 	router.HandleFunc("/chips", api.GetChipAll).Methods("GET")
 	//Major
-  	router.HandleFunc("/major/{name}/{facultyName}", api.AddMajor).Methods("GET")
+	router.HandleFunc("/major/{name}/{facultyName}", api.AddMajor).Methods("GET")
 	router.HandleFunc("/major/{facultyName}", api.GetMajorByFaculty).Methods("GET")
 	router.HandleFunc("/majorbyemail/{facultyName}/{email}", api.GetMajorByFacultyEmail).Methods("GET")
 	router.HandleFunc("/deletemajor/{majorname}", api.DeleteMajor).Methods("GET")
@@ -68,18 +69,23 @@ func main() {
 	router.HandleFunc("/post/{code}", api.GetPostByCode).Methods("GET")
 	router.HandleFunc("/deletepost/{postid}", api.DeletePost).Methods("GET")
 	router.HandleFunc("/getpost/{postid}", api.GetPostById).Methods("GET")
-  	log.Fatal(http.ListenAndServe(":12345", handlers.CORS(handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}), handlers.AllowedOrigins([]string{"*"}))(router)))
-  
+	//comment
+	router.HandleFunc("/commenttext/{text}", api.AddComment).Methods("GET")
+	router.HandleFunc("/comment/{postID}", api.AddComment).Methods("POST")
+	//feedback
+	router.HandleFunc("/feedback", api.AddFeedback).Methods("POST")
+	//request
+	router.HandleFunc("/request", api.AddRequest).Methods("POST")
+	log.Fatal(http.ListenAndServe(":12345", handlers.CORS(handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}), handlers.AllowedOrigins([]string{"*"}))(router)))
+
 }
 func test(w http.ResponseWriter, req *http.Request) {
 	//
-	body:= req.Body
+	body := req.Body
 	fmt.Println(body)
 	json.NewEncoder(w).Encode(body)
 
-
 }
-
 
 // func updateProfile(profileRepository repository.ProfileRepository) {
 //   var p model.Profile
@@ -109,8 +115,6 @@ func test(w http.ResponseWriter, req *http.Request) {
 //     fmt.Println("Profile deleted..")
 //   }
 // }
-
-
 
 // func getProfiles(w http.ResponseWriter, req *http.Request) {
 // //

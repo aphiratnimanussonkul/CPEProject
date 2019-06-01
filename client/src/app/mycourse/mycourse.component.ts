@@ -11,6 +11,29 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenService} from '../service/authen.service';
 import {ModalDirective} from 'angular-bootstrap-md';
 
+export  interface Comment {
+  text: string;
+  user: {
+    name: string
+    email: string
+  };
+}
+export  interface Feedback {
+  text: string;
+  user: {
+    name: string
+    email: string
+  };
+}
+export  interface Request {
+  subjectcode: string;
+  subjectname: string;
+  user: {
+    name: string
+    email: string
+  };
+}
+
 export interface FacultyComponent {
   name: string;
 }
@@ -95,8 +118,16 @@ export class MycourseComponent implements OnInit {
   major: Array<any>;
   subject: Array<any>;
   post: Array<any>;
+  comment: Array<any>;
+  feedback: Array<any>;
+  request: Array<any>;
   select: any = {
-    text: ''
+    text: '',
+    commentText: '',
+    feedbackText: '',
+    subjectcodeText: '',
+    subjectnameText: '',
+    inputCode: ''
   };
   posts: Post = {
     text: '',
@@ -113,6 +144,28 @@ export class MycourseComponent implements OnInit {
       code: ''
     }
   };
+  comments: Comment = {
+    text: '',
+    user: {
+      name: '',
+      email: ''
+    },
+  };
+  feedbacks: Feedback = {
+    text: '',
+    user: {
+      name: '',
+      email: ''
+    },
+  };
+  requests: Request = {
+    subjectcode: '',
+    subjectname: '',
+    user: {
+      name: '',
+      email: ''
+    },
+  };
   // table faculty
   dataSource = new FacultyDataSource(this.postService, this.posts.user.email);
   columnsToDisplay = ['สำนักวิชา'];
@@ -127,22 +180,33 @@ export class MycourseComponent implements OnInit {
   countPicStatus: number;
   disPlayName: string;
   isPosting: boolean;
-
-  inputCode: '';
+  feedbackBoo: boolean;
   where: string;
   isTerminate: boolean;
 
   ngOnInit() {
-    this.authenService.getUserAndSaveOnsService();
+    this.getUser();
     this.authenService.getLoggedInUser().subscribe(user => {
       this.posts.user.email = user.email;
       if (!this.posts.user.email) {
         this.router.navigate(['/login']);
       }
     });
+    // user comment
+    this.comments.user.email = this.authenService.user.email;
+    this.comments.user.name = this.authenService.user.name;
+    // user feedback
+    this.feedbacks.user.email = this.authenService.user.email;
+    this.feedbacks.user.name = this.authenService.user.name;
+    // user request
+    this.requests.user.email = this.authenService.user.email;
+    this.requests.user.name = this.authenService.user.name;
+    console.log('print user: ' + this.authenService.user);
+    console.log('print feedback user: ' + this.requests.user.name);
+    this.feedbackBoo = true;
+
     this.posts.subject.code = this.codeSubject;
     this.posts.subject.name = this.nameSubject;
-    this.refresh();
     this.isTerminate = false;
     this.countPicChoose = 0;
     this.countFileChoose = 0;
@@ -157,13 +221,24 @@ export class MycourseComponent implements OnInit {
     this.count = 0;
     this.countFile = 0;
     this.countPic = 0;
-    this.refresh();
 
     this.postService.getFeed(this.codeSubject).subscribe(data => {
       this.post = data;
     });
   }
-
+  getUser() {
+    this.authenService.getUserAndSaveOnsService();
+    console.log(this.authenService.check);
+    if (!this.authenService.check) {
+      setTimeout(() => {
+        this.getUser();
+      }, 50);
+    } else {
+      this.refresh();
+      this.getFeed(this.codeSubject, this.nameSubject);
+    }
+    console.log(this.authenService.user);
+  }
   UPLOAD() {
     for (let i = 0; i < this.countFileChoose; i++) {
       if (this.isTerminate) {
@@ -343,14 +418,6 @@ export class MycourseComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustResourceUrl(link);
   }
 
-  isComment(posts) {
-    posts.comment = true;
-  }
-
-  notComment(posts) {
-    posts.comment = false;
-  }
-
   upload(event, index) {
     if (event.target.files[0].size > 25000000) {
       alert('The file you have selected is too large. The maximum size is 25MB. Please compress file');
@@ -375,15 +442,12 @@ export class MycourseComponent implements OnInit {
   }
 
   refresh() {
-    if (this.posts.user.email === '') {
+    if (!this.authenService.user.email) {
       setTimeout(() => {
         this.refresh();
       }, 50);
     } else {
-      this.postService.getFacultyTableByEmail(this.authenService.user.email).subscribe((res) => {
-        this.faculty = res;
         this.dataSource = new FacultyDataSource(this.postService, this.authenService.user.email);
-      });
     }
   }
 
@@ -544,12 +608,10 @@ export class MycourseComponent implements OnInit {
     if (this.isPosting) {
       this.basicModal.show();
     }
-    console.log(this.inputCode);
-    if (this.inputCode === '') {
+    if (this.select.inputCode === '') {
       alert('Please enter subject code or subject name');
     } else {
-      this.router.navigate(['/searchcourse', this.inputCode]);
-      this.inputCode = '';
+      this.router.navigate(['/searchcourse', this.select.inputCode]);
     }
   }
 
@@ -599,6 +661,76 @@ export class MycourseComponent implements OnInit {
       this.isTerminate = true;
     }
     this.router.navigate(['/'].concat(this.where));
+  }
+  postComment(postsID) {
+    // alert(postsID);
+    this.comments.text = this.select.commentText;
+    this.postService.createComment(this.comments, postsID).subscribe(
+        data => {
+          if (data) {
+            console.log('กดคอมเม้น' + data);
+            // alert(data);
+          } else {
+            alert('comment success!');
+            this.getFeed(this.codeSubject, this.nameSubject);
+            // this.getFeed(this.codeSubject, this.nameSubject);
+          }
+        },
+        error1 => {
+        }
+    );
+    this.comments.text = '';
+    this.select.commentText = '';
+  }
+  postFeedback() {
+    this.feedbacks.text = this.select.feedbackText;
+    this.postService.createFeedback(this.feedbacks).subscribe(
+        data => {
+          if (data) {
+            console.log('กดfeedback: ' + data);
+            // alert(data);
+          } else {
+            alert('feedback success!');
+          }
+        },
+        error1 => {
+        }
+    );
+    this.feedbacks.text = '';
+    this.select.feedbackText = '';
+  }
+  postRequest() {
+    this.requests.subjectcode = this.select.subjectcodeText;
+    this.requests.subjectname = this.select.subjectnameText;
+    this.postService.createRequest(this.requests).subscribe(
+        data => {
+          if (data) {
+            console.log('กดrequest: ' + data);
+            // alert(data);
+          } else {
+            alert('request success!');
+          }
+        },
+        error1 => {
+        }
+    );
+    this.requests.subjectcode = '';
+    this.requests.subjectname = '';
+    this.select.subjectcodeText = '';
+    this.select.subjectnameText = '';
+  }
+  feedBackClick(feedBack) {
+    this.feedbackBoo = !this.feedbackBoo;
+    console.log('feeeeeeeeeeeeeeeeeeeeeeeeeeeeeeed' + this.feedbackBoo);
+  }
+  isComment(posts) {
+    posts.checkComment = true;
+    console.log('commeeeeeeeeeeeeeeeeeeeeeeeeeeet' + posts.checkComment);
+  }
+
+  notComment(posts) {
+    posts.checkComment = false;
+    console.log('commeeeeeeeeeeeeeeeeeeeeeeeeeeet' + posts.checkComment);
   }
 }
 

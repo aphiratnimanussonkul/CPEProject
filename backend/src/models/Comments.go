@@ -2,14 +2,13 @@ package models
 
 import (
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
-type Comments struct {
+type Comment struct {
 	ID        bson.ObjectId `json:"id" bson:"_id,omitempty"`
 	Text		string 		`json:"text"`
-	Timestamp 	time.Time   `json:"timestamp"`
+	Timestamp 	string   `json:"timestamp"`
 	Date		string 		`json:"date"`
-	
+	User		*User		`bson:"user" json:"user"`
 
 }
-
+type Comments []Comment

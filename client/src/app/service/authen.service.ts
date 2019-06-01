@@ -4,6 +4,7 @@ import {auth} from 'firebase';
 import {PostService} from './post.service';
 import {Router} from '@angular/router';
 import {AngularFireStorage} from '@angular/fire/storage';
+import {User} from '../aboutme/aboutme.component';
 
 // import { HttpClient, HttpHeaders} from '@angular/common/http';
 
@@ -12,7 +13,8 @@ import {AngularFireStorage} from '@angular/fire/storage';
   providedIn: 'root'
 })
 export class AuthenService {
-  public user: firebase.User;
+  public user: User;
+  public check: string;
   public API = '//localhost:12345';
 
   constructor(private afAuth: AngularFireAuth, private postService: PostService,
@@ -49,11 +51,16 @@ export class AuthenService {
 
   getUserAndSaveOnsService() {
     this.getLoggedInUser().subscribe(user => {
-      this.user = user;
-      this.postService.getSubjectParseToArray(user.email);
-      if (!this.user.email) {
-        this.router.navigate(['/login']);
-      }
+      this.postService.getUser(user.email).subscribe(
+        data => {
+          this.user = data;
+          this.check = data.email;
+          this.postService.getSubjectParseToArray(this.user.email);
+          if (!this.user.email) {
+            this.router.navigate(['/login']);
+          }
+        }
+      );
     });
     if (this.postService.isUploading) {
       this.postService.checkUpload();

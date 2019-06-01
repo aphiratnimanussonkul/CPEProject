@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { FacultyComponent, Post } from '../mycourse/mycourse.component';
+import { FacultyComponent, Post, Feedback, Comment, Request } from '../mycourse/mycourse.component';
 import {AngularFireStorage} from '@angular/fire/storage';
 
 @Injectable({
@@ -102,5 +102,26 @@ export class PostService {
       this.picture.splice(0);
       this.isUploadSuccess = this.isUploading = false;
     }
+  }
+  createComment(comment: Comment,postID): Observable<Comment> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    headers.append('Content-Type', 'application/json');
+    return this.http.post<Comment>(this.API + '/comment/' + postID, JSON.stringify(comment), {headers});
+  }
+  createFeedback(feedback: Feedback): Observable<Feedback> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    headers.append('Content-Type', 'application/json');
+    return this.http.post<Feedback>(this.API + '/feedback', JSON.stringify(feedback), { headers });
+  }
+  createRequest(request: Request): Observable<Request> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    headers.append('Content-Type', 'application/json');
+    return this.http.post<Request>(this.API + '/request', JSON.stringify(request), { headers });
   }
 }
