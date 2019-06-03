@@ -522,10 +522,9 @@ mat-list-item {
 }
 .feedBackButton {
   font-size: 12px;
-  margin-left: 100px;
+  margin-left: calc(50% - 45px);
   margin-top: 10px;
   position: absolute;
-  float: center;
   background-color: rgba(179, 24, 32, 0.952);
   color: white;
 }
@@ -564,4 +563,36 @@ margin-right: 12px;
 .showCommentAll:hover{
   cursor: pointer;
   color: #d6006b;
+}
+
+
+
+
+.sideNav{
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+}
+.sideContent{
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(233, 233, 233);
+}
+.menuIcon{
+  color: white;
+  margin-bottom: 10px;
+}
+.menuIcon:hover{
+  cursor: pointer;
+}
+.sideHeader{
+  text-align: center;
+  display: inline-block;
+  font-size: 27px;
+  font-weight: bold;
+  color: rgb(255, 19, 149);
+}
+.sideHeader:hover{
+  font-size: 28px;
+  color: rgb(255, 0, 140);
 }
