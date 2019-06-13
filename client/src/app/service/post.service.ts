@@ -138,4 +138,8 @@ export class PostService {
       }
     }
   }
+  getPostById(id): Observable<any> {
+    console.log(this.http.get(this.API + '/getpost/' + id));
+    return this.http.get(this.API + '/getpost/' + id);
+  }
 }

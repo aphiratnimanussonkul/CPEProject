@@ -133,22 +133,22 @@
           <h1 mat-line>{{authenService.user.email}}</h1>
         </mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item >
+        <mat-list-item [routerLink]="['/aboutme']">
           <mat-icon mat-list-icon>people</mat-icon>
           <h1 mat-line>About Me</h1>
-        </mat-list-item>
+        </mat-list-item >
         <mat-divider></mat-divider>
-        <mat-list-item>
+        <mat-list-item [routerLink]="['/home']">
           <mat-icon mat-list-icon>add</mat-icon>
           <h1 mat-line>Add Course</h1>
         </mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item>
+        <mat-list-item [routerLink]="['/welcome']">
           <mat-icon mat-list-icon>book</mat-icon>
           <h1 mat-line>My Course</h1>
         </mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item>
+        <mat-list-item (click)="logout()">
           <mat-icon mat-list-icon>exit_to_app</mat-icon>
           <h1 mat-line>Log out</h1>
         </mat-list-item>

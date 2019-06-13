@@ -1,31 +1,31 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material';
-import { HttpClient } from '@angular/common/http';
-import { PostService } from '../service/post.service';
-import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
-import { Observable } from 'rxjs/Observable';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { DataSource } from '@angular/cdk/collections';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenService } from '../service/authen.service';
-import { ModalDirective } from 'angular-bootstrap-md';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
+import {MatIconRegistry} from '@angular/material';
+import {HttpClient} from '@angular/common/http';
+import {PostService} from '../service/post.service';
+import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from '@angular/fire/storage';
+import {Observable} from 'rxjs/Observable';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {DataSource} from '@angular/cdk/collections';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthenService} from '../service/authen.service';
+import {ModalDirective} from 'angular-bootstrap-md';
 
-export interface Comment {
+export  interface Comment {
   text: string;
   user: {
     name: string
     email: string
   };
 }
-export interface Feedback {
+export  interface Feedback {
   text: string;
   user: {
     name: string
     email: string
   };
 }
-export interface Request {
+export  interface Request {
   subjectcode: string;
   subjectname: string;
   user: {
@@ -55,23 +55,23 @@ export interface Post {
 }
 
 @Component({
-  selector: 'app-mycourse',
-  templateUrl: './mycourse.component.html',
-  styleUrls: ['./mycourse.component.css'],
+  selector: 'app-comment',
+  templateUrl: './comment.component.html',
+  styleUrls: ['./comment.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
-      state('expanded', style({ height: '*' })),
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
-export class MycourseComponent implements OnInit {
+export class CommentComponent implements OnInit {
   @ViewChild('basicModal') basicModal: ModalDirective;
 
   constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
-    private router: Router, private authenService: AuthenService) {
+              private sanitizer: DomSanitizer, private storage: AngularFireStorage, private route: ActivatedRoute,
+              private router: Router, private authenService: AuthenService) {
     iconRegistry.addSvgIcon(
       'more',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/more.svg'));
@@ -81,8 +81,7 @@ export class MycourseComponent implements OnInit {
     iconRegistry.addSvgIcon(
       'logout',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/logout.svg'));
-    this.codeSubject = this.route.snapshot.paramMap.get('code');
-    this.nameSubject = this.route.snapshot.paramMap.get('name');
+      this.postId = this.route.snapshot.paramMap.get('postid');
   }
 
   // Firebase Authen
@@ -114,6 +113,7 @@ export class MycourseComponent implements OnInit {
   //
   nameSubject: string;
   codeSubject: string;
+  postId: string;
   faculty: Array<any>;
   major: Array<any>;
   subject: Array<any>;
@@ -183,7 +183,6 @@ export class MycourseComponent implements OnInit {
   feedbackBoo: boolean;
   where: string;
   isTerminate: boolean;
-
   ngOnInit() {
     this.getUser();
     this.authenService.getLoggedInUser().subscribe(user => {
@@ -192,6 +191,9 @@ export class MycourseComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+    // user comment
+    this.comments.user.email = this.authenService.user.email;
+    this.comments.user.name = this.authenService.user.name;
     // user feedback
     this.feedbacks.user.email = this.authenService.user.email;
     this.feedbacks.user.name = this.authenService.user.name;
@@ -218,12 +220,14 @@ export class MycourseComponent implements OnInit {
     this.count = 0;
     this.countFile = 0;
     this.countPic = 0;
-
-    this.postService.getFeed(this.codeSubject).subscribe(data => {
+    
+    this.postService.getPostById(this.postId).subscribe(data => {
       this.post = data;
+      console.log("post object "+this.post);
     });
   }
   getUser() {
+    console.log(this.postId);
     this.authenService.getUserAndSaveOnsService();
     console.log(this.authenService.check);
     if (!this.authenService.check) {
@@ -232,7 +236,7 @@ export class MycourseComponent implements OnInit {
       }, 50);
     } else {
       this.refresh();
-      this.getFeed(this.codeSubject, this.nameSubject);
+      this.getFeed(this.postId);
     }
     console.log(this.authenService.user);
   }
@@ -306,7 +310,7 @@ export class MycourseComponent implements OnInit {
             alert('success');
             this.isPost = false;
             this.isPosting = false;
-            this.getFeed(this.codeSubject, this.nameSubject);
+            this.getFeed(this.postId);
           }
         },
         error1 => {
@@ -371,9 +375,9 @@ export class MycourseComponent implements OnInit {
 
   checkSuccess() {
     if (this.isTerminate && this.countFileChoose === this.countFileStatus) {
-      this.postService.isUploadSuccess = true;
+        this.postService.isUploadSuccess = true;
     } else if (this.countFileStatus === this.countFileChoose && this.countPicStatus === this.countPicChoose) {
-      this.UPLOADALL();
+        this.UPLOADALL();
     } else {
       setTimeout(() => {
         this.checkSuccess();
@@ -396,17 +400,23 @@ export class MycourseComponent implements OnInit {
     });
   }
 
-  getFeed(code, name) {
+  getFeed(id) {
     if (this.isPosting) {
       this.basicModal.show();
     }
-    this.router.navigate(['/mycourse', code, name]);
-    this.postService.getFeed(code).subscribe(data => {
+    this.router.navigate(['/comment', id]);
+    this.postService.getPostById(id).subscribe(data => {
       this.post = data;
-      this.nameSubject = name;
-      this.codeSubject = code;
-      this.posts.subject.code = this.codeSubject;
-      this.posts.subject.name = this.nameSubject;
+      console.log(this.post);
+    });
+  }
+  getFeedComment(postId){
+    if (this.isPosting) {
+      this.basicModal.show();
+    }
+    this.router.navigate(['/comment',postId]);
+    this.postService.getFeed(postId).subscribe(data => {
+      this.post = data;
       console.log(this.post);
     });
   }
@@ -444,7 +454,7 @@ export class MycourseComponent implements OnInit {
         this.refresh();
       }, 50);
     } else {
-      this.dataSource = new FacultyDataSource(this.postService, this.authenService.user.email);
+        this.dataSource = new FacultyDataSource(this.postService, this.authenService.user.email);
     }
   }
 
@@ -571,7 +581,7 @@ export class MycourseComponent implements OnInit {
       data => {
         if (!data) {
           alert('Deleted');
-          this.getFeed(this.codeSubject, this.nameSubject);
+          this.getFeed(this.postId);
         }
       }
     );
@@ -661,40 +671,39 @@ export class MycourseComponent implements OnInit {
   }
   postComment(postsID) {
     // alert(postsID);
-    // user comment
-    this.comments.user.email = this.authenService.user.email;
-    this.comments.user.name = this.authenService.user.name;
     this.comments.text = this.select.commentText;
-    this.postService.createComment(this.comments, postsID).subscribe(
-      data => {
-        if (data) {
-          console.log('กดคอมเม้น' + data);
-          // alert(data);
-        } else {
-          alert('comment success!');
-          this.getFeed(this.codeSubject, this.nameSubject);
-          // this.getFeed(this.codeSubject, this.nameSubject);
-        }
-      },
-      error1 => {
-      }
-    );
-    this.comments.text = '';
-    this.select.commentText = '';
+    if(this.comments.text ==='')
+      alert('comment null');
+    else{
+      this.postService.createComment(this.comments, postsID).subscribe(
+          data => {
+            if (data) {
+              console.log('กดคอมเม้น' + data);
+            } else {
+              alert('comment success!');
+              this.getFeed(this.postId);
+            }
+          },
+          error1 => {
+          }
+      );
+      this.comments.text = '';
+      this.select.commentText = '';
+    }
   }
   postFeedback() {
     this.feedbacks.text = this.select.feedbackText;
     this.postService.createFeedback(this.feedbacks).subscribe(
-      data => {
-        if (data) {
-          console.log('กดfeedback: ' + data);
-          // alert(data);
-        } else {
-          alert('feedback success!');
+        data => {
+          if (data) {
+            console.log('กดfeedback: ' + data);
+            // alert(data);
+          } else {
+            alert('feedback success!');
+          }
+        },
+        error1 => {
         }
-      },
-      error1 => {
-      }
     );
     this.feedbacks.text = '';
     this.select.feedbackText = '';
@@ -703,16 +712,16 @@ export class MycourseComponent implements OnInit {
     this.requests.subjectcode = this.select.subjectcodeText;
     this.requests.subjectname = this.select.subjectnameText;
     this.postService.createRequest(this.requests).subscribe(
-      data => {
-        if (data) {
-          console.log('กดrequest: ' + data);
-          // alert(data);
-        } else {
-          alert('request success!');
+        data => {
+          if (data) {
+            console.log('กดrequest: ' + data);
+            // alert(data);
+          } else {
+            alert('request success!');
+          }
+        },
+        error1 => {
         }
-      },
-      error1 => {
-      }
     );
     this.requests.subjectcode = '';
     this.requests.subjectname = '';
@@ -732,12 +741,10 @@ export class MycourseComponent implements OnInit {
     posts.checkComment = false;
     console.log('commeeeeeeeeeeeeeeeeeeeeeeeeeeet' + posts.checkComment);
   }
-  getCommentAll(postid) {
-    console.log('postid ' + postid);
-    this.router.navigate(['/comment', postid]);
+  getPostById(postid){
+    
   }
 }
-
 export class FacultyDataSource extends DataSource<any> {
   email: string;
 

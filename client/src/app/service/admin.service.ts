@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Faculty, Major, Subject, Post } from '../admin-page/admin-page.component';
+import { Faculty, Major, Subject, Post, User, Comment} from '../admin-page/admin-page.component';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,12 @@ export class AdminService {
   }
   getPostTable(): Observable<Post[]> {
     return this.http.get<Post[]>(this.API + '/posts');
+  }
+  getUserTable(): Observable<User[]> {
+    return this.http.get<User[]>(this.API + '/users');
+  }
+  getCommentTable(): Observable<Comment[]> {
+    return this.http.get<Comment[]>(this.API + '/users');
   }
   getPostById(postid): Observable<any> {
     return this.http.get('http://localhost:12345/getpost/' + postid);

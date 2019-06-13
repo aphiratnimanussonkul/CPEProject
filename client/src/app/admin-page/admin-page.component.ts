@@ -6,7 +6,14 @@ import {AuthenService} from '../service/authen.service';
 import {AdminService} from '../service/admin.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {AngularFireStorage, AngularFireStorageReference} from '@angular/fire/storage';
+import {PostService} from "../service/post.service";
 
+export interface Comment {
+  text: string;
+}
+export interface User {
+  name: string;
+}
 export interface Post {
   text: string;
 }
@@ -46,7 +53,8 @@ export class AdminPageComponent implements OnInit {
 
   constructor(private adminService: AdminService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
               private route: ActivatedRoute, private router: Router,
-              private authenService: AuthenService, private storage: AngularFireStorage) {
+              private authenService: AuthenService, private storage: AngularFireStorage,
+              private postService: PostService) {
   }
 
   ref: AngularFireStorageReference;
@@ -81,10 +89,14 @@ export class AdminPageComponent implements OnInit {
   dataSourceMajor: MatTableDataSource<any>;
   dataSourceSubject: MatTableDataSource<any>;
   dataSourcePost: MatTableDataSource<any>;
+  dataSourceUser: MatTableDataSource<any>;
+  dataSourceComment: MatTableDataSource<any>;
   displayedColumns = ['ลำดับ', 'สำนักวิชา', 'หมายเหตุ'];
   displayedColumnsMajor = ['ลำดับ', 'สาขาวิชา', 'สำนักวิชา', 'หมายเหตุ'];
   displayedColumnsSubject = ['ลำดับ', 'ชื่อวิชา', 'รหัสวิชา', 'สาขาวิชา', 'สำนักวิชา', 'หมายเหตุ'];
   displayedColumnsPost = ['ข้อความ', 'ผู้ใช้', 'ชื่อวิชา', 'รหัสวิชา', 'หมายเหตุ'];
+  displayedColumnsComment = ['ข้อความ', 'ผู้ใช้', 'หมายเหตุ'];
+  displayedColumnsUser = ['ลำดับ', 'ชื่อผู้ใช้', 'Email', 'Major', 'หมายเหตุ'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
@@ -153,6 +165,19 @@ export class AdminPageComponent implements OnInit {
     this.getSubject();
     this.isSubject = true;
     this.isComment = this.isFaculty = this.isUser = this.isPost = this.isMajor = false;
+  }
+
+  chooseComment() {
+    this.select.selectFaculty = '';
+    this.isComment = true;
+    this.isSubject = this.isFaculty = this.isUser = this.isPost = this.isMajor = false;
+  }
+
+  chooseUser() {
+
+    this.select.selectFaculty = '';
+    this.isUser = true;
+    this.isComment = this.isFaculty = this.isSubject = this.isPost = this.isMajor = false;
   }
 
   // Major
@@ -358,6 +383,46 @@ export class AdminPageComponent implements OnInit {
   leftpad(val, resultLength = 2, leftpadChar = '0'): string {
     return (String(leftpadChar).repeat(resultLength)
       + String(val)).slice(String(val).length);
+  }
+
+  // User
+  getUser() {
+    this.adminService.getUserTable().subscribe(data => {
+      this.dataSourceUser = new MatTableDataSource(data);
+      this.dataSourceUser.paginator = this.paginator;
+    });
+  }
+  deleteUser(userId) {
+    this.httpClient.get(this.postService.API + '/deleteUser/' + userId).subscribe(
+      data => {
+        if (!data) {
+          alert('ลบผู้ใช้ สำเร็จ');
+          this.getMajor();
+        } else {
+          alert('ไม่สามารถลบผู้ใช้');
+        }
+      }
+    );
+  }
+
+  // Comment
+  getComment() {
+    this.adminService.getCommentTable().subscribe(data => {
+      this.dataSourceComment = new MatTableDataSource(data);
+      this.dataSourceComment.paginator = this.paginator;
+    });
+  }
+  deleteComment(CommentId) {
+    this.httpClient.get(this.postService.API + '/deleteComment/' + CommentId).subscribe(
+      data => {
+        if (!data) {
+          alert('ลบ Comment สำเร็จ');
+          this.getMajor();
+        } else {
+          alert('ไม่สามารถลบ Comment');
+        }
+      }
+    );
   }
 }
 

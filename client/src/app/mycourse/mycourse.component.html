@@ -318,7 +318,7 @@
                     <p class="commentText">{{comments.text}}</p>
                   </div>
                 </ng-container>
-                <p *ngIf="posts.comment.length > 3" class="showCommentAll">>> show more <<</p>
+                <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> show more </p>
               </mat-card-content>
               <ng-container *ngIf='!posts.checkComment'>
                 <button mat-button (click)="isComment(posts)" class="addComment">comment
@@ -398,7 +398,7 @@
 <div *ngIf="postService.isMobile">
   <mat-toolbar>
     <mat-toolbar-row class="navbar">
-      <mat-icon class="menuIcon" svgIcon="hamIcon" (click)="sidenav.toggle()"></mat-icon>
+      <mat-icon class="menuIconBook" (click)="sidenav.toggle()">book</mat-icon>
       <a href="home" class="sideHeader">SUT Course Online</a>
       <mat-icon class="menuIcon" svgIcon="hamIcon" (click)="sidenavRight.toggle()"></mat-icon>
     </mat-toolbar-row>
@@ -492,22 +492,22 @@
           <h1 mat-line>{{authenService.user.email}}</h1>
         </mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item >
+        <mat-list-item (click)="goAboutMe()">
           <mat-icon mat-list-icon>people</mat-icon>
           <h1 mat-line>About Me</h1>
         </mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item>
+        <mat-list-item (click)="goHome()">
           <mat-icon mat-list-icon>add</mat-icon>
           <h1 mat-line>Add Course</h1>
         </mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item>
+        <mat-list-item (click)="goWelcome()">
           <mat-icon mat-list-icon>book</mat-icon>
           <h1 mat-line>My Course</h1>
         </mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item>
+        <mat-list-item (click)="logout()">
           <mat-icon mat-list-icon>exit_to_app</mat-icon>
           <h1 mat-line>Log out</h1>
         </mat-list-item>
@@ -713,7 +713,7 @@
                   <p class="commentText">{{comments.text}}</p>
                 </div>
               </ng-container>
-              <p *ngIf="posts.comment.length > 3" class="showCommentAll">>> show more <<</p>
+              <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> >> show more << </p>
             </mat-card-content>
             <ng-container *ngIf='!posts.checkComment'>
               <button mat-button (click)="isComment(posts)" class="addComment">comment

@@ -1,5 +1,6 @@
-<img src='../../assets/sutwallpaper.jpg' style='position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-1;'>
-<mat-toolbar
+<!--toolbar-->
+<mat-toolbar 
+  *ngIf="user"
   id="mainToolbar"
   color="primary">
   Course Online
@@ -10,7 +11,7 @@
     [matMenuTriggerFor]="avatarDropDown"
     class="toolbar-avatar"
     color="primary"
-    [ngStyle]="{ 'background-image': 'url(' + user?.photoURL + ')'}"
+    [ngStyle]="{ 'background-image': 'url(' + user?.picture + ')'}"
   >
   </button>
 </mat-toolbar>
@@ -24,9 +25,9 @@
     </mat-card-header>
   </mat-card>
 
-  <button mat-menu-item (click)="profile()">
+  <button mat-menu-item (click)="aboutme()">
     <mat-icon>account_box</mat-icon>
-    <span>Edit Profile</span>
+    <span>About me!</span>
   </button>
 
   <button mat-menu-item (click)="logout()">
@@ -34,6 +35,11 @@
     <span>Sign out</span>
   </button>
 </mat-menu>
+<!--loading page-->
+<div class="progress" *ngIf="!user">
+  <div class="indeterminate"></div>
+</div>
+<!--page profile-->
 <br>
 <h1 class="title" *ngIf="user">"Confirm Account"</h1>
 <br>
@@ -45,14 +51,36 @@
     </mat-card-header>
     <mat-card-content>
         <form class="my-form">
-          <mat-form-field class="full-width">
-                <mat-label>Student ID.</mat-label>
-                <input  matInput  [(ngModel)]="input.stuid" placeholder="Student ID." name="studentId"  required>
+            <mat-form-field class="full-width" *ngIf="!user?.email" [class.has-error]="email.invalid && email.touched"> 
+                <mat-label>Email</mat-label>
+                  <input  matInput  [(ngModel)]="input.email" placeholder="Email" required email name="email" #email="ngModel" class="form-control">
+                  <span class="help-block" *ngIf="email.errors?.required && email.touched">
+                    Email is required
+                  </span>
+                  <span class="help-block" *ngIf="email.errors?.email && email.touched">
+                    Email is invalid
+                  </span>
              </mat-form-field>
-             <mat-form-field class="full-width">
+            <mat-form-field class="full-width" [class.has-error]="studentId.invalid && studentId.touched">
+                <mat-label>Student ID.</mat-label>
+                  <input  matInput  [(ngModel)]="input.stuid" placeholder="Student ID." required name="studentId" #studentId="ngModel" class="form-control" pattern="^[Bb]([0-9]{7})">
+                  <span class="help-block" *ngIf="studentId.errors?.required && studentId.touched">
+                    Student ID. is required
+                  </span>
+                  <span class="help-block" *ngIf="studentId.errors?.pattern && studentId.touched">
+                    Student ID. is invalid
+                  </span>
+             </mat-form-field>
+             <mat-form-field class="full-width" [class.has-error]="major.invalid && major.touched">
               <mat-label>Major</mat-label>
-              <input  matInput  [(ngModel)]="input.major" placeholder="Major" name="major"   required>
-          </mat-form-field>
+                <input  matInput  [(ngModel)]="input.major" placeholder="Major" required name="major" #major="ngModel" class="form-control" pattern="^([A-z*' '])+|^([ก-๙*' ']+)"> 
+                <span class="help-block" *ngIf="major.errors?.required && major.touched">
+                    Major is required
+                  </span>
+                  <span class="help-block" *ngIf="major.errors?.pattern && major.touched">
+                    Major is invalid
+                  </span>
+              </mat-form-field>
         </form>
       </mat-card-content>
       <mat-card-actions>
