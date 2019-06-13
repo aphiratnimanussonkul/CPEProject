@@ -9,6 +9,7 @@ import { Faculty, Major, Subject, Post, User, Comment} from '../admin-page/admin
 export class AdminService {
   constructor(private http: HttpClient) { }
   public API = 'https://go-mongodb-driver.herokuapp.com';
+  // public API = 'http://localhost:12345';
   getFacultyTable(): Observable<Faculty[]> {
     return this.http.get<Faculty[]>(this.API + '/faculties');
   }

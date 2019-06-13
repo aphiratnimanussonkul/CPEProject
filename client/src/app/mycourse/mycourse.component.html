@@ -231,22 +231,18 @@
                     <mat-icon>delete_outline</mat-icon>
                     <span>Delete</span>
                   </button>
-                  <button mat-menu-item>
-                    <mat-icon>edit</mat-icon>
-                    <span>Edit</span>
-                  </button>
                 </mat-menu>
               </mat-card-header>
               <mat-card-content>
                 <h6>{{posts.text}}</h6>
-                <div *ngIf="posts.vdoLink[0] && !posts.file[0] && !posts.picture[0]">
+                <div *ngIf="posts.vdoLink && !posts.file && !posts.picture">
                   <div *ngFor="let vdo of posts.vdoLink; let j = index">
                     <a [href]="vdo" target="_blank" rel="noopener noreferrer">
                       {{vdo}}
                     </a>
                   </div>
                 </div>
-                <mdb-carousel *ngIf="!posts.vdoLink[0] && !posts.file[0] && posts.picture[0]" [animation]="'slide'"
+                <mdb-carousel *ngIf="!posts.vdoLink && !posts.file && posts.picture" [animation]="'slide'"
                               data-interval="false">
                   <mdb-carousel-item *ngFor="let pic of posts.picture; let x = index">
                     <a [href]="posts.picture[x]" target="_blank" rel="noopener noreferrer">
@@ -254,14 +250,14 @@
                     </a>
                   </mdb-carousel-item>
                 </mdb-carousel>
-                <div *ngIf="!posts.vdoLink[0] && posts.file[0] && !posts.picture[0]">
+                <div *ngIf="!posts.vdoLink && posts.file && !posts.picture">
                   <div *ngFor="let files of posts.file; let k = index">
                     <a [href]="files" target="_blank" rel="noopener noreferrer">{{posts.filename[k]}}</a>
                   </div>
                 </div>
                 <mat-tab-group
-                  *ngIf="(posts.vdoLink[0] && posts.picture[0]) || (posts.vdoLink[0] && posts.file[0]) || (posts.file[0] && posts.picture[0])">
-                  <mat-tab *ngIf="posts.vdoLink[0]">
+                  *ngIf="(posts.vdoLink && posts.picture) || (posts.vdoLink && posts.file) || (posts.file && posts.picture)">
+                  <mat-tab *ngIf="posts.vdoLink">
                     <ng-template mat-tab-label>
                       <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
                       Youtube
@@ -280,7 +276,7 @@
                       <div class="separator" style="clear: both; text-align: center;"></div>-->
                     </div>
                   </mat-tab>
-                  <mat-tab *ngIf="posts.file[0]">
+                  <mat-tab *ngIf="posts.file">
                     <ng-template mat-tab-label>
                       <mat-icon class="example-tab-icon">attach_file</mat-icon>
                       File
@@ -292,7 +288,7 @@
                       </div>
                     </div>
                   </mat-tab>
-                  <mat-tab *ngIf="posts.picture[0]">
+                  <mat-tab *ngIf="posts.picture">
                     <ng-template mat-tab-label>
                       <mat-icon class="example-tab-icon">photo_library</mat-icon>
                       Picture
@@ -308,17 +304,19 @@
                   </mat-tab>
                 </mat-tab-group>
                 <br>
-                <ng-container *ngFor="let comments of posts.comment | slice:0:3;">
-                  <div class="containerComment">
-                    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
-                         class="headerimage-comment"></div>
-                    <p class="commentName">{{comments.user.name}}</p>
-                    <span class="spacer"></span>
-                    <br><br>
-                    <p class="commentText">{{comments.text}}</p>
-                  </div>
-                </ng-container>
-                <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> show more </p>
+                <div *ngIf="posts.comment">
+                  <ng-container *ngFor="let comments of posts.comment | slice:0:3;">
+                    <div class="containerComment">
+                      <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
+                           class="headerimage-comment"></div>
+                      <p class="commentName">{{comments.user.name}}</p>
+                      <span class="spacer"></span>
+                      <br><br>
+                      <p class="commentText">{{comments.text}}</p>
+                    </div>
+                  </ng-container>
+                  <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> show more </p>
+                </div>
               </mat-card-content>
               <ng-container *ngIf='!posts.checkComment'>
                 <button mat-button (click)="isComment(posts)" class="addComment">comment
@@ -333,8 +331,7 @@
                 </form>
                 <form>
                   <button mat-button class="postButton" (click)="postComment(posts.id)"
-                          (click)="notComment(posts)">Enter
-                  </button>
+                          (click)="notComment(posts)">Enter</button>
                 </form>
                 <form>
                   <button mat-button class="postButton" (click)="notComment(posts)">Cancel</button>
@@ -626,22 +623,18 @@
                   <mat-icon>delete_outline</mat-icon>
                   <span>Delete</span>
                 </button>
-                <button mat-menu-item>
-                  <mat-icon>edit</mat-icon>
-                  <span>Edit</span>
-                </button>
               </mat-menu>
             </mat-card-header>
             <mat-card-content>
               <h6>{{posts.text}}</h6>
-              <div *ngIf="posts.vdoLink[0] && !posts.file[0] && !posts.picture[0]">
+              <div *ngIf="posts.vdoLink && !posts.file && !posts.picture">
                 <div *ngFor="let vdo of posts.vdoLink; let j = index">
                   <a [href]="vdo" target="_blank" rel="noopener noreferrer">
                     {{vdo}}
                   </a>
                 </div>
               </div>
-              <mdb-carousel *ngIf="!posts.vdoLink[0] && !posts.file[0] && posts.picture[0]" [animation]="'slide'"
+              <mdb-carousel *ngIf="!posts.vdoLink && !posts.file && posts.picture" [animation]="'slide'"
                             data-interval="false">
                 <mdb-carousel-item *ngFor="let pic of posts.picture; let x = index">
                   <a [href]="posts.picture[x]" target="_blank" rel="noopener noreferrer">
@@ -649,14 +642,14 @@
                   </a>
                 </mdb-carousel-item>
               </mdb-carousel>
-              <div *ngIf="!posts.vdoLink[0] && posts.file[0] && !posts.picture[0]">
+              <div *ngIf="!posts.vdoLink && posts.file && !posts.picture">
                 <div *ngFor="let files of posts.file; let k = index">
                   <a [href]="files" target="_blank" rel="noopener noreferrer">{{posts.filename[k]}}</a>
                 </div>
               </div>
               <mat-tab-group
-                *ngIf="(posts.vdoLink[0] && posts.picture[0]) || (posts.vdoLink[0] && posts.file[0]) || (posts.file[0] && posts.picture[0])">
-                <mat-tab *ngIf="posts.vdoLink[0]">
+                *ngIf="(posts.vdoLink && posts.picture) || (posts.vdoLink && posts.file) || (posts.file && posts.picture)">
+                <mat-tab *ngIf="posts.vdoLink">
                   <ng-template mat-tab-label>
                     <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
                     Youtube
@@ -675,7 +668,7 @@
                     <div class="separator" style="clear: both; text-align: center;"></div>-->
                   </div>
                 </mat-tab>
-                <mat-tab *ngIf="posts.file[0]">
+                <mat-tab *ngIf="posts.file">
                   <ng-template mat-tab-label>
                     <mat-icon class="example-tab-icon">attach_file</mat-icon>
                     File
@@ -687,7 +680,7 @@
                     </div>
                   </div>
                 </mat-tab>
-                <mat-tab *ngIf="posts.picture[0]">
+                <mat-tab *ngIf="posts.picture">
                   <ng-template mat-tab-label>
                     <mat-icon class="example-tab-icon">photo_library</mat-icon>
                     Picture

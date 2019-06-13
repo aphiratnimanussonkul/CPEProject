@@ -6,7 +6,7 @@ import {AuthenService} from '../service/authen.service';
 import {AdminService} from '../service/admin.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {AngularFireStorage, AngularFireStorageReference} from '@angular/fire/storage';
-import {PostService} from "../service/post.service";
+import {PostService} from '../service/post.service';
 
 export interface Comment {
   text: string;
@@ -168,13 +168,14 @@ export class AdminPageComponent implements OnInit {
   }
 
   chooseComment() {
+    this.getComment();
     this.select.selectFaculty = '';
     this.isComment = true;
     this.isSubject = this.isFaculty = this.isUser = this.isPost = this.isMajor = false;
   }
 
   chooseUser() {
-
+    this.getUser();
     this.select.selectFaculty = '';
     this.isUser = true;
     this.isComment = this.isFaculty = this.isSubject = this.isPost = this.isMajor = false;

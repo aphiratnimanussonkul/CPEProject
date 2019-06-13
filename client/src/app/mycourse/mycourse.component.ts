@@ -166,6 +166,7 @@ export class MycourseComponent implements OnInit {
       email: ''
     },
   };
+  postNew: Array<Post>;
   // table faculty
   dataSource = new FacultyDataSource(this.postService, this.posts.user.email);
   columnsToDisplay = ['สำนักวิชา'];
@@ -220,12 +221,12 @@ export class MycourseComponent implements OnInit {
     this.countPic = 0;
 
     this.postService.getFeed(this.codeSubject).subscribe(data => {
+      this.postNew = data;
       this.post = data;
     });
   }
   getUser() {
     this.authenService.getUserAndSaveOnsService();
-    console.log(this.authenService.check);
     if (!this.authenService.check) {
       setTimeout(() => {
         this.getUser();
@@ -248,13 +249,10 @@ export class MycourseComponent implements OnInit {
         } else {
           this.refFile[i].getDownloadURL().subscribe(
             data => {
-              console.log('push');
               this.posts.file.push(data);
               this.posts.filename.push(this.file[i].name);
               this.postService.file.push(data);
               this.countFileStatus += 1;
-              console.log(this.countFileStatus);
-              console.log(this.posts.file);
             }
           );
         }
@@ -279,12 +277,9 @@ export class MycourseComponent implements OnInit {
           } else {
             this.ref[i].getDownloadURL().subscribe(
               data => {
-                console.log('push');
                 this.posts.picture.push(data);
                 this.postService.file.push(data)
                 this.countPicStatus += 1;
-                console.log(this.countPicStatus);
-                console.log(this.posts.picture);
               }
             );
           }
@@ -354,18 +349,14 @@ export class MycourseComponent implements OnInit {
   checkFile(state) {
     if (state !== 'success') {
       setTimeout(this.checkFile, 300);
-      console.log('wait');
     } else {
-      console.log('successFile');
     }
   }
 
   checkPicture(state) {
     if (state !== 'success') {
-      console.log('wait');
       setTimeout(this.checkPicture, 300);
     } else {
-      console.log('successPicture');
     }
   }
 
@@ -552,18 +543,17 @@ export class MycourseComponent implements OnInit {
   }
 
   delete(postid, picture, file) {
-    if (picture.length !== 0) {
+    if (picture != null) {
       for (let i = 0; i < picture.length; i++) {
         let temp = (<string>picture[i]).split('/');
         let picname = temp[7].split('?');
         this.storage.ref(picname[0]).delete();
       }
     }
-    if (file.length !== 0) {
+    if (file != null) {
       for (let i = 0; i < file.length; i++) {
         let temp = (<string>file[i]).split('/');
         let filename = temp[7].split('?');
-        console.log(filename[0]);
         this.storage.ref(filename[0]).delete();
       }
     }
@@ -660,15 +650,12 @@ export class MycourseComponent implements OnInit {
     this.router.navigate(['/'].concat(this.where));
   }
   postComment(postsID) {
-    // alert(postsID);
-    // user comment
     this.comments.user.email = this.authenService.user.email;
     this.comments.user.name = this.authenService.user.name;
     this.comments.text = this.select.commentText;
     this.postService.createComment(this.comments, postsID).subscribe(
       data => {
         if (data) {
-          console.log('กดคอมเม้น' + data);
           // alert(data);
         } else {
           alert('comment success!');
@@ -687,7 +674,6 @@ export class MycourseComponent implements OnInit {
     this.postService.createFeedback(this.feedbacks).subscribe(
       data => {
         if (data) {
-          console.log('กดfeedback: ' + data);
           // alert(data);
         } else {
           alert('feedback success!');
@@ -705,7 +691,6 @@ export class MycourseComponent implements OnInit {
     this.postService.createRequest(this.requests).subscribe(
       data => {
         if (data) {
-          console.log('กดrequest: ' + data);
           // alert(data);
         } else {
           alert('request success!');
@@ -721,19 +706,15 @@ export class MycourseComponent implements OnInit {
   }
   feedBackClick(feedBack) {
     this.feedbackBoo = !this.feedbackBoo;
-    console.log('feeeeeeeeeeeeeeeeeeeeeeeeeeeeeeed' + this.feedbackBoo);
   }
   isComment(posts) {
     posts.checkComment = true;
-    console.log('commeeeeeeeeeeeeeeeeeeeeeeeeeeet' + posts.checkComment);
   }
 
   notComment(posts) {
     posts.checkComment = false;
-    console.log('commeeeeeeeeeeeeeeeeeeeeeeeeeeet' + posts.checkComment);
   }
   getCommentAll(postid) {
-    console.log('postid ' + postid);
     this.router.navigate(['/comment', postid]);
   }
 }
@@ -751,6 +732,5 @@ export class FacultyDataSource extends DataSource<any> {
   }
 
   disconnect() {
-    console.log('disconnect');
   }
 }
