@@ -1,181 +1,363 @@
-<mat-toolbar>
-  <mat-toolbar-row class="navbar">
-    <h1 class="courseOnline" (click)="goHome()">SUT Course Online</h1>
-    <mat-icon class="bookicon">book</mat-icon>
-    <div class="search">
-      <form>
-        <div class="form-row">
-          <div class="col">
-            <input mdbInput [(ngModel)]="select.inputCode" name="inputCode" class="form-control" placeholder="Search"
-                   matTooltip="Example : 523101 or Computer Programing or 523">
+<div *ngIf="!postService.isMobile">
+  <mat-toolbar>
+    <mat-toolbar-row class="navbar">
+      <h1 class="courseOnline" (click)="goHome()">SUT Course Online</h1>
+      <mat-icon class="bookicon">book</mat-icon>
+      <div class="search">
+        <form>
+          <div class="form-row">
+            <div class="col">
+              <input mdbInput [(ngModel)]="select.inputCode" name="inputCode" class="form-control" placeholder="Search"
+                     matTooltip="Example : 523101 or Computer Programing or 523">
+            </div>
           </div>
-        </div>
-      </form>
-      <button mat-icon-button (click)="search()" class="searchicon">
-        <mat-icon>search</mat-icon>
+        </form>
+        <button mat-icon-button (click)="search()" class="searchicon">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+      <span class="spacer"></span>
+      <div class="nameNavbar">{{authenService.user.name}}</div>
+      <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + authenService.user?.picture + ')' }"
+           class="headerimage"></div>
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
+              class="moreBackground">
+        <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
       </button>
-    </div>
-    <span class="spacer"></span>
-    <div class="nameNavbar">{{authenService.user.name}}</div>
-    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + authenService.user?.picture + ')' }"
-         class="headerimage"></div>
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
-            class="moreBackground">
-      <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
-    </button>
-    <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
-      <button mat-menu-item (click)="goAboutMe()">
-        <mat-icon>person</mat-icon>
-        <span>About me</span>
-      </button>
-      <button mat-menu-item (click)="goHome()">
-        <mat-icon>add</mat-icon>
-        <span>Add Course</span>
-      </button>
-      <button mat-menu-item (click)="goWelcome()">
-        <mat-icon>book</mat-icon>
-        <span>My course</span>
-      </button>
-      <button mat-menu-item (click)="logout()">
-        <mat-icon svgIcon="logout"></mat-icon>
-        <span>log out</span>
-      </button>
-    </mat-menu>
-  </mat-toolbar-row>
-</mat-toolbar>
-<!-- Comment -->
-<div class="panel2">
-  <div class="insidepanel2">
-    <!-- Post -->
-    <div>
-      <ng-container>
-        <mat-card class="postCard">
-          <mat-card-header>
-            <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + post.user.picture + ')' }"
-                 class="headerimage"></div>
-            <mat-card-title>{{post.user.name}}</mat-card-title>
-            <mat-card-subtitle>{{post.timestamp}} : {{post.date}}</mat-card-subtitle>
-            <span class="spacer"></span>
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
-                    class="moreBackground" class="morePost" *ngIf="post.user.email === authenService.user.email">
-              <mat-icon svgIcon="more"></mat-icon>
-            </button>
-            <mat-menu yPosition="below" xPosition="after" #menu="matMenu">
-              <button mat-menu-item (click)="delete(post.id, post.picture, post.file)">
-                <mat-icon>delete_outline</mat-icon>
-                <span>Delete</span>
+      <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
+        <button mat-menu-item (click)="goAboutMe()">
+          <mat-icon>person</mat-icon>
+          <span>About me</span>
+        </button>
+        <button mat-menu-item (click)="goHome()">
+          <mat-icon>add</mat-icon>
+          <span>Add Course</span>
+        </button>
+        <button mat-menu-item (click)="goWelcome()">
+          <mat-icon>book</mat-icon>
+          <span>My course</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon svgIcon="logout"></mat-icon>
+          <span>log out</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!-- Comment -->
+  <div class="panel2">
+    <div class="insidepanel2">
+      <!-- Post -->
+      <div>
+        <ng-container>
+          <mat-card class="postCard">
+            <mat-card-header>
+              <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + post.user.picture + ')' }"
+                   class="headerimage"></div>
+              <mat-card-title>{{post.user.name}}</mat-card-title>
+              <mat-card-subtitle>{{post.timestamp}} : {{post.date}}</mat-card-subtitle>
+              <span class="spacer"></span>
+              <button mat-icon-button [matMenuTriggerFor]="menuDelete" aria-label="Example icon-button with a menu"
+                      class="moreBackground" class="morePost" *ngIf="post.user.email === authenService.user.email">
+                <mat-icon svgIcon="more"></mat-icon>
               </button>
-              <button mat-menu-item>
-                <mat-icon>edit</mat-icon>
-                <span>Edit</span>
-              </button>
-            </mat-menu>
-          </mat-card-header>
-          <mat-card-content>
-            <h6>{{post.text}}</h6>
-            <div *ngIf="post.vdoLink[0] && !post.file[0] && !post.picture[0]">
-              <div *ngFor="let vdo of post.vdoLink; let j = index">
-                <a [href]="vdo" target="_blank" rel="noopener noreferrer">
-                  {{vdo}}
-                </a>
-              </div>
-            </div>
-            <mdb-carousel *ngIf="!post.vdoLink[0] && !post.file[0] && post.picture[0]" [animation]="'slide'"
-                          data-interval="false">
-              <mdb-carousel-item *ngFor="let pic of post.picture; let x = index">
-                <a [href]="post.picture[x]" target="_blank" rel="noopener noreferrer">
-                  <img [src]="post.picture[x]" width=100%>
-                </a>
-              </mdb-carousel-item>
-            </mdb-carousel>
-            <div *ngIf="!post.vdoLink[0] && post.file[0] && !post.picture[0]">
-              <div *ngFor="let files of post.file; let k = index">
-                <a [href]="files" target="_blank" rel="noopener noreferrer">{{post.filename[k]}}</a>
-              </div>
-            </div>
-            <mat-tab-group
-              *ngIf="(post.vdoLink[0] && post.picture[0]) || (post.vdoLink[0] && post.file[0]) || (post.file[0] && post.picture[0])">
-              <mat-tab *ngIf="post.vdoLink[0]">
-                <ng-template mat-tab-label>
-                  <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
-                  Youtube
-                </ng-template>
-                <br>
+              <mat-menu yPosition="below" xPosition="after" #menuDelete="matMenu">
+                <button mat-menu-item (click)="delete(post.id, post.picture, post.file)">
+                  <mat-icon>delete_outline</mat-icon>
+                  <span>Delete</span>
+                </button>
+                <!-- <button mat-menu-item>
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button> -->
+              </mat-menu>
+            </mat-card-header>
+            <mat-card-content>
+              <h6>{{post.text}}</h6>
+              <div *ngIf="post.vdoLink[0] && !post.file[0] && !post.picture[0]">
                 <div *ngFor="let vdo of post.vdoLink; let j = index">
                   <a [href]="vdo" target="_blank" rel="noopener noreferrer">
                     {{vdo}}
                   </a>
-                  <!--<div style="text-align: center;" *ngIf="post.vdoLink[j]">
+                </div>
+              </div>
+              <mdb-carousel *ngIf="!post.vdoLink[0] && !post.file[0] && post.picture[0]" [animation]="'slide'"
+                            data-interval="false">
+                <mdb-carousel-item *ngFor="let pic of post.picture; let x = index">
+                  <a [href]="post.picture[x]" target="_blank" rel="noopener noreferrer">
+                    <img [src]="post.picture[x]" width=100%>
+                  </a>
+                </mdb-carousel-item>
+              </mdb-carousel>
+              <div *ngIf="!post.vdoLink[0] && post.file[0] && !post.picture[0]">
+                <div *ngFor="let files of post.file; let k = index">
+                  <a [href]="files" target="_blank" rel="noopener noreferrer">{{post.filename[k]}}</a>
+                </div>
+              </div>
+              <mat-tab-group
+                *ngIf="(post.vdoLink[0] && post.picture[0]) || (post.vdoLink[0] && post.file[0]) || (post.file[0] && post.picture[0])">
+                <mat-tab *ngIf="post.vdoLink[0]">
+                  <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
+                    Youtube
+                  </ng-template>
+                  <br>
+                  <div *ngFor="let vdo of post.vdoLink; let j = index">
+                    <a [href]="vdo" target="_blank" rel="noopener noreferrer">
+                      {{vdo}}
+                    </a>
+                    <!--<div style="text-align: center;" *ngIf="post.vdoLink[j]">
                     <span>
                       <iframe width=100% he ight="235" [src]="getEmbedUrl(post.vdoLink[j])" frameborder="0">
                       </iframe>
                     </span>
                   </div>
                   <div class="separator" style="clear: both; text-align: center;"></div>-->
-                </div>
-              </mat-tab>
-              <mat-tab *ngIf="post.file[0]">
-                <ng-template mat-tab-label>
-                  <mat-icon class="example-tab-icon">attach_file</mat-icon>
-                  File
-                </ng-template>
-                <br>
-                <div *ngFor="let files of post.file; let k = index">
-                  <div>
-                    <a [href]="files" target="_blank" rel="noopener noreferrer">{{post.filename[k]}}</a>
                   </div>
+                </mat-tab>
+                <mat-tab *ngIf="post.file[0]">
+                  <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">attach_file</mat-icon>
+                    File
+                  </ng-template>
+                  <br>
+                  <div *ngFor="let files of post.file; let k = index">
+                    <div>
+                      <a [href]="files" target="_blank" rel="noopener noreferrer">{{post.filename[k]}}</a>
+                    </div>
+                  </div>
+                </mat-tab>
+                <mat-tab *ngIf="post.picture[0]">
+                  <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">photo_library</mat-icon>
+                    Picture
+                  </ng-template>
+                  <br>
+                  <mdb-carousel [animation]="'slide'" data-interval="false">
+                    <mdb-carousel-item *ngFor="let pic of post.picture; let x = index">
+                      <a [href]="post.picture[x]" target="_blank" rel="noopener noreferrer">
+                        <img [src]="post.picture[x]" width=100%>
+                      </a>
+                    </mdb-carousel-item>
+                  </mdb-carousel>
+                </mat-tab>
+              </mat-tab-group>
+              <br>
+              <ng-container *ngFor="let comments of post.comment">
+                <div class="containerComment">
+                  <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
+                       class="headerimage-comment"></div>
+                  <p class="commentName">{{comments.user.name}}</p>
+                  <span class="spacer"></span>
+                  <br><br>
+                  <p class="commentText">{{comments.text}}</p>
                 </div>
-              </mat-tab>
-              <mat-tab *ngIf="post.picture[0]">
-                <ng-template mat-tab-label>
-                  <mat-icon class="example-tab-icon">photo_library</mat-icon>
-                  Picture
-                </ng-template>
-                <br>
-                <mdb-carousel [animation]="'slide'" data-interval="false">
-                  <mdb-carousel-item *ngFor="let pic of post.picture; let x = index">
-                    <a [href]="post.picture[x]" target="_blank" rel="noopener noreferrer">
-                      <img [src]="post.picture[x]" width=100%>
-                    </a>
-                  </mdb-carousel-item>
-                </mdb-carousel>
-              </mat-tab>
-            </mat-tab-group>
-            <br>
-            <ng-container *ngFor="let comments of post.comment">
-              <div class="containerComment">
-                <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
-                     class="headerimage-comment"></div>
-                <p class="commentName">{{comments.user.name}}</p>
-                <span class="spacer"></span>
-                <br><br>
-                <p class="commentText">{{comments.text}}</p>
-              </div>
-            </ng-container>
-          </mat-card-content>
-          <ng-container *ngIf='!post.checkComment'>
-            <button mat-button (click)="isComment(post)" class="addComment">comment
-            </button>
-          </ng-container>
-          <ng-container *ngIf='post.checkComment'>
-            <form>
-              <mat-form-field class="comment">
-              <textarea matInput [(ngModel)]="select.commentText" placeholder="Leave a comment"
-                        name="commentText"></textarea>
-              </mat-form-field>
-            </form>
-            <form>
-              <button mat-button class="postButton" (click)="postComment(post.id)"
-                      (click)="notComment(post)">Enter
+              </ng-container>
+            </mat-card-content>
+            <ng-container *ngIf='!post.checkComment'>
+              <button mat-button (click)="isComment(post)" class="addComment">comment
               </button>
-            </form>
-            <form>
-              <button mat-button class="postButton" (click)="notComment(post)">Cancel</button>
-            </form>
-          </ng-container>
-          <br>
-        </mat-card>
-      </ng-container>
+            </ng-container>
+            <ng-container *ngIf='post.checkComment'>
+              <form>
+                <mat-form-field class="comment">
+                  <textarea matInput [(ngModel)]="select.commentText" placeholder="Leave a comment"
+                            name="commentText"></textarea>
+                </mat-form-field>
+              </form>
+              <form>
+                <button mat-button class="postButton" (click)="postComment(post.id)" (click)="notComment(post)">Enter
+                </button>
+              </form>
+              <form>
+                <button mat-button class="postButton" (click)="notComment(post)">Cancel</button>
+              </form>
+            </ng-container>
+            <br>
+          </mat-card>
+        </ng-container>
+      </div>
     </div>
   </div>
+</div>
+
+<!-- mobile -->
+
+<div *ngIf="postService.isMobile">
+  <mat-toolbar>
+    <mat-toolbar-row class="navbar">
+      <mat-icon class="menuIcon" (click)="getBack(post.subject.code, post.subject.name)">keyboard_arrow_left</mat-icon>
+      <a href="home" class="sideHeader">SUT Course Online</a>
+      <mat-icon class="menuIcon" svgIcon="hamIcon" (click)="sidenavRight.toggle()"></mat-icon>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-sidenav-container>
+    <mat-sidenav #sidenavRight mode="side" position="end" class="sideNav">
+      <mat-list>
+        <mat-list-item>
+          <mat-icon mat-list-icon>person_outline</mat-icon>
+          <h1 mat-line>{{authenService.user.name}}</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <mat-icon mat-list-icon>mail_outline</mat-icon>
+          <h1 mat-line>{{authenService.user.email}}</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <mat-icon mat-list-icon>people</mat-icon>
+          <h1 mat-line>About Me</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <mat-icon mat-list-icon>add</mat-icon>
+          <h1 mat-line>Add Course</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <mat-icon mat-list-icon>book</mat-icon>
+          <h1 mat-line>My Course</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <mat-icon mat-list-icon>exit_to_app</mat-icon>
+          <h1 mat-line>Log out</h1>
+        </mat-list-item>
+      </mat-list>
+    </mat-sidenav>
+
+    <!-- post -->
+    <mat-sidenav-content>
+      <div>
+        <ng-container>
+          <mat-card class="postCard">
+            <mat-card-header>
+              <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + post.user.picture + ')' }"
+                   class="headerimage">
+              </div>
+              <mat-card-title>{{post.user.name}}</mat-card-title>
+              <mat-card-subtitle>{{post.timestamp}} : {{post.date}}</mat-card-subtitle>
+              <span class="spacer"></span>
+              <button mat-icon-button [matMenuTriggerFor]="menuDelete" aria-label="Example icon-button with a menu"
+                      class="moreBackground" class="morePost" *ngIf="post.user.email === authenService.user.email">
+                <mat-icon svgIcon="more"></mat-icon>
+              </button>
+              <mat-menu yPosition="below" xPosition="after" #menuDelete="matMenu">
+                <button mat-menu-item (click)="delete(post.id, post.picture, post.file)">
+                  <mat-icon>delete_outline</mat-icon>
+                  <span>Delete</span>
+                </button>
+                <!-- <button mat-menu-item>
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button> -->
+              </mat-menu>
+            </mat-card-header>
+            <mat-card-content>
+              <h6>{{post.text}}</h6>
+              <div *ngIf="post.vdoLink[0] && !post.file[0] && !post.picture[0]">
+                <div *ngFor="let vdo of post.vdoLink; let j = index">
+                  <a [href]="vdo" target="_blank" rel="noopener noreferrer">
+                    {{vdo}}
+                  </a>
+                </div>
+              </div>
+              <mdb-carousel *ngIf="!post.vdoLink[0] && !post.file[0] && post.picture[0]" [animation]="'slide'"
+                            data-interval="false">
+                <mdb-carousel-item *ngFor="let pic of post.picture; let x = index">
+                  <a [href]="post.picture[x]" target="_blank" rel="noopener noreferrer">
+                    <img [src]="post.picture[x]" width=100%>
+                  </a>
+                </mdb-carousel-item>
+              </mdb-carousel>
+              <div *ngIf="!post.vdoLink[0] && post.file[0] && !post.picture[0]">
+                <div *ngFor="let files of post.file; let k = index">
+                  <a [href]="files" target="_blank" rel="noopener noreferrer">{{post.filename[k]}}</a>
+                </div>
+              </div>
+              <mat-tab-group
+                *ngIf="(post.vdoLink[0] && post.picture[0]) || (post.vdoLink[0] && post.file[0]) || (post.file[0] && post.picture[0])">
+                <mat-tab *ngIf="post.vdoLink[0]">
+                  <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
+                    Youtube
+                  </ng-template>
+                  <br>
+                  <div *ngFor="let vdo of post.vdoLink; let j = index">
+                    <a [href]="vdo" target="_blank" rel="noopener noreferrer">
+                      {{vdo}}
+                    </a>
+                    <!--<div style="text-align: center;" *ngIf="post.vdoLink[j]">
+                  <span>
+                    <iframe width=100% he ight="235" [src]="getEmbedUrl(post.vdoLink[j])" frameborder="0">
+                    </iframe>
+                  </span>
+                </div>
+                <div class="separator" style="clear: both; text-align: center;"></div>-->
+                  </div>
+                </mat-tab>
+                <mat-tab *ngIf="post.file[0]">
+                  <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">attach_file</mat-icon>
+                    File
+                  </ng-template>
+                  <br>
+                  <div *ngFor="let files of post.file; let k = index">
+                    <div>
+                      <a [href]="files" target="_blank" rel="noopener noreferrer">{{post.filename[k]}}</a>
+                    </div>
+                  </div>
+                </mat-tab>
+                <mat-tab *ngIf="post.picture[0]">
+                  <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">photo_library</mat-icon>
+                    Picture
+                  </ng-template>
+                  <br>
+                  <mdb-carousel [animation]="'slide'" data-interval="false">
+                    <mdb-carousel-item *ngFor="let pic of post.picture; let x = index">
+                      <a [href]="post.picture[x]" target="_blank" rel="noopener noreferrer">
+                        <img [src]="post.picture[x]" width=100%>
+                      </a>
+                    </mdb-carousel-item>
+                  </mdb-carousel>
+                </mat-tab>
+              </mat-tab-group>
+              <br>
+              <ng-container *ngFor="let comments of post.comment">
+                <div class="containerComment">
+                  <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
+                       class="headerimage-comment"></div>
+                  <p class="commentName">{{comments.user.name}}</p>
+                  <span class="spacer"></span>
+                  <br><br>
+                  <p class="commentText">{{comments.text}}</p>
+                </div>
+              </ng-container>
+            </mat-card-content>
+            <ng-container *ngIf='!post.checkComment'>
+              <button mat-button (click)="isComment(post)" class="addComment">comment
+              </button>
+            </ng-container>
+            <ng-container *ngIf='post.checkComment'>
+              <form>
+                <mat-form-field class="comment">
+                <textarea matInput [(ngModel)]="select.commentText" placeholder="Leave a comment"
+                          name="commentText"></textarea>
+                </mat-form-field>
+              </form>
+              <form>
+                <button mat-button class="postButton" (click)="postComment(post.id)" (click)="notComment(post)">Enter
+                </button>
+              </form>
+              <form>
+                <button mat-button class="postButton" (click)="notComment(post)">Cancel</button>
+              </form>
+            </ng-container>
+            <br>
+          </mat-card>
+        </ng-container>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>

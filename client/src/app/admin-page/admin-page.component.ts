@@ -113,7 +113,7 @@ export class AdminPageComponent implements OnInit {
     if (this.facultyname === '') {
       alert('กรุณาใส่ชื่อสำนักวิชา');
     } else {
-      this.httpClient.get('http://localhost:12345/faculty/' + this.facultyname).subscribe(
+      this.httpClient.get(this.adminService.API + '/faculty/' + this.facultyname).subscribe(
         data => {
           if (!data) {
             alert('เพิ่มสำนักวิชา สำเร็จ');
@@ -135,7 +135,7 @@ export class AdminPageComponent implements OnInit {
   }
 
   deleteFaculty(facultyname) {
-    this.httpClient.get('http://localhost:12345/deletefaculty/' + facultyname).subscribe(
+    this.httpClient.get(this.adminService.API + '/deletefaculty/' + facultyname).subscribe(
       data => {
         if (!data) {
           alert('ลบสำนักวิชา สำเร็จ');
@@ -202,7 +202,7 @@ export class AdminPageComponent implements OnInit {
     } else if (this.select.selectFaculty === '') {
       alert('กรุณาเลือกสำนักวิชา');
     } else {
-      this.httpClient.get('http://localhost:12345/major/' + this.majorname + '/' + this.select.selectFaculty).subscribe(
+      this.httpClient.get(this.adminService.API + '/major/' + this.majorname + '/' + this.select.selectFaculty).subscribe(
         data => {
           if (!data) {
             alert('เพิ่มสาขาวิชา สำเร็จ');
@@ -217,7 +217,7 @@ export class AdminPageComponent implements OnInit {
   }
 
   deleteMajor(majorname) {
-    this.httpClient.get('http://localhost:12345/deletemajor/' + majorname).subscribe(
+    this.httpClient.get(this.adminService.API + '/deletemajor/' + majorname).subscribe(
       data => {
         if (!data) {
           alert('ลบสาขาวิชา สำเร็จ');
@@ -280,7 +280,7 @@ export class AdminPageComponent implements OnInit {
     let temp = (<string>picture).split('/');
     let picname = temp[7].split('?');
     this.storage.ref('PicMajor/'.concat(picname[0].substr(11, picname[0].length))).delete();
-    this.httpClient.get('http://localhost:12345/deletesubject/' + code).subscribe(
+    this.httpClient.get(this.adminService.API + '/deletesubject/' + code).subscribe(
       data => {
         if (!data) {
           alert('ลบวิชา สำเร็จ');
@@ -321,7 +321,7 @@ export class AdminPageComponent implements OnInit {
         this.storage.ref(filename[0]).delete();
       }
     }
-    this.httpClient.get('http://localhost:12345/deletepost/' + postid).subscribe(
+    this.httpClient.get(this.adminService.API + '/deletepost/' + postid).subscribe(
       data => {
         if (!data) {
           alert('ลบวิชา โพสสำเร็จ');

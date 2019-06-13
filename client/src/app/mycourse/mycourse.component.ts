@@ -567,7 +567,7 @@ export class MycourseComponent implements OnInit {
         this.storage.ref(filename[0]).delete();
       }
     }
-    this.httpClient.get('http://localhost:12345/deletepost/' + postid, postid).subscribe(
+    this.httpClient.get(this.postService.API + '/deletepost/' + postid, postid).subscribe(
       data => {
         if (!data) {
           alert('Deleted');
@@ -586,7 +586,7 @@ export class MycourseComponent implements OnInit {
   }
 
   unfollow(code) {
-    this.httpClient.get('http://localhost:12345/unfollow/' + this.authenService.user.email + '/' + code).subscribe(
+    this.httpClient.get(this.postService.API + '/unfollow/' + this.authenService.user.email + '/' + code).subscribe(
       data => {
         if (!data) {
           alert('Unfollow success');

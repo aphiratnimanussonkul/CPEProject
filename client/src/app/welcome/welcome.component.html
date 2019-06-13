@@ -1,71 +1,135 @@
-<mat-toolbar>
-  <mat-toolbar-row class="navbar">
-    <a href="home" class="courseOnline">SUT Course Online</a>
-    <span class="spacer"></span>
-    <div class="nameNavbar">{{authenService.user.name}}</div>
-    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + authenService.user?.picture + ')' }"
-         class="headerimage"></div>
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
-            class="moreBackground">
-      <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
-    </button>
-    <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
-      <button mat-menu-item [routerLink]="['/aboutme']">
-        <mat-icon>person</mat-icon>
-        <span>About me</span>
+<div *ngIf="!postService.isMobile">
+  <mat-toolbar>
+    <mat-toolbar-row class="navbar">
+      <a href="home" class="courseOnline">SUT Course Online</a>
+      <span class="spacer"></span>
+      <div class="nameNavbar">{{authenService.user.name}}</div>
+      <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + authenService.user?.picture + ')' }"
+           class="headerimage"></div>
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
+              class="moreBackground">
+        <mat-icon svgIcon="more" aria-hidden="true" aria-label="Example thumbs up SVG icon"></mat-icon>
       </button>
-      <button mat-menu-item [routerLink]="['/home']">
-        <mat-icon>add</mat-icon>
-        <span>Add Course</span>
-      </button>
-      <button mat-menu-item [routerLink]="['/welcome']">
-        <mat-icon>book</mat-icon>
-        <span>My course</span>
-      </button>
-      <button mat-menu-item (click)="logout()">
-        <mat-icon svgIcon="logout"></mat-icon>
-        <span>log out</span>
-      </button>
-    </mat-menu>
-  </mat-toolbar-row>
-</mat-toolbar>
-<div class="panelMaster">
-  <div class="panelleft">
-  </div>
-  <div class="panel1">
-    <mat-grid-list cols="3" rowHeight="380px">
-      <mat-grid-tile class="grid" *ngFor="let subject of postService.subjectFromUser">
-        <mat-card class="subjectCard">
-          <img mat-card-image [src]="subject.picture">
-          <mat-card-title (click)="getFeed(subject.code, subject.name)">{{subject.name}}</mat-card-title>
-          <mat-card-subtitle>{{subject.code}}</mat-card-subtitle>
-          <mat-divider></mat-divider>
-          <button mat-button (click)="getFeed(subject.code, subject.name)">See</button>
-          <button mat-button (click)="unfollow(subject.code)">Unfollow</button>
-        </mat-card>
-      </mat-grid-tile>
-    </mat-grid-list>
-  </div>
-  <div class="panelright">
-  </div>
-</div>
-<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close pull-right" aria-label="Close" (click)="basicModal.hide()">
-          <span aria-hidden="true">×</span>
+      <mat-menu yPosition="above" xPosition="before" #menu="matMenu">
+        <button mat-menu-item [routerLink]="['/aboutme']">
+          <mat-icon>person</mat-icon>
+          <span>About me</span>
         </button>
-        <h5 class="modal-title w-100" id="myModalLabel">You don't have any course?</h5>
-      </div>
-      <div class="modal-body">
-        <P>คุณต้องการติดตามรายวิชาก่อนหรือไม่?</P>
-      </div>
-      <div class="modal-footer">
-        <button mat-button (click)="basicModal.hide()">Close</button>
-        <button mat-button (click)="add()">Add</button>
+        <button mat-menu-item [routerLink]="['/home']">
+          <mat-icon>add</mat-icon>
+          <span>Add Course</span>
+        </button>
+        <button mat-menu-item [routerLink]="['/welcome']">
+          <mat-icon>book</mat-icon>
+          <span>My course</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon svgIcon="logout"></mat-icon>
+          <span>log out</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <div class="panelMaster">
+    <div class="panelleft">
+    </div>
+    <div class="panel1">
+      <mat-grid-list cols="3" rowHeight="380px">
+        <mat-grid-tile class="grid" *ngFor="let subject of postService.subjectFromUser">
+          <mat-card class="subjectCard">
+            <img mat-card-image [src]="subject.picture">
+            <mat-card-title (click)="getFeed(subject.code, subject.name)">{{subject.name}}</mat-card-title>
+            <mat-card-subtitle>{{subject.code}}</mat-card-subtitle>
+            <mat-divider></mat-divider>
+            <button mat-button (click)="getFeed(subject.code, subject.name)">See</button>
+            <button mat-button (click)="unfollow(subject.code)">Unfollow</button>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+    <div class="panelright">
+    </div>
+  </div>
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+       aria-labelledby="myBasicModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="basicModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h5 class="modal-title w-100" id="myModalLabel">You don't have any course?</h5>
+        </div>
+        <div class="modal-body">
+          <P>คุณต้องการติดตามรายวิชาก่อนหรือไม่?</P>
+        </div>
+        <div class="modal-footer">
+          <button mat-button (click)="basicModal.hide()">Close</button>
+          <button mat-button (click)="add()">Add</button>
+        </div>
       </div>
     </div>
   </div>
+</div>
+
+<div *ngIf="postService.isMobile">
+  <mat-toolbar>
+    <mat-toolbar-row class="navbar">
+      <mat-icon class="menuIcon" svgIcon="hamIcon" (click)="sidenav.toggle()"></mat-icon>
+      <a href="home" class="sideHeader">SUT Course Online</a>
+      <span class="spacer"></span>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav mode="side" class="sideNav">
+      <mat-list>
+        <mat-list-item>
+          <mat-icon mat-list-icon>person_outline</mat-icon>
+          <h1 mat-line>{{authenService.user.name}}</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <mat-icon mat-list-icon>mail_outline</mat-icon>
+          <h1 mat-line>{{authenService.user.email}}</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item [routerLink]="['/aboutme']">
+          <mat-icon mat-list-icon>people</mat-icon>
+          <h1 mat-line>About Me</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item [routerLink]="['/home']">
+          <mat-icon mat-list-icon>add</mat-icon>
+          <h1 mat-line>Add Course</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item [routerLink]="['/welcome']">
+          <mat-icon mat-list-icon>book</mat-icon>
+          <h1 mat-line>My Course</h1>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item (click)="logout()">
+          <mat-icon mat-list-icon>exit_to_app</mat-icon>
+          <h1 mat-line>Log out</h1>
+        </mat-list-item>
+      </mat-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="sideContent">
+      <mat-grid-list cols="1" rowHeight="380px">
+        <mat-grid-tile class="grid" *ngFor="let subject of postService.subjectFromUser">
+          <mat-card class="subjectCard">
+            <img mat-card-image [src]="subject.picture">
+            <mat-card-title (click)="getFeed(subject.code, subject.name)">{{subject.name}}</mat-card-title>
+            <mat-card-subtitle>{{subject.code}}</mat-card-subtitle>
+            <mat-divider></mat-divider>
+            <button mat-button (click)="getFeed(subject.code, subject.name)">See</button>
+            <button mat-button (click)="unfollow(subject.code)">Unfollow</button>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>

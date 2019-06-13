@@ -15,7 +15,6 @@ import {User} from '../aboutme/aboutme.component';
 export class AuthenService {
   public user: User;
   public check: string;
-  public API = '//localhost:12345';
 
   constructor(private afAuth: AngularFireAuth, private postService: PostService,
               private router: Router, private storage: AngularFireStorage) {

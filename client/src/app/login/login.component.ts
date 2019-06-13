@@ -16,6 +16,8 @@ export class LoginComponent implements OnInit {
     private service: AuthenService, private route: ActivatedRoute, private router: Router,
     private postService: PostService) { }
   ngOnInit() {
+    this.postService.checkDevice();
+    console.log(this.postService.isMobile);
     this.service.getLoggedInUser()
       .subscribe(user => {
         this.user = user;

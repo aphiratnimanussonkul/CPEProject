@@ -18,7 +18,6 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 
 import { AuthenService } from './service/authen.service';
 import { ProfileService } from './service/profile.service';
-import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -34,12 +33,12 @@ import { HomeComponent } from './home/home.component';
 import { MycourseComponent } from './mycourse/mycourse.component';
 import {PostService} from './service/post.service';
 import { SearchCourseComponent } from './search-course/search-course.component';
-import { VdoComponent, dialog } from './vdo/vdo.component';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { AdminService } from './service/admin.service';
 import { WelcomeComponent } from './welcome/welcome.component';
-import {AboutmeComponent} from "./aboutme/aboutme.component";
+import {AboutmeComponent} from './aboutme/aboutme.component';
 import { CommentComponent } from './comment/comment.component';
+import { BlankPageComponent } from './blank-page/blank-page.component';
 
 const appRoutes: Routes = [
   {path: 'login' , component: LoginComponent},
@@ -47,28 +46,26 @@ const appRoutes: Routes = [
   {path: 'home' , component: HomeComponent},
   {path: 'mycourse/:code/:name' , component: MycourseComponent},
   {path: 'searchcourse/:code' , component: SearchCourseComponent},
-  {path: '' , component: VdoComponent},
   {path: 'admin' , component: AdminPageComponent},
   {path: 'welcome' , component: WelcomeComponent},
   {path: 'aboutme', component: AboutmeComponent},
-  {path: 'comment/:postid' , component: CommentComponent}
+  {path: 'comment/:postid' , component: CommentComponent},
+  {path: '' , component: BlankPageComponent}
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    ToolbarComponent,
     ProfileComponent,
     HomeComponent,
     MycourseComponent,
     SearchCourseComponent,
-    VdoComponent,
-    dialog,
     AdminPageComponent,
     WelcomeComponent,
     AboutmeComponent,
-    CommentComponent
+    CommentComponent,
+    BlankPageComponent
   ],
   imports: [
     BrowserModule,
@@ -112,7 +109,7 @@ const appRoutes: Routes = [
     MatPaginatorModule,
     ModalModule,
   ],
-  entryComponents: [dialog],
+  entryComponents: [],
   providers: [AuthenService, ProfileService, PostService, AdminService],
   bootstrap: [AppComponent]
 })

@@ -8,7 +8,7 @@ import { Faculty, Major, Subject, Post, User, Comment} from '../admin-page/admin
 })
 export class AdminService {
   constructor(private http: HttpClient) { }
-  public API = '//localhost:12345';
+  public API = 'https://go-mongodb-driver.herokuapp.com';
   getFacultyTable(): Observable<Faculty[]> {
     return this.http.get<Faculty[]>(this.API + '/faculties');
   }
@@ -37,11 +37,11 @@ export class AdminService {
     return this.http.get<Comment[]>(this.API + '/users');
   }
   getPostById(postid): Observable<any> {
-    return this.http.get('http://localhost:12345/getpost/' + postid);
+    return this.http.get(this.API + '/getpost/' + postid);
   }
   createSubject(subject: Subject): Observable<Major> {
     const headers = new HttpHeaders();
-    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Origin', this.API);
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('Content-Type', 'application/json');
     return this.http.post<Subject>(this.API + '/subject', JSON.stringify(subject), { headers });

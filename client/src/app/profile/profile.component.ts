@@ -37,6 +37,7 @@ export class ProfileComponent implements OnInit {
     private route: ActivatedRoute, private router: Router, private postService: PostService) { }
   picURL: string;
   ngOnInit() {
+    this.postService.checkDevice();
     this.authenService.getLoggedInUser()
       .subscribe(user => {
         console.log(user);

@@ -20,7 +20,7 @@ export class PostService {
   isUploadSuccess: boolean;
   isUploading: boolean;
   countDelete: number;
-  public API = '//localhost:12345';
+  public API = 'https://go-mongodb-driver.herokuapp.com';
   getPost(): Object {
     return this.http.get(this.API + '/posts');
   }
@@ -55,7 +55,7 @@ export class PostService {
   }
   createArticle(post: Post): Observable<Post> {
     const headers = new HttpHeaders();
-    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Origin', this.API);
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('Content-Type', 'application/json');
     return this.http.post<Post>(this.API + '/post', JSON.stringify(post), { headers });
@@ -110,21 +110,21 @@ export class PostService {
   }
   createComment(comment: Comment,postID): Observable<Comment> {
     const headers = new HttpHeaders();
-    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Origin', this.API);
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('Content-Type', 'application/json');
     return this.http.post<Comment>(this.API + '/comment/' + postID, JSON.stringify(comment), {headers});
   }
   createFeedback(feedback: Feedback): Observable<Feedback> {
     const headers = new HttpHeaders();
-    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Origin', this.API);
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('Content-Type', 'application/json');
     return this.http.post<Feedback>(this.API + '/feedback', JSON.stringify(feedback), { headers });
   }
   createRequest(request: Request): Observable<Request> {
     const headers = new HttpHeaders();
-    headers.append('Access-Control-Allow-Origin', 'http://localhost:12345');
+    headers.append('Access-Control-Allow-Origin', this.API);
     headers.append('Access-Control-Allow-Credentials', 'true');
     headers.append('Content-Type', 'application/json');
     return this.http.post<Request>(this.API + '/request', JSON.stringify(request), { headers });

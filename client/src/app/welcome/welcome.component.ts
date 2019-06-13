@@ -6,7 +6,7 @@ import {FacultyDataSource} from '../mycourse/mycourse.component';
 import { HttpClient } from '@angular/common/http';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
-import {ModalDirective} from "angular-bootstrap-md";
+import {ModalDirective} from 'angular-bootstrap-md';
 
 @Component({
   selector: 'app-welcome',
@@ -63,7 +63,7 @@ export class WelcomeComponent implements OnInit {
     this.router.navigate(['/mycourse', code, name]);
   }
   unfollow(code) {
-    this.httpClient.get('http://localhost:12345/unfollow/' + this.authenService.user.email + '/' + code).subscribe(
+    this.httpClient.get(this.postService.API + '/unfollow/' + this.authenService.user.email + '/' + code).subscribe(
       data => {
         if (!data) {
           alert('Unfollow success');

@@ -1,11 +1,28 @@
 .login-card{
     position: absolute;
-    margin-left: 33%;
-    margin-right: 33%;
+  width: 500px;
     margin-top: 16%;
+  margin-left: calc(50% - 250px);
 }
 .title-name{
     text-align : center;
     // color: #FF3399;
     font-size: 30px;
+}
+button{
+  box-shadow: 5px 1px 4px -3px rgba(0, 0, 0, 0.08), 5px 1px 4px -3px rgba(0, 0, 0, 0.08), 5px 1px 4px -3px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+.cardmobile {
+  position: absolute;
+  width: 90%;
+  margin-top: 30%;
+  margin-right: 5%;
+  margin-left: 5%;
+}
+mat-list-item{
+  margin-left: calc(50% - 125px);
+}
+button{
+  width:200px;
 }
