@@ -318,16 +318,21 @@ export class MycourseComponent implements OnInit {
       this.countFileStatus = 0;
       this.countPicChoose = 0;
       this.countPicStatus = 0;
-      this.countPic = 0;
-      this.countFile = 0;
-
       this.ref.splice(0);
       this.refFile.splice(0);
-      for (let i = 0; i < this.count; i++) {
+      for (let i = 0; i < 5; i++) {
         this.tempVdoLink[i] = '';
         this.tempVdoLink2[i] = '';
+        this.tempFileLink[i] = '';
+        this.tempFileLink2[i] = '';
+      }
+      for (let i = 0; i < 30; i++) {
+        this.tempPicLink[i] = '';
+        this.tempPicLink2[i] = '';
       }
       this.count = 0;
+      this.countPic = 0;
+      this.countFile = 0;
     }
   }
 
@@ -410,19 +415,19 @@ export class MycourseComponent implements OnInit {
     if (event.target.files[0].size > 25000000) {
       alert('The file you have selected is too large. The maximum size is 25MB. Please compress file');
     } else {
-      this.file[index] = event.target.files[0];
       if (this.countFileChoose === 0) {
         this.countFileChoose += 1;
       } else if (index >= this.countFileChoose) {
         this.countFileChoose += 1;
       }
-      if (this.file[index].name.includes('pdf', 0) ||
-        this.file[index].name.includes('doc', 0) ||
-        this.file[index].name.includes('ppt', 0) ||
-        this.file[index].name.includes('xls', 0) ||
-        this.file[index].name.includes('zip', 0) ||
-        this.file[index].name.includes('rar', 0)
+      if (event.target.files[0].name.includes('pdf', 0) ||
+        event.target.files[0].name.includes('doc', 0) ||
+        event.target.files[0].name.includes('ppt', 0) ||
+        event.target.files[0].name.includes('xls', 0) ||
+        event.target.files[0].name.includes('zip', 0) ||
+        event.target.files[0].name.includes('rar', 0)
       ) {
+        this.file[index] = event.target.files[0];
       } else {
         alert('Please choose file as type : pdf, word , exel, ppt, rar and zip');
       }
@@ -510,23 +515,26 @@ export class MycourseComponent implements OnInit {
   }
 
   uploadPic(event, index) {
-    if (event.target.files[0].size > 1000000) {
-      alert('The picture you have selected is too large. The maximum size is 1MB.');
+    if (event.target.files[0].size > 3000000) {
+      alert('The picture you have selected is too large. The maximum size is 3MB.');
     } else {
-      this.picture[index] = event.target.files[0];
       if (this.countPicChoose === 0) {
         this.countPicChoose += 1;
       } else if (index >= this.countPicChoose) {
         this.countPicChoose += 1;
       }
-      if (this.picture[index].name.includes('png', 0) ||
-        this.picture[index].name.includes('PNG', 0) ||
-        this.picture[index].name.includes('jpg', 0) ||
-        this.picture[index].name.includes('JPEG', 0) ||
-        this.picture[index].name.includes('JPG', 0)
+      if (event.target.files[0].name.includes('png', 0) ||
+        event.target.files[0].name.includes('PNG', 0) ||
+        event.target.files[0].name.includes('jpg', 0) ||
+        event.target.files[0].name.includes('JPEG', 0) ||
+        event.target.files[0].name.includes('JPG', 0)
       ) {
+        this.picture[index] = event.target.files[0];
+      } else if (this.postService.isMobile && (!event.target.files[0].name.includes('MOV', 0) ||
+        !event.target.files[0].name.includes('AAE', 0))) {
+        this.picture[index] = event.target.files[0];
       } else {
-        alert('Please choose picture as type : png or jpg');
+        alert('Please choose picture as type : PNG or JPG');
       }
     }
   }

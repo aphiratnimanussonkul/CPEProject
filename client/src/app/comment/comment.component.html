@@ -2,20 +2,6 @@
   <mat-toolbar>
     <mat-toolbar-row class="navbar">
       <h1 class="courseOnline" (click)="goHome()">SUT Course Online</h1>
-      <mat-icon class="bookicon">book</mat-icon>
-      <div class="search">
-        <form>
-          <div class="form-row">
-            <div class="col">
-              <input mdbInput [(ngModel)]="select.inputCode" name="inputCode" class="form-control" placeholder="Search"
-                     matTooltip="Example : 523101 or Computer Programing or 523">
-            </div>
-          </div>
-        </form>
-        <button mat-icon-button (click)="search()" class="searchicon">
-          <mat-icon>search</mat-icon>
-        </button>
-      </div>
       <span class="spacer"></span>
       <div class="nameNavbar">{{authenService.user.name}}</div>
       <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + authenService.user?.picture + ')' }"

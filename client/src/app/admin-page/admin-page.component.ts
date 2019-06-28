@@ -7,6 +7,7 @@ import {AdminService} from '../service/admin.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {AngularFireStorage, AngularFireStorageReference} from '@angular/fire/storage';
 import {PostService} from '../service/post.service';
+import {ModalDirective} from 'angular-bootstrap-md';
 
 export interface Comment {
   text: string;
@@ -50,11 +51,15 @@ export interface Subject {
 export class AdminPageComponent implements OnInit {
   faculty: Faculty[];
   major: Major[];
-
+  USERNAME: string;
+  PASSWORD: string;
+  @ViewChild('basicModal') basicModal: ModalDirective;
   constructor(private adminService: AdminService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
               private route: ActivatedRoute, private router: Router,
               private authenService: AuthenService, private storage: AngularFireStorage,
               private postService: PostService) {
+    this.USERNAME = 'sutcourseonlineadmin';
+    this.PASSWORD = '@Ththth001234';
   }
 
   ref: AngularFireStorageReference;
@@ -78,6 +83,8 @@ export class AdminPageComponent implements OnInit {
       name: ''
     }
   };
+  hide = true;
+  isAdmin: boolean;
   isPosting: boolean;
   posts: Array<any>;
   subjectcode: '';
@@ -98,17 +105,33 @@ export class AdminPageComponent implements OnInit {
   displayedColumnsComment = ['ข้อความ', 'ผู้ใช้', 'หมายเหตุ'];
   displayedColumnsUser = ['ลำดับ', 'ชื่อผู้ใช้', 'Email', 'Major', 'หมายเหตุ'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
+  username: string;
+  password: string;
   ngOnInit() {
-    this.isPosting = false;
-    this.isComment = this.isFaculty = this.isMajor = this.isUser = this.isPost = this.isSubject = false;
-    this.chooseFaculty();
-    this.adminService.getFacultyTable().subscribe(data => {
-      this.dataSource = new MatTableDataSource(data);
-      this.dataSource.paginator = this.paginator;
-    });
+    this.isComment = this.isFaculty = this.isMajor = this.isUser = this.isPost = this.isSubject = this.isPosting = this.isAdmin = false;
   }
-
+  isLogin() {
+    if (this.password === '' && this.username === '') {
+      alert('Please enter username and password');
+    } else if (this.password === '') {
+      alert('Please enter password');
+    } else if (this.username === '') {
+      alert('Please enter username');
+    } else {
+      if (this.username === this.USERNAME && this.PASSWORD === this.password) {
+        this.isAdmin = true;
+        this.basicModal.hide();
+        alert('Login success');
+        this.chooseFaculty();
+      } else {
+        alert('Error, please try angain');
+      }
+    }
+  }
+  isCancle() {
+    this.basicModal.hide();
+    this.router.navigate(['/login']);
+  }
   addFaculty() {
     if (this.facultyname === '') {
       alert('กรุณาใส่ชื่อสำนักวิชา');
@@ -148,37 +171,58 @@ export class AdminPageComponent implements OnInit {
   }
 
   chooseFaculty() {
-    this.isFaculty = true;
-    this.isComment = this.isMajor = this.isUser = this.isPost = this.isSubject = false;
+    if (this.isAdmin) {
+      this.getFaculty();
+      this.isFaculty = true;
+      this.isComment = this.isMajor = this.isUser = this.isPost = this.isSubject = false;
+    } else {
+      this.basicModal.show();
+    }
   }
 
   chooseMajor() {
-    this.getFacultyArray();
-    this.getMajor();
-    this.isMajor = true;
-    this.isComment = this.isFaculty = this.isUser = this.isPost = this.isSubject = false;
+    if (this.isAdmin) {
+      this.getFacultyArray();
+      this.getMajor();
+      this.isMajor = true;
+      this.isComment = this.isFaculty = this.isUser = this.isPost = this.isSubject = false;
+    } else {
+      this.basicModal.show();
+    }
   }
 
   chooseSubject() {
-    this.select.selectFaculty = '';
-    this.getFacultyArray();
-    this.getSubject();
-    this.isSubject = true;
-    this.isComment = this.isFaculty = this.isUser = this.isPost = this.isMajor = false;
+    if (this.isAdmin) {
+      this.select.selectFaculty = '';
+      this.getFacultyArray();
+      this.getSubject();
+      this.isSubject = true;
+      this.isComment = this.isFaculty = this.isUser = this.isPost = this.isMajor = false;
+    } else {
+      this.basicModal.show();
+    }
   }
 
   chooseComment() {
-    this.getComment();
-    this.select.selectFaculty = '';
-    this.isComment = true;
-    this.isSubject = this.isFaculty = this.isUser = this.isPost = this.isMajor = false;
+    if (this.isAdmin) {
+      this.getComment();
+      this.select.selectFaculty = '';
+      this.isComment = true;
+      this.isSubject = this.isFaculty = this.isUser = this.isPost = this.isMajor = false;
+    } else {
+      this.basicModal.show();
+    }
   }
 
   chooseUser() {
-    this.getUser();
-    this.select.selectFaculty = '';
-    this.isUser = true;
-    this.isComment = this.isFaculty = this.isSubject = this.isPost = this.isMajor = false;
+    if (this.isAdmin) {
+      this.getUser();
+      this.select.selectFaculty = '';
+      this.isUser = true;
+      this.isComment = this.isFaculty = this.isSubject = this.isPost = this.isMajor = false;
+    } else {
+      this.basicModal.show();
+    }
   }
 
   // Major
@@ -295,9 +339,13 @@ export class AdminPageComponent implements OnInit {
 
   // Post
   choosePost() {
-    this.getPost();
-    this.isPost = true;
-    this.isComment = this.isFaculty = this.isUser = this.isSubject = this.isMajor = false;
+    if (this.isAdmin) {
+      this.getPost();
+      this.isPost = true;
+      this.isComment = this.isFaculty = this.isUser = this.isSubject = this.isMajor = false;
+    } else {
+      this.basicModal.show();
+    }
   }
 
   getPost() {

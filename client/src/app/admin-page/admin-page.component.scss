@@ -257,3 +257,14 @@ mat-card {
     right: -8%;
   }
 }
+input.example-right-align::-webkit-outer-spin-button,
+input.example-right-align::-webkit-inner-spin-button {
+  display: none;
+}
+.inputLogin {
+  width: 98%;
+  position: absolute;
+}
+mat-form-field{
+  width: 94%;
+}

@@ -696,17 +696,19 @@
                 </mat-tab>
               </mat-tab-group>
               <br>
-              <ng-container *ngFor="let comments of posts.comment | slice:0:3;">
-                <div class="containerComment">
-                  <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
-                       class="headerimage-comment"></div>
-                  <p class="commentName">{{comments.user.name}}</p>
-                  <span class="spacer"></span>
-                  <br><br>
-                  <p class="commentText">{{comments.text}}</p>
-                </div>
-              </ng-container>
-              <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> >> show more << </p>
+              <div *ngIf="posts.comment">
+                <ng-container *ngFor="let comments of posts.comment | slice:0:3;">
+                  <div class="containerComment">
+                    <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
+                         class="headerimage-comment"></div>
+                    <p class="commentName">{{comments.user.name}}</p>
+                    <span class="spacer"></span>
+                    <br><br>
+                    <p class="commentText">{{comments.text}}</p>
+                  </div>
+                </ng-container>
+                <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> show more </p>
+              </div>
             </mat-card-content>
             <ng-container *ngIf='!posts.checkComment'>
               <button mat-button (click)="isComment(posts)" class="addComment">comment
