@@ -8,8 +8,8 @@ import { Faculty, Major, Subject, Post, User, Comment} from '../admin-page/admin
 })
 export class AdminService {
   constructor(private http: HttpClient) { }
-  public API = 'https://sutcpe.club/goservice';
-  // public API = 'https://sutcourseonline.herokuapp.com';
+  // public API = 'https://sutcpe.club/goservice';
+  public API = 'http://localhost:12345';
   getFacultyTable(): Observable<Faculty[]> {
     return this.http.get<Faculty[]>(this.API + '/faculties');
   }
@@ -35,7 +35,7 @@ export class AdminService {
     return this.http.get<User[]>(this.API + '/users');
   }
   getCommentTable(): Observable<Comment[]> {
-    return this.http.get<Comment[]>(this.API + '/users');
+    return this.http.get<Comment[]>(this.API + '/comments');
   }
   getPostById(postid): Observable<any> {
     return this.http.get(this.API + '/getpost/' + postid);

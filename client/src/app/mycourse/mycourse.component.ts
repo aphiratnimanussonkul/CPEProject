@@ -725,6 +725,14 @@ export class MycourseComponent implements OnInit {
   getCommentAll(postid) {
     this.router.navigate(['/comment', postid]);
   }
+  deletecomment (id, postid) {
+    this.httpClient.get(this.postService.API + '/deletecomment/' + id + '/' + postid).subscribe(data => {
+      if (!data) {
+        alert('ลบ comment สำเร็จ');
+        this.getFeed(this.codeSubject, this.nameSubject);
+      }
+    });
+  }
 }
 
 export class FacultyDataSource extends DataSource<any> {

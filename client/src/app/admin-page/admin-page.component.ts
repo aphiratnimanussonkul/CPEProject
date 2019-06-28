@@ -442,7 +442,7 @@ export class AdminPageComponent implements OnInit {
     });
   }
   deleteUser(userId) {
-    this.httpClient.get(this.postService.API + '/deleteUser/' + userId).subscribe(
+    this.httpClient.get(this.postService.API + '/deleteuser/' + userId).subscribe(
       data => {
         if (!data) {
           alert('ลบผู้ใช้ สำเร็จ');
@@ -462,11 +462,11 @@ export class AdminPageComponent implements OnInit {
     });
   }
   deleteComment(CommentId) {
-    this.httpClient.get(this.postService.API + '/deleteComment/' + CommentId).subscribe(
+    this.httpClient.get(this.postService.API + '/deletecomment/' + CommentId).subscribe(
       data => {
         if (!data) {
           alert('ลบ Comment สำเร็จ');
-          this.getMajor();
+          this.getComment();
         } else {
           alert('ไม่สามารถลบ Comment');
         }

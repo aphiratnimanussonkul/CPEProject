@@ -606,3 +606,9 @@ margin-right: 12px;
   font-size: 28px;
   color: rgb(255, 0, 140);
 }
+.deletecomment {
+  margin-left: calc(100% - 40px);
+}
+.deletecommenticon {
+  color: white;
+}

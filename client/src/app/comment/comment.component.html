@@ -129,13 +129,23 @@
                 </mat-tab>
               </mat-tab-group>
               <br>
-              <ng-container *ngFor="let comments of post.comment">
+              <ng-container *ngFor="let comments of comment">
                 <div class="containerComment">
                   <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
                        class="headerimage-comment"></div>
                   <p class="commentName">{{comments.user.name}}</p>
                   <span class="spacer"></span>
-                  <br><br>
+                  <div class="deletecomment">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" class="deletecommenticon" *ngIf="comments.user.email === authenService.user.email">
+                      <mat-icon svgIcon="more"></mat-icon>
+                    </button>
+                    <mat-menu yPosition="below" xPosition="after" #menu="matMenu">
+                      <button mat-menu-item (click)="deletecomment(comments.id)">
+                        <mat-icon>delete_outline</mat-icon>
+                        <span>Delete</span>
+                      </button>
+                    </mat-menu>
+                  </div>
                   <p class="commentText">{{comments.text}}</p>
                 </div>
               </ng-container>
@@ -310,13 +320,23 @@
                 </mat-tab>
               </mat-tab-group>
               <br>
-              <ng-container *ngFor="let comments of post.comment">
+              <ng-container *ngFor="let comments of comment">
                 <div class="containerComment">
                   <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + comments.user.picture + ')' }"
                        class="headerimage-comment"></div>
                   <p class="commentName">{{comments.user.name}}</p>
                   <span class="spacer"></span>
-                  <br><br>
+                  <div class="deletecomment">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" class="deletecommenticon" *ngIf="comments.user.email === authenService.user.email">
+                      <mat-icon svgIcon="more"></mat-icon>
+                    </button>
+                    <mat-menu yPosition="below" xPosition="after" #menu="matMenu">
+                      <button mat-menu-item (click)="deletecomment(comments.id)">
+                        <mat-icon>delete_outline</mat-icon>
+                        <span>Delete</span>
+                      </button>
+                    </mat-menu>
+                  </div>
                   <p class="commentText">{{comments.text}}</p>
                 </div>
               </ng-container>

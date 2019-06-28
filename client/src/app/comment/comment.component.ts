@@ -125,6 +125,8 @@ export class CommentComponent implements OnInit {
 
     this.postService.getPostById(this.postId).subscribe(data => {
       this.post = data;
+      this.comment = data.comment;
+      console.log(this.post);
     });
   }
   getUser() {
@@ -212,6 +214,17 @@ export class CommentComponent implements OnInit {
   }
   getBack(code, name) {
     this.router.navigate(['/mycourse', code, name]);
+  }
+  deletecomment (id) {
+    this.httpClient.get(this.postService.API + '/deletecomment/' + id + '/' + this.postId).subscribe(data => {
+      if (!data) {
+        alert('ลบ comment สำเร็จ');
+        this.postService.getPostById(this.postId).subscribe(res => {
+          this.post = res;
+          this.comment = res;
+        });
+      }
+    });
   }
 }
 export class FacultyDataSource extends DataSource<any> {

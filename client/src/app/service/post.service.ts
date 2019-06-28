@@ -20,8 +20,8 @@ export class PostService {
   isUploadSuccess: boolean;
   isUploading: boolean;
   countDelete: number;
-  public API = 'https://sutcpe.club/goservice';
-  // public API = 'https://sutcourseonline.herokuapp.com';
+  // public API = 'https://sutcpe.club/goservice';
+  public API = 'http://localhost:12345';
   getPost(): Object {
     return this.http.get(this.API + '/posts');
   }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
@@ -8,6 +8,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {DataSource} from '@angular/cdk/collections';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenService} from '../service/authen.service';
+import {ModalDirective} from 'angular-bootstrap-md';
 
 export interface FacultyComponent {
   name: string;
@@ -32,6 +33,7 @@ export class SearchCourseComponent implements OnInit {
   columnsToDisplay = ['สำนักวิชา'];
 
   //
+  @ViewChild('basicModal') basicModal: ModalDirective;
   constructor(private postService: PostService, private httpClient: HttpClient, iconRegistry: MatIconRegistry,
               private sanitizer: DomSanitizer, private route: ActivatedRoute, private router: Router,
               private authenService: AuthenService) {
@@ -50,6 +52,7 @@ export class SearchCourseComponent implements OnInit {
   // Firebase Authen
   user: firebase.User;
   //
+  codeFollow: string;
   code: string;
   inputCode: string;
   faculty: Array<any>;
@@ -116,9 +119,13 @@ export class SearchCourseComponent implements OnInit {
         this.router.navigate(['/mycourse', code, name]);
       } else {
         alert('Please follow this course');
+        this.basicModal.show();
+        this.codeFollow = code;
       }
     } else {
       alert('Please follow this course');
+      this.basicModal.show();
+      this.codeFollow = code;
     }
   }
 
@@ -140,6 +147,10 @@ export class SearchCourseComponent implements OnInit {
       error => {
       }
     );
+  }
+  followCourse () {
+    this.follow(this.codeFollow);
+    this.basicModal.hide();
   }
 }
 
