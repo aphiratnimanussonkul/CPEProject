@@ -7,8 +7,8 @@ import {Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class ProfileService {
-  public API = 'http://localhost:12345';
-  // public API = 'https://sutcpe.club/goservice';
+  // public API = 'http://localhost:12345';
+  public API = 'https://sutcpe.club/goservice';
   constructor(private http: HttpClient) {
   }
   createUser (users: User): Observable<User> {

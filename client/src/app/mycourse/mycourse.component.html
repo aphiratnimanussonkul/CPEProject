@@ -235,13 +235,13 @@
               </mat-card-header>
               <mat-card-content>
                 <h6>{{posts.text}}</h6>
-                <div *ngIf="posts.vdoLink && !posts.file && !posts.picture">
-                  <div *ngFor="let vdo of posts.vdoLink; let j = index">
-                    <a [href]="vdo" target="_blank" rel="noopener noreferrer">
-                      {{vdo}}
+                <mdb-carousel *ngIf="posts.vdoLink && !posts.file && !posts.picture" [animation]="'slide'" data-interval="false">
+                  <mdb-carousel-item *ngFor="let vdo of posts.vdoLink; let j = index">
+                    <a [href]="'https://www.youtube.com/watch?v=' + vdo" target="_blank" rel="noopener noreferrer">
+                      <img [src]="'http://i3.ytimg.com/vi/' + vdo + '/maxresdefault.jpg'" width=100%>
                     </a>
-                  </div>
-                </div>
+                  </mdb-carousel-item>
+                </mdb-carousel>
                 <mdb-carousel *ngIf="!posts.vdoLink && !posts.file && posts.picture" [animation]="'slide'"
                               data-interval="false">
                   <mdb-carousel-item *ngFor="let pic of posts.picture; let x = index">
@@ -259,22 +259,24 @@
                   *ngIf="(posts.vdoLink && posts.picture) || (posts.vdoLink && posts.file) || (posts.file && posts.picture)">
                   <mat-tab *ngIf="posts.vdoLink">
                     <ng-template mat-tab-label>
-                      <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>
-                      Youtube
+                      <mat-icon class="example-tab-icon">play_circle_outline</mat-icon>Youtube
                     </ng-template>
                     <br>
-                    <div *ngFor="let vdo of posts.vdoLink; let j = index">
-                      <a [href]="vdo" target="_blank" rel="noopener noreferrer">
-                        {{vdo}}
-                      </a>
-                      <!--<div style="text-align: center;" *ngIf="posts.vdoLink[j]">
-                        <span>
-                          <iframe width=100% he ight="235" [src]="getEmbedUrl(posts.vdoLink[j])" frameborder="0">
-                          </iframe>
-                        </span>
-                      </div>
-                      <div class="separator" style="clear: both; text-align: center;"></div>-->
+                    <mdb-carousel [animation]="'slide'" data-interval="false">
+                      <mdb-carousel-item *ngFor="let vdo of posts.vdoLink; let j = index">
+                        <a [href]="'https://www.youtube.com/watch?v=' + vdo" target="_blank" rel="noopener noreferrer">
+                          <img [src]="'http://i3.ytimg.com/vi/' + vdo + '/maxresdefault.jpg'" width=100%>
+                        </a>
+                      </mdb-carousel-item>
+                    </mdb-carousel>
+                    <!--<div style="text-align: center;" *ngIf="posts.vdoLink[j]">
+                      <span>
+                        <iframe width=100% he ight="235" [src]="getEmbedUrl(posts.vdoLink[j])" frameborder="0">
+                        </iframe>
+                      </span>
                     </div>
+                    <div class="separator" style="clear: both; text-align: center;"></div>-->
+
                   </mat-tab>
                   <mat-tab *ngIf="posts.file">
                     <ng-template mat-tab-label>
@@ -312,7 +314,8 @@
                       <p class="commentName">{{comments.user.name}}</p>
                       <span class="spacer"></span>
                       <div class="deletecomment">
-                        <button mat-icon-button [matMenuTriggerFor]="menu" class="deletecommenticon" *ngIf="posts.user.email === authenService.user.email">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" class="deletecommenticon"
+                                *ngIf="posts.user.email === authenService.user.email">
                           <mat-icon svgIcon="more"></mat-icon>
                         </button>
                         <mat-menu yPosition="below" xPosition="after" #menu="matMenu">
@@ -325,7 +328,8 @@
                       <p class="commentText">{{comments.text}}</p>
                     </div>
                   </ng-container>
-                  <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> show more </p>
+                  <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> show
+                    more </p>
                 </div>
               </mat-card-content>
               <ng-container *ngIf='!posts.checkComment'>
@@ -341,7 +345,8 @@
                 </form>
                 <form>
                   <button mat-button class="postButton" (click)="postComment(posts.id)"
-                          (click)="notComment(posts)">Enter</button>
+                          (click)="notComment(posts)">Enter
+                  </button>
                 </form>
                 <form>
                   <button mat-button class="postButton" (click)="notComment(posts)">Cancel</button>
@@ -494,7 +499,7 @@
           <h1 mat-line>{{authenService.user.name}}</h1>
         </mat-list-item>
         <mat-divider></mat-divider>
-        <mat-list-item >
+        <mat-list-item>
           <mat-icon mat-list-icon>mail_outline</mat-icon>
           <h1 mat-line>{{authenService.user.email}}</h1>
         </mat-list-item>
@@ -637,13 +642,14 @@
             </mat-card-header>
             <mat-card-content>
               <h6>{{posts.text}}</h6>
-              <div *ngIf="posts.vdoLink && !posts.file && !posts.picture">
-                <div *ngFor="let vdo of posts.vdoLink; let j = index">
-                  <a [href]="vdo" target="_blank" rel="noopener noreferrer">
-                    {{vdo}}
+              <mdb-carousel [animation]="'slide'" data-interval="false"
+                            *ngIf="posts.vdoLink && !posts.file && !posts.picture">
+                <mdb-carousel-item *ngFor="let vdo of posts.vdoLink; let j = index">
+                  <a [href]="'https://www.youtube.com/watch?v=' + vdo" target="_blank" rel="noopener noreferrer">
+                    <img [src]="'http://i3.ytimg.com/vi/' + vdo + '/maxresdefault.jpg'" width=100%>
                   </a>
-                </div>
-              </div>
+                </mdb-carousel-item>
+              </mdb-carousel>
               <mdb-carousel *ngIf="!posts.vdoLink && !posts.file && posts.picture" [animation]="'slide'"
                             data-interval="false">
                 <mdb-carousel-item *ngFor="let pic of posts.picture; let x = index">
@@ -665,18 +671,22 @@
                     Youtube
                   </ng-template>
                   <br>
-                  <div *ngFor="let vdo of posts.vdoLink; let j = index">
-                    <a [href]="vdo" target="_blank" rel="noopener noreferrer">
-                      {{vdo}}
-                    </a>
-                    <!--<div style="text-align: center;" *ngIf="posts.vdoLink[j]">
-                      <span>
-                        <iframe width=100% he ight="235" [src]="getEmbedUrl(posts.vdoLink[j])" frameborder="0">
-                        </iframe>
-                      </span>
-                    </div>
-                    <div class="separator" style="clear: both; text-align: center;"></div>-->
+                  <mdb-carousel [animation]="'slide'"
+                                data-interval="false">
+                    <mdb-carousel-item *ngFor="let vdo of posts.vdoLink; let j = index">
+                      <a [href]="'https://www.youtube.com/watch?v=' + vdo" target="_blank" rel="noopener noreferrer">
+                        <img [src]="'http://i3.ytimg.com/vi/' + vdo + '/maxresdefault.jpg'" width=100%>
+                      </a>
+                    </mdb-carousel-item>
+                  </mdb-carousel>
+                  <!--<div style="text-align: center;" *ngIf="posts.vdoLink[j]">
+                    <span>
+                      <iframe width=100% he ight="235" [src]="getEmbedUrl(posts.vdoLink[j])" frameborder="0">
+                      </iframe>
+                    </span>
                   </div>
+                  <div class="separator" style="clear: both; text-align: center;"></div>-->
+
                 </mat-tab>
                 <mat-tab *ngIf="posts.file">
                   <ng-template mat-tab-label>
@@ -714,7 +724,8 @@
                     <p class="commentName">{{comments.user.name}}</p>
                     <span class="spacer"></span>
                     <div class="deletecomment">
-                      <button mat-icon-button [matMenuTriggerFor]="menu" class="deletecommenticon" *ngIf="posts.user.email === authenService.user.email">
+                      <button mat-icon-button [matMenuTriggerFor]="menu" class="deletecommenticon"
+                              *ngIf="posts.user.email === authenService.user.email">
                         <mat-icon svgIcon="more"></mat-icon>
                       </button>
                       <mat-menu yPosition="below" xPosition="after" #menu="matMenu">
@@ -727,7 +738,8 @@
                     <p class="commentText">{{comments.text}}</p>
                   </div>
                 </ng-container>
-                <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> show more </p>
+                <p *ngIf="posts.comment.length > 3" class="showCommentAll" (click)="getCommentAll(posts.id)"> show
+                  more </p>
               </div>
             </mat-card-content>
             <ng-container *ngIf='!posts.checkComment'>
